@@ -1,5 +1,7 @@
 package com.icreate.projectx;
 
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +19,9 @@ public class homeActivity extends Activity {
         requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.home);
 	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo2);
+	    
+	    ProjectxGlobalState globalData = (ProjectxGlobalState)getApplication();
+	    //globalData.getApiKey();
 	    
 	    ImageButton newProjectButton = (ImageButton) findViewById(R.id.newProjectButton);
 	    Button myProjectButton = (Button) findViewById(R.id.myProjectButton);

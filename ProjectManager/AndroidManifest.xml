@@ -10,7 +10,8 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" >
+        android:theme="@style/CustomTheme" 
+        android:name="com.icreate.projectx.datamodel.ProjectxGlobalState" >
         <activity
             android:label="@string/app_name"
             android:name=".ProjectManagerActivity" >
