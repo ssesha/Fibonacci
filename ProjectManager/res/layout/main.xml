@@ -3,10 +3,17 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background1"
-    android:gravity="bottom"
+    android:gravity="top"
     android:orientation="vertical" >
+    
+    <WebView
+       android:id="@+id/WebViewLogin"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       
+       />
 
-    <LinearLayout
+    <!-- <LinearLayout
         android:id="@+id/loginDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,6 +55,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Login" />
-    </LinearLayout>
+    </LinearLayout> -->
 
 </LinearLayout>
