@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background1"
     android:orientation="vertical" >
+        
+<LinearLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background1"
+    android:orientation="vertical" >  
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:orientation="vertical" >
+        
+       
         
         <TextView
             android:layout_width="match_parent"
@@ -84,10 +93,12 @@
                 android:id="@+id/deadlineTextBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:drawableRight="@drawable/date"
                 android:background="#00ffffff" />
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/LL1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal" >
@@ -99,42 +110,24 @@
                 android:src="@drawable/members" />
 
             <EditText
-                android:id="@+id/membersTextBox"
+                android:id="@+id/membersTextBox1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00ffffff" />
+                android:background="#00ffffff"
+                android:hint="Enter name to add more members"/>
         </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
         
-        <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-		
-        <ListView
-            android:id="@+id/membersListView"
-            android:layout_width="150dp"
-            android:layout_height="226dp"
-            android:visibility="invisible"
-            android:background="#000000" >
-
-        </ListView>
-
-        <ListView
-            android:id="@+id/modulesListView"
-            android:layout_width="150dp"
-            android:layout_height="226dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:visibility="invisible"
-            android:background="#000000" >
-        </ListView>
+        <LinearLayout
+            android:id="@+id/layout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="left" 
+            android:layout_marginLeft="120dp">
+  
+    	</LinearLayout>
         
-        </RelativeLayout>
+    
     </LinearLayout>
 
     <LinearLayout
@@ -152,3 +145,46 @@
     </LinearLayout>
 
 </LinearLayout>
+
+<RelativeLayout
+     android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"  >
+
+<ListView
+    android:id="@+id/modulesListView"
+    android:layout_width="150dp"
+    android:layout_height="226dp"   
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true"
+    android:layout_marginRight="28dp"
+    android:layout_marginTop="60dp" 
+    android:background="#000000"
+    android:visibility="invisible" >
+</ListView>
+
+
+<ListView
+    android:id="@+id/membersListView"
+    android:layout_width="150dp"
+    android:layout_height="226dp"
+    android:layout_alignLeft="@+id/modulesListView"
+    android:layout_alignParentRight="true"
+    android:layout_alignParentTop="true" 
+    android:layout_marginRight="28dp"
+    android:layout_marginTop="190dp"
+    android:background="#000000"
+    android:visibility="invisible" >
+</ListView>
+
+<DatePicker
+    android:id="@+id/datePicker1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_alignTop="@+id/modulesListView"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="26dp"
+    android:visibility="invisible" />
+
+</RelativeLayout>
+</RelativeLayout>
