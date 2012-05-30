@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.os.StrictMode;
 
 public class newProjectActivity extends Activity {
 	private ListView moduleListView, membersListView;
@@ -38,12 +40,20 @@ public class newProjectActivity extends Activity {
 	private List<String> studentList = new ArrayList<String>();
 	private ArrayList<String> moduleListFilter = new ArrayList<String>();
 	private ArrayList<String> studentListFilter = new ArrayList<String>();
+	
+	//TODO: is this list needed here? Look for better ways. Maybe add it to global state. 
+	private List<String> moduleId = new ArrayList<String>();
+	
 	int textLength1 = 0;
 	int textLength2 = 0;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
+		.detectAll().penaltyLog().penaltyDeath().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+		.penaltyLog().penaltyDeath().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newproject);
@@ -57,13 +67,14 @@ public class newProjectActivity extends Activity {
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
 		dueTextBox = (EditText) findViewById(R.id.deadlineTextBox);
 		loginButton = (Button) findViewById(R.id.loginButton);
-		getModuleList();
-		studentList.add("Oinker");
+		GetModuleList task = new GetModuleList();
+		task.execute();
+		/*studentList.add("Oinker");
 		studentList.add("Abs");
 		studentList.add("Abbinayaa");
 		studentList.add("oink");
 		studentList.add("oinky");
-		studentList.add("piggy");
+		studentList.add("piggy");*/
 
 		moduleListView.setAdapter(new ArrayAdapter<String>(this,
 				android.R.layout.simple_list_item_1, moduleList));
@@ -77,6 +88,8 @@ public class newProjectActivity extends Activity {
 						.getItemAtPosition(myItemInt));
 				moduleTextBox.setText(selectedFromList);
 				moduleListView.setVisibility(View.INVISIBLE);
+				GetStudentList task2 = new GetStudentList();
+				task2.execute(moduleList.indexOf(selectedFromList));
 			}
 		});
 
@@ -185,41 +198,90 @@ public class newProjectActivity extends Activity {
 			}
 		});
 	}
+	private class GetModuleList extends AsyncTask<Void, Void, List<String>>{
 
-	private void getModuleList() {
-		try {
-			HttpClient client = new DefaultHttpClient();
-			ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
-			String getURL = "https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Student?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken="
-					+ globalData.getAuthToken()
-					+ "&Duration=0&IncludeAllInfo=false";
-			HttpGet get = new HttpGet(getURL);
-			HttpResponse responseGet = client.execute(get);
-			HttpEntity mResEntityGet = responseGet.getEntity();
-			String content;
+		@Override
+		protected List<String> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+			//List<String> modulesList = new ArrayList<String>();
+			try {
+				HttpClient client = new DefaultHttpClient();
+				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
+				String getURL = "https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Student?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken=" 
+					+ globalData.getAuthToken() + "&Duration=0&IncludeAllInfo=false";
+				HttpGet get = new HttpGet(getURL);
+				HttpResponse responseGet = client.execute(get);
+				HttpEntity mResEntityGet = responseGet.getEntity();
+				String content;
 
-			JSONObject json = new JSONObject();
+				JSONObject json = new JSONObject();
 
-			if (mResEntityGet != null) {
-				content = EntityUtils.toString(mResEntityGet);
-				Log.d("response", content);
-				json = new JSONObject(content);
-				String xyz = json.getString("Results");
-				JSONArray arr = new JSONArray(xyz);
-				// Log.d("json", json.toString(3));
+				if (mResEntityGet != null) {
+					content = EntityUtils.toString(mResEntityGet);
+					Log.d("response", content);
+					json = new JSONObject(content);
+					String xyz = json.getString("Results");
+					JSONArray arr = new JSONArray(xyz);
+					// Log.d("json", json.toString(3));
 
-				for (int i = 0; i < arr.length(); i++) {
-					JSONObject obj = arr.getJSONObject(i);
-					String courseid = obj.getString("CourseCode");
-					moduleList.add(courseid);
-					Log.d("result", courseid);
-				}
+					for (int i = 0; i < arr.length(); i++) {
+						JSONObject obj = arr.getJSONObject(i);
+						String courseid = obj.getString("CourseCode");
+						moduleList.add(courseid);
+						moduleId.add(obj.getString("ID"));
+						Log.d("module - result", courseid);
+					}
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("module-error", "could not get modules");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.e("module-error", "could not get modules");
-		}
-
+			return moduleList;
+		}		
+		
 	}
+	
+	private class GetStudentList extends AsyncTask<Integer, Void, List<String>>{
 
+		@Override
+		protected List<String> doInBackground(Integer... params) {
+			
+			try {
+				
+				HttpClient client = new DefaultHttpClient();
+				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
+				String getURL ="https://ivle.nus.edu.sg/API/Lapi.svc/Class_Roster?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken=" + globalData.getAuthToken() +"&CourseID="+ moduleId.get(params[0]); 
+					
+				HttpGet get = new HttpGet(getURL);
+				HttpResponse responseGet = client.execute(get);
+				HttpEntity mResEntityGet = responseGet.getEntity();
+				String content;
+
+				JSONObject json = new JSONObject();
+
+				if (mResEntityGet != null) {
+					content = EntityUtils.toString(mResEntityGet);
+					Log.d("response", content);
+					json = new JSONObject(content);
+					String xyz = json.getString("Results");
+					JSONArray arr = new JSONArray(xyz);
+					// Log.d("json", json.toString(3));
+					
+					for (int i =0; i< arr.length();i++)
+                    {
+                    	JSONObject obj = arr.getJSONObject(i);
+                    	String name = obj.getString("Name");
+                    	studentList.add(name);
+                    	System.out.println("result - project group: "+ name);
+                    }
+					System.out.println(arr.length());
+					
+				}				
+			} catch (Exception e) {
+				e.printStackTrace();
+				Log.e("project members-error", "could not get modules");
+			}
+			return moduleList;
+		}
+	}	
 }
