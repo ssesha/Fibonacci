@@ -75,7 +75,8 @@
                 android:id="@+id/aboutTextBox"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#00ffffff" />
+                android:background="#00ffffff" 
+                android:inputType="textMultiLine"/>
         </LinearLayout>
 
         <LinearLayout
@@ -160,7 +161,7 @@
     android:layout_marginRight="28dp"
     android:layout_marginTop="60dp" 
     android:background="#000000"
-    android:visibility="invisible" >
+    android:visibility="invisible">
 </ListView>
 
 
@@ -175,6 +176,7 @@
     android:layout_marginTop="190dp"
     android:background="#000000"
     android:visibility="invisible" >
+    <!--android:dividerHeight="14.5sp"-->
 </ListView>
 
 <DatePicker

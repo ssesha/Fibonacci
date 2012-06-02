@@ -5,7 +5,7 @@ import android.app.Application;
 public class ProjectxGlobalState extends Application{
 	private String authToken;
 	private String apiKey;
-	private int userid;
+	private String userid;
 	public String getAuthToken() {
 		return authToken;
 	}
@@ -18,10 +18,10 @@ public class ProjectxGlobalState extends Application{
 	public void setApiKey(String apiKey) {
 		this.apiKey = apiKey;
 	}
-	public int getUserid() {
+	public String getUserid() {
 		return userid;
 	}
-	public void setUserid(int userid) {
+	public void setUserid(String userid) {
 		this.userid = userid;
 	}
 
