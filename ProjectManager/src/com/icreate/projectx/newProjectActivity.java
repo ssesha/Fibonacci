@@ -101,9 +101,9 @@ public class newProjectActivity extends Activity {
 		
         
 		moduleListView.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, moduleList));
+				R.layout.list,R.id.tv1, moduleList));
 		membersListView.setAdapter(new ArrayAdapter<String>(this,
-				android.R.layout.simple_list_item_1, studentList));
+				R.layout.list, R.id.tv1, studentList));
 
 		moduleListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> myAdapter, View myView,
@@ -127,8 +127,8 @@ public class newProjectActivity extends Activity {
 				int name_i=selectedFromList.indexOf(" ");
 				String name=selectedFromList.substring(0,name_i);
 				t.setText(name);
-				t.setCompoundDrawablesWithIntrinsicBounds(null, null, getResources().getDrawable(R.drawable.formvalidationerror), null);
-				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT));
+				t.setTextSize(15);
+				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 		        ll.addView(t);
 		        membersTextBox1.setText("");
 		        members.add(selectedFromList);
@@ -186,7 +186,7 @@ public class newProjectActivity extends Activity {
 
 				moduleListView.setAdapter(new ArrayAdapter<String>(
 						newProjectActivity.this,
-						android.R.layout.simple_list_item_1, moduleListFilter));
+						R.layout.list,R.id.tv1, moduleListFilter));
 				
 				
 				
@@ -219,6 +219,7 @@ public class newProjectActivity extends Activity {
 						if (membersTextBox1.getText().toString().equalsIgnoreCase(
 										(String) studentList.get(i)
 												.subSequence(0, textLength2))) {
+							
 							studentListFilter.add(studentList.get(i));
 						}
 					}
@@ -227,7 +228,7 @@ public class newProjectActivity extends Activity {
 				membersListView
 						.setAdapter(new ArrayAdapter<String>(
 								newProjectActivity.this,
-								android.R.layout.simple_list_item_1,
+								R.layout.list,R.id.tv1,
 								studentListFilter));
 				
 				if(membersListView.getCount()>=1 && textLength2>0)
@@ -341,6 +342,9 @@ public class newProjectActivity extends Activity {
                     {
                     	JSONObject obj = arr.getJSONObject(i);
                     	String name = obj.getString("Name");
+						name=name.toLowerCase();
+						int index=name.indexOf(" ");
+						name= name.substring(0,1).toUpperCase()+name.subSequence(1, index+1)+ name.substring(index+1,index+2).toUpperCase()+ name.substring(index+2);
                     	studentList.add(name);
 						student_id_list.add(obj.getString("UserID"));
                     	System.out.println("result - project group: "+ name);
