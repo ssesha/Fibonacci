@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_error">Usename/Password Invalid!</string>
+    <string name="server_error">Server Error Occurred</string>
+    <string name="uname_hint">Enter Username</string>
+    <string name="pass_hint">Enter Password</string>
+</resources>

@@ -5,19 +5,19 @@
     android:background="@drawable/background1"
     android:gravity="top"
     android:orientation="vertical" >
-    
+
     <WebView
-       android:id="@+id/WebViewLogin"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:visibility="invisible"
-       />
+        android:id="@+id/WebViewLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/loginDetails"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="fill_parent"
         android:layout_margin="5dp"
+        android:gravity="bottom"
         android:orientation="vertical" >
 
         <EditText
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:drawableRight="@drawable/formvalidationerror"
-            android:hint="Enter username"
+            android:hint="@string/uname_hint"
             android:inputType="textEmailAddress" >
 
             <requestFocus />
@@ -38,23 +38,30 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="25dp"
             android:drawableRight="@drawable/formvalidationerror"
-            android:hint="Enter password"
+            android:hint="@string/pass_hint"
             android:inputType="textPassword" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearlayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal" >
+        <LinearLayout
+            android:id="@+id/linearlayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/loginButton"
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Login" />
+        </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/loginProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Login" />
-    </LinearLayout> 
+            android:visibility="gone" />
+    </LinearLayout>
 
 </LinearLayout>
