@@ -1,5 +1,8 @@
 package com.icreate.projectx;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +10,9 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
@@ -17,7 +23,9 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.renderscript.Font;
@@ -38,6 +46,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.os.StrictMode;
 
 public class newProjectActivity extends Activity {
@@ -45,7 +54,7 @@ public class newProjectActivity extends Activity {
 	private EditText moduleTextBox, membersTextBox1, nameTextBox, aboutTextBox,
 			dueTextBox;
 	private DatePicker dp1;
-	private Button loginButton;
+	private Button createProjectButton;
 	private Button t;
 	private List<Button> alltv = new ArrayList<Button>();
 	private List<String> moduleList = new ArrayList<String>();
@@ -77,7 +86,9 @@ public class newProjectActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newproject);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
-
+		final Context cont = this;
+		final Activity currentActivity = this;
+		
 		moduleListView = (ListView) findViewById(R.id.modulesListView);
 		moduleTextBox = (EditText) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersListView);
@@ -85,7 +96,7 @@ public class newProjectActivity extends Activity {
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
 		dueTextBox = (EditText) findViewById(R.id.deadlineTextBox);
-		loginButton = (Button) findViewById(R.id.loginButton);
+		createProjectButton = (Button) findViewById(R.id.loginButton);
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 
@@ -123,7 +134,7 @@ public class newProjectActivity extends Activity {
 		        // do something here
 		    	int index=v.getId();
 		    	LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
-		    	
+		    	members.remove(index);
 		    	ll.removeView(alltv.get(index));
 		    	
 		    }
@@ -254,7 +265,7 @@ public class newProjectActivity extends Activity {
 			}
 		});
 
-		loginButton.setOnClickListener(new View.OnClickListener() {
+		createProjectButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				JSONObject json1 = new JSONObject();
 				JSONArray json_array = new JSONArray();
@@ -267,13 +278,17 @@ public class newProjectActivity extends Activity {
 					json1.put("duedate", dueTextBox.getText());
 					for (int i = 0; i < members.size(); i++) {
 						JSONObject json2 = new JSONObject();
-						json2.put("memberid", memberid.get(i));
-						json2.put("member name", members.get(i));
+						json2.put("member_id", memberid.get(i));
+						json2.put("member_name", members.get(i));
 						json_array.put(json2);
 					}
 					json1.put("members", json_array);
 
 					Log.d("JSON string", json1.toString());
+					ProgressDialog dialog = new ProgressDialog(cont);
+					dialog.setMessage("Create Project...");
+					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1, dialog);
+					createProjectTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -324,6 +339,76 @@ public class newProjectActivity extends Activity {
 			return moduleList;
 		}
 
+	}
+	
+	public class CreateProjectTask extends AsyncTask<String, Void, String> {
+		private Context context;
+		private Activity callingActivity;
+		private ProgressDialog dialog;
+		private JSONObject requestJson;
+
+		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.requestJson = requestData;
+			this.dialog = dialog;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			System.out.println(this.dialog.isShowing());
+			if(!(this.dialog.isShowing())){
+				this.dialog.show();
+			}
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				HttpClient client = new DefaultHttpClient();
+				HttpPut httpPut = new HttpPut(url);
+				try {
+					httpPut.setEntity(new StringEntity(requestJson.toString()));
+					HttpResponse execute = client.execute(httpPut);
+					InputStream content = execute.getEntity().getContent();
+
+					BufferedReader buffer = new BufferedReader(
+							new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
+			System.out.println(result);
+			try {
+				JSONObject resultJson = new JSONObject(result);
+				System.out.println(resultJson.toString());
+				if(resultJson.getString("msg").equals("success")){
+				context.startActivity(new Intent(context, homeActivity.class));
+				}
+				else{
+					Toast.makeText(context, R.string.login_error,
+							Toast.LENGTH_LONG).show();
+				}
+				callingActivity.finish();
+			} catch (JSONException e) {
+				Toast.makeText(context, R.string.server_error,
+						Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private class GetStudentList extends AsyncTask<Integer, Void, List<String>> {

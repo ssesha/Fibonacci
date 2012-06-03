@@ -184,11 +184,12 @@ public class ProjectManagerActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
+			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if(resultJson.getString("msg").equals("success")){
-				context.startActivity(new Intent(cont, homeActivity.class));
+				context.startActivity(new Intent(context, homeActivity.class));
 				}
 				else{
 					Toast.makeText(context, R.string.login_error,
