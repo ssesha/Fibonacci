@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background1"
+    android:background="@drawable/notepapernolines"
     android:gravity="top"
     android:orientation="vertical" >
 
@@ -27,7 +27,10 @@
             android:layout_marginLeft="25dp"
             android:drawableRight="@drawable/formvalidationerror"
             android:hint="@string/uname_hint"
-            android:inputType="textEmailAddress" >
+            android:inputType="textEmailAddress"
+            android:textColor="#013c78"
+            android:textSize="35sp"
+            android:background="@drawable/edittext_top" >
 
             <requestFocus />
         </EditText>
@@ -39,7 +42,10 @@
             android:layout_marginLeft="25dp"
             android:drawableRight="@drawable/formvalidationerror"
             android:hint="@string/pass_hint"
-            android:inputType="textPassword" />
+            android:textSize="35sp"
+            android:inputType="textPassword" 
+            android:textColor="#013c78"
+            android:background="@drawable/edittext_bottom"/>
 
         <LinearLayout
             android:id="@+id/linearlayout4"

@@ -3,188 +3,180 @@
     android:id="@+id/rlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/background1"
+    android:background="@drawable/notepapernolines"
     android:orientation="vertical" >
-        
-<LinearLayout 
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@drawable/background1"
-    android:orientation="vertical" >  
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/notepapernolines"
         android:orientation="vertical" >
-        
-       
-        
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal" >
+            android:layout_margin="5dp"
+            android:orientation="vertical" >
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/module" />
-
-            <EditText
-                android:id="@+id/moduleTextBox"
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00ffffff" />
+                android:layout_height="wrap_content" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/module" />
+
+                <EditText
+                    android:id="@+id/moduleTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00ffffff" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/name" />
+
+                <EditText
+                    android:id="@+id/nameTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00ffffff" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/about" />
+
+                <EditText
+                    android:id="@+id/aboutTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00ffffff"
+                    android:inputType="textMultiLine" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/deadline" />
+
+                <EditText
+                    android:id="@+id/deadlineTextBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00ffffff"
+                    android:drawableRight="@drawable/date" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/LL1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:src="@drawable/members" />
+
+                <EditText
+                    android:id="@+id/membersTextBox1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#00ffffff"
+                    android:hint="Enter name to add more members" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearlayout4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal" >
 
-            <ImageView
+            <Button
+                android:id="@+id/loginButton"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/name" />
-
-            <EditText
-                android:id="@+id/nameTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00ffffff" />
+                android:layout_height="wrap_content"
+                android:text="Create" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/about" />
-
-            <EditText
-                android:id="@+id/aboutTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00ffffff" 
-                android:inputType="textMultiLine"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/deadline" />
-
-            <EditText
-                android:id="@+id/deadlineTextBox"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:drawableRight="@drawable/date"
-                android:background="#00ffffff" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/LL1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                android:src="@drawable/members" />
-
-            <EditText
-                android:id="@+id/membersTextBox1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#00ffffff"
-                android:hint="Enter name to add more members"/>
-        </LinearLayout>
-        
-        <LinearLayout
-            android:id="@+id/layout1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" >
-  
-    	</LinearLayout>
-        
-    
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearlayout4"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/loginButton"
+        <ListView
+            android:id="@+id/modulesListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="28dp"
+            android:background="#000000"
+            android:visibility="invisible" >
+        </ListView>
+
+        <ListView
+            android:id="@+id/membersListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/modulesListView"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="28dp"
+            android:layout_marginTop="190dp"
+            android:background="#000000"
+            android:visibility="invisible" >
+
+            <!-- android:dividerHeight="14.5sp" -->
+        </ListView>
+
+        <DatePicker
+            android:id="@+id/datePicker1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create" />
-    </LinearLayout>
+            android:layout_alignTop="@+id/modulesListView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="26dp"
+            android:visibility="invisible" />
+    </RelativeLayout>
 
-</LinearLayout>
-
-<RelativeLayout
-     android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"  >
-
-<ListView
-    android:id="@+id/modulesListView"
-    android:layout_width="150dp"
-    android:layout_height="wrap_content"   
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true"
-    android:layout_marginRight="28dp"
-    android:layout_marginTop="60dp" 
-    android:background="#000000"
-    android:visibility="invisible">
-</ListView>
-
-
-<ListView
-    android:id="@+id/membersListView"
-    android:layout_width="150dp"
-    android:layout_height="wrap_content"
-    android:layout_alignLeft="@+id/modulesListView"
-    android:layout_alignParentRight="true"
-    android:layout_alignParentTop="true" 
-    android:layout_marginRight="28dp"
-    android:layout_marginTop="190dp"
-    android:background="#000000"
-    android:visibility="invisible" >
-    <!--android:dividerHeight="14.5sp"-->
-</ListView>
-
-<DatePicker
-    android:id="@+id/datePicker1"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_alignTop="@+id/modulesListView"
-    android:layout_centerHorizontal="true"
-    android:layout_marginTop="26dp"
-    android:visibility="invisible" />
-
-</RelativeLayout>
 </RelativeLayout>
