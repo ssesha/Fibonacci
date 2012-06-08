@@ -38,6 +38,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -45,14 +46,16 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.os.StrictMode;
 
 public class newProjectActivity extends Activity {
 	private ListView moduleListView, membersListView;
-	private EditText moduleTextBox, membersTextBox1, nameTextBox, aboutTextBox,
+	private EditText  membersTextBox1, nameTextBox, aboutTextBox,
 			dueTextBox;
+	private Spinner moduleTextBox;
 	private DatePicker dp1;
 	private Button createProjectButton;
 	private Button t;
@@ -90,7 +93,7 @@ public class newProjectActivity extends Activity {
 		final Activity currentActivity = this;
 		
 		moduleListView = (ListView) findViewById(R.id.modulesListView);
-		moduleTextBox = (EditText) findViewById(R.id.moduleTextBox);
+		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersListView);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
@@ -103,7 +106,14 @@ public class newProjectActivity extends Activity {
 		// getModuleList();
 		// studentList.add("Oinker");
 		GetModuleList task = new GetModuleList();
+		moduleTextBox.setOnItemSelectedListener(new MyOnItemSelectedListener());
 		task.execute();
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, moduleList);
+			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			    moduleTextBox.setAdapter(dataAdapter);
+			    
+			    
 		/*
 		 * studentList.add("Oinker"); studentList.add("Abs");
 		 * studentList.add("Abbinayaa"); studentList.add("oink");
@@ -112,22 +122,12 @@ public class newProjectActivity extends Activity {
 		 * studentList.add("piggy");
 		 */
 
-		moduleListView.setAdapter(new ArrayAdapter<String>(this, R.layout.list,
-				R.id.tv1, moduleList));
+		//moduleListView.setAdapter(new ArrayAdapter<String>(this, R.layout.list,
+				//R.id.tv1, moduleList));
 		membersListView.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.list, R.id.tv1, studentList));
 
-		moduleListView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> myAdapter, View myView,
-					int myItemInt, long mylng) {
-				String selectedFromList = (String) (moduleListView
-						.getItemAtPosition(myItemInt));
-				moduleTextBox.setText(selectedFromList);
-				moduleListView.setVisibility(View.INVISIBLE);
-				GetStudentList task2 = new GetStudentList();
-				task2.execute(moduleList.indexOf(selectedFromList));
-			}
-		});
+
 		
 		clickListener = new OnClickListener() {
 		    public void onClick(View v) {
@@ -183,7 +183,7 @@ public class newProjectActivity extends Activity {
 			}
 		});
 
-		moduleTextBox.addTextChangedListener(new TextWatcher() {
+	/*	moduleTextBox.addTextChangedListener(new TextWatcher() {
 
 			public void afterTextChanged(Editable s) {
 			}
@@ -222,7 +222,7 @@ public class newProjectActivity extends Activity {
 				}
 
 			}
-		});
+		});*/
 
 		membersTextBox1.addTextChangedListener(new TextWatcher() {
 
@@ -274,7 +274,7 @@ public class newProjectActivity extends Activity {
 					json1.put("description", aboutTextBox.getText());
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
 					json1.put("leader", Gs.getUserid());
-					json1.put("moduleCode", moduleTextBox.getText());
+					json1.put("moduleCode", moduleTextBox.getSelectedItem());
 					json1.put("duedate", dueTextBox.getText());
 					for (int i = 0; i < members.size(); i++) {
 						JSONObject json2 = new JSONObject();
@@ -295,6 +295,24 @@ public class newProjectActivity extends Activity {
 
 			}
 		});
+	}
+	
+	public class MyOnItemSelectedListener implements OnItemSelectedListener {
+
+	    public void onItemSelected(AdapterView<?> parent,
+	        View view, int pos, long id) {
+	    	String selectedFromList = (String) (moduleList
+					.get(pos));
+	    	Log.d("INSIDE ITEM SELECTED",selectedFromList);
+	    	moduleTextBox.setVisibility(View.VISIBLE);
+			moduleTextBox.setSelection(pos);
+			GetStudentList task2 = new GetStudentList();
+			task2.execute(moduleList.indexOf(selectedFromList));
+	    }
+
+	    public void onNothingSelected(AdapterView parent) {
+	      // Do nothing.
+	    }
 	}
 
 	private class GetModuleList extends AsyncTask<Void, Void, List<String>> {
@@ -463,5 +481,13 @@ public class newProjectActivity extends Activity {
 			}
 			return moduleList;
 		}
+		
+		@Override
+        protected void onPostExecute(List<String> result) {
+			
+			
+				
+			
+        }
 	}
 }
