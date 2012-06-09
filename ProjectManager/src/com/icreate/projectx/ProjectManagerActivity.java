@@ -16,6 +16,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,7 +27,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
@@ -37,6 +38,8 @@ public class ProjectManagerActivity extends Activity {
 	private Activity activity;
 	private Context cont;
 	private ProgressDialog dialog;
+	private TextView usernameView,passwordView;
+	private EditText usernameText,passwordText;
 	
 	
 	@Override
@@ -44,6 +47,18 @@ public class ProjectManagerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
+		
+		
+		Typeface font = Typeface.createFromAsset(getAssets(),"EraserDust.ttf"); 
+		usernameView = (TextView) findViewById(R.id.unameView);
+		usernameView.setTypeface(font);
+		passwordView = (TextView) findViewById(R.id.passView);
+		passwordView.setTypeface(font);
+		usernameText = (EditText) findViewById(R.id.uname);
+		usernameText.setTypeface(font);
+		passwordText = (EditText) findViewById(R.id.pass);
+		passwordText.setTypeface(font);
+		
 		cont = this;
 		activity = this;
 		//final ProgressBar progressBar = (ProgressBar) findViewById(R.id.loginProgress);

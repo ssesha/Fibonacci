@@ -3,13 +3,13 @@
     android:id="@+id/rlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/green"
+    android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/green"
+        android:background="@drawable/backgrounddown"
         android:orientation="vertical" 
         android:paddingRight="20dp">
 
