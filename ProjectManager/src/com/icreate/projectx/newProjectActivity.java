@@ -10,7 +10,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -19,16 +18,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
-
 import android.app.Activity;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.renderscript.Font;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -38,7 +34,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -49,12 +44,12 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.StrictMode;
+
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class newProjectActivity extends Activity {
-	private ListView moduleListView, membersListView;
-	private EditText  membersTextBox1, nameTextBox, aboutTextBox,
-			dueTextBox;
+	private ListView membersListView;
+	private EditText  membersTextBox1, nameTextBox, aboutTextBox,dueTextBox;
 	private Spinner moduleTextBox;
 	private DatePicker dp1;
 	private Button createProjectButton;
@@ -68,6 +63,7 @@ public class newProjectActivity extends Activity {
 	private ArrayList<String> members = new ArrayList<String>();
 	private ArrayList<String> memberid = new ArrayList<String>();
 	private View.OnClickListener clickListener;
+	private ArrayAdapter<String> dataAdapter ;
 
 	// TODO: is this list needed here? Look for better ways. Maybe add it to
 	// global state.
@@ -92,7 +88,8 @@ public class newProjectActivity extends Activity {
 		final Context cont = this;
 		final Activity currentActivity = this;
 		
-		moduleListView = (ListView) findViewById(R.id.modulesListView);
+		
+		//moduleListView = (ListView) findViewById(R.id.modulesListView);
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersListView);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
@@ -103,16 +100,32 @@ public class newProjectActivity extends Activity {
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 
-		// getModuleList();
-		// studentList.add("Oinker");
+		//List<String> items = new ArrayList<String>();
+		//items.add("this");
+		//items.add("is");
+		moduleList.add("Select Module");
+		//moduleTextBox.setOnItemSelectedListener(this);
+		dataAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, moduleList){
+				public boolean isEnabled(int position) {
+            if(position == 0){
+                return false; 
+            }else{
+                return true;
+            }
+          } 
+          public boolean areAllItemsEnabled() { 
+            return false; 
+          } 
+        };;
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		moduleTextBox.setAdapter(dataAdapter);
 		GetModuleList task = new GetModuleList();
-		moduleTextBox.setOnItemSelectedListener(new MyOnItemSelectedListener());
 		task.execute();
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, moduleList);
-			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-			    moduleTextBox.setAdapter(dataAdapter);
-			    
+		//moduleTextBox.setOnItemSelectedListener(this);	
+		
+	//	moduleTextBox.setSelection(0,true);
+		
+		
 			    
 		/*
 		 * studentList.add("Oinker"); studentList.add("Abs");
@@ -139,7 +152,7 @@ public class newProjectActivity extends Activity {
 		    	
 		    }
 		};
-
+		
 		membersListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> myAdapter, View myView,
 					int myItemInt, long mylng) {
@@ -222,7 +235,7 @@ public class newProjectActivity extends Activity {
 				}
 
 			}
-		});*/
+		});*/		
 
 		membersTextBox1.addTextChangedListener(new TextWatcher() {
 
@@ -296,31 +309,14 @@ public class newProjectActivity extends Activity {
 			}
 		});
 	}
-	
-	public class MyOnItemSelectedListener implements OnItemSelectedListener {
 
-	    public void onItemSelected(AdapterView<?> parent,
-	        View view, int pos, long id) {
-	    	String selectedFromList = (String) (moduleList
-					.get(pos));
-	    	Log.d("INSIDE ITEM SELECTED",selectedFromList);
-	    	moduleTextBox.setVisibility(View.VISIBLE);
-			moduleTextBox.setSelection(pos);
-			GetStudentList task2 = new GetStudentList();
-			task2.execute(moduleList.indexOf(selectedFromList));
-	    }
-
-	    public void onNothingSelected(AdapterView parent) {
-	      // Do nothing.
-	    }
-	}
-
-	private class GetModuleList extends AsyncTask<Void, Void, List<String>> {
+	private class GetModuleList extends AsyncTask<Void, Void, String> {
 
 		@Override
-		protected List<String> doInBackground(Void... params) {
+		protected String doInBackground(Void... params) {
 			// TODO Auto-generated method stub
 			// List<String> modulesList = new ArrayList<String>();
+			String content = "";
 			try {
 				HttpClient client = new DefaultHttpClient();
 				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
@@ -330,14 +326,14 @@ public class newProjectActivity extends Activity {
 				HttpGet get = new HttpGet(getURL);
 				HttpResponse responseGet = client.execute(get);
 				HttpEntity mResEntityGet = responseGet.getEntity();
-				String content;
+				
 
-				JSONObject json = new JSONObject();
+				//JSONObject json = new JSONObject();
 
 				if (mResEntityGet != null) {
 					content = EntityUtils.toString(mResEntityGet);
 					Log.d("response", content);
-					json = new JSONObject(content);
+					/*json = new JSONObject(content);
 					String xyz = json.getString("Results");
 					JSONArray arr = new JSONArray(xyz);
 					// Log.d("json", json.toString(3));
@@ -346,17 +342,44 @@ public class newProjectActivity extends Activity {
 						JSONObject obj = arr.getJSONObject(i);
 						String courseid = obj.getString("CourseCode");
 						moduleList.add(courseid);
+						
 						moduleId.add(obj.getString("ID"));
 						Log.d("module - result", courseid);
-					}
+					}*/
 				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				Log.e("module-error", "could not get modules");
 			}
-			return moduleList;
+			return content;
 		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			try{
+				JSONObject json = new JSONObject();
+				json = new JSONObject(result);
+				String xyz = json.getString("Results");
+				JSONArray arr = new JSONArray(xyz);
+				// Log.d("json", json.toString(3));
 
+				for (int i = 0; i < arr.length(); i++) {
+					JSONObject obj = arr.getJSONObject(i);
+					String courseid = obj.getString("CourseCode");
+					dataAdapter.add(courseid);
+					
+					moduleId.add(obj.getString("ID"));
+					Log.d("module - result", courseid);
+			}
+			}
+			catch(Exception e)
+			{
+				Log.e("module-error", "could not get modules");
+			}
+			
+
+	}
 	}
 	
 	public class CreateProjectTask extends AsyncTask<String, Void, String> {

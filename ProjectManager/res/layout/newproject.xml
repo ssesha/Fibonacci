@@ -10,8 +10,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@drawable/green"
-        android:orientation="vertical" 
-        android:paddingRight="20dp">
+        android:orientation="vertical"
+        android:paddingRight="20dp" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,20 +27,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/module" />
-
+                
                 <Spinner
                     android:id="@+id/moduleTextBox"
+                    android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                     />
-                
-                
+                    android:layout_height="match_parent" 
+                    android:prompt="@string/module" />
             </LinearLayout>
 
             <LinearLayout
@@ -139,9 +132,9 @@
                 android:layout_width="148dp"
                 android:layout_height="54dp"
                 android:background="@drawable/scribble1"
-                android:text="Create" 
-                android:textSize="30sp"
-                android:textColor="#05261f" />
+                android:text="Create"
+                android:textColor="#05261f"
+                android:textSize="30sp" />
         </LinearLayout>
     </LinearLayout>
 
