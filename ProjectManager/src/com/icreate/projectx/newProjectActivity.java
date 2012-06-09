@@ -47,7 +47,7 @@ import android.widget.Toast;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
-public class newProjectActivity extends Activity {
+public class newProjectActivity extends Activity implements AdapterView.OnItemSelectedListener {
 	private ListView membersListView;
 	private EditText  membersTextBox1, nameTextBox, aboutTextBox,dueTextBox;
 	private Spinner moduleTextBox;
@@ -88,10 +88,8 @@ public class newProjectActivity extends Activity {
 		final Context cont = this;
 		final Activity currentActivity = this;
 		
-		
-		//moduleListView = (ListView) findViewById(R.id.modulesListView);
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
-		membersListView = (ListView) findViewById(R.id.membersListView);
+		membersListView = (ListView) findViewById(R.id.membersList);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
@@ -121,7 +119,7 @@ public class newProjectActivity extends Activity {
 		moduleTextBox.setAdapter(dataAdapter);
 		GetModuleList task = new GetModuleList();
 		task.execute();
-		//moduleTextBox.setOnItemSelectedListener(this);	
+		moduleTextBox.setOnItemSelectedListener(this);	
 		
 	//	moduleTextBox.setSelection(0,true);
 		
@@ -310,6 +308,17 @@ public class newProjectActivity extends Activity {
 		});
 	}
 
+	public void onItemSelected(AdapterView<?> parent, View v, int position,
+			long id) {
+		studentList = new ArrayList<String>();
+		String selectedFromList=(String) moduleTextBox.getSelectedItem();
+		GetStudentList task2 = new GetStudentList();
+        task2.execute(moduleList.indexOf(selectedFromList));
+	}
+
+	public void onNothingSelected(AdapterView<?> parent) {
+	}
+	
 	private class GetModuleList extends AsyncTask<Void, Void, String> {
 
 		@Override
