@@ -20,26 +20,56 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectList;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class ProjectListActivity extends Activity {
+	private TextView logoText;
+	private ProjectxGlobalState globalState;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.projectlist);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+
 		final Context cont = this;
 		final Activity currentActivity = this;
+
+		globalState = (ProjectxGlobalState) getApplication();
+
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		logoText = (TextView) findViewById(R.id.logoText);
+		logoText.setTypeface(font);
+		logoText.setTextColor(R.color.white);
+
+		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
+		homeButton.setBackgroundResource(R.drawable.home_button);
+
+		homeButton.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				startActivity(new Intent(cont, homeActivity.class));
+
+			}
+		});
 
 		final ListView projectListView = (ListView) findViewById(R.id.ListView01);
 		projectListView.setTextFilterEnabled(true);
@@ -48,6 +78,12 @@ public class ProjectListActivity extends Activity {
 		String passedUserId = null;
 		if (extras != null) {
 			passedUserId = extras.getString("requiredId");
+			if (passedUserId.equalsIgnoreCase(globalState.getUserid())) {
+				logoText.setText("My Projects");
+			} else {
+				logoText.setText("Projects");
+			}
+
 			Toast.makeText(cont, extras.getString("requiredId"),
 					Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
@@ -68,11 +104,12 @@ public class ProjectListActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				Object o = projectListView.getItemAtPosition(position);
-				Project fullObject = (Project) o;
+				Project selectedProject = (Project) o;
 				Toast.makeText(
 						cont,
 						"You have chosen: " + " "
-								+ fullObject.getProject_name(),
+								+ selectedProject.getProject_name() + " "
+								+ selectedProject.getProject_id(),
 						Toast.LENGTH_LONG).show();
 			}
 		});
