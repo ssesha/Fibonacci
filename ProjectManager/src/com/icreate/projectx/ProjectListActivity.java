@@ -122,7 +122,7 @@ public class ProjectListActivity extends Activity {
 						projectViewActivity.class);
 				//String currentUserId = globalData.getUserid();
 			//	if (!(currentUserId.isEmpty())) {
-					projectViewIntent.putExtra("projectid",selectedProject.getProject_id() );
+					projectViewIntent.putExtra("position",position );
 				//}
 				//System.out.println(fullObject.getProject_name());
 				startActivity(projectViewIntent);

@@ -21,20 +21,20 @@ public class projectViewActivity extends Activity {
 		final Context cont = this;
 		final Activity currentActivity = this;
 		
-		ProjectName=(TextView)findViewById(R.id.projectname);
+		ProjectName=(TextView)findViewById(R.id.projectName);
 		Bundle extras = getIntent().getExtras();
-		
-		int project_id=0;
+		ProjectxGlobalState global = (ProjectxGlobalState)getApplication();
+		int position=0;
 		if(extras!=null)
 		{
-			project_id=extras.getInt("projectid");
-			//System.out.println(project_id);
-			Toast.makeText(cont, "" + project_id,
-					Toast.LENGTH_LONG).show();
-			ProjectxGlobalState global = new ProjectxGlobalState();
+			position=extras.getInt("position");
+			System.out.println(position);
 			
-			//ProjectName.setText(""+ project_id);
+			Toast.makeText(cont, "" + global.getProjectList().getProjects().get(position).getProject_name(),
+				Toast.LENGTH_LONG).show();
 		}
+		
+		ProjectName.setText(global.getProjectList().getProjects().get(position).getProject_name());
 		//Log.d("project id", project_id);
 		
 	}
