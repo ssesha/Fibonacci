@@ -27,6 +27,7 @@
         <activity android:name=".myProjectsActivity"></activity>
         <activity android:name="loginActivity"></activity>
         <activity android:name=".ProjectListActivity"></activity>
+        <activity android:name="projectViewActivity"></activity>
     </application>
 
 </manifest>

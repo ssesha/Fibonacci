@@ -20,6 +20,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -74,6 +75,15 @@ public class ProjectListActivity extends Activity {
 						"You have chosen: " + " "
 								+ fullObject.getProject_name(),
 						Toast.LENGTH_LONG).show();
+				String pid="14";
+				Intent projectViewIntent = new Intent(cont,
+						projectViewActivity.class);
+				//String currentUserId = globalData.getUserid();
+			//	if (!(currentUserId.isEmpty())) {
+					projectViewIntent.putExtra("projectid",pid );
+				//}
+				System.out.println(fullObject.getProject_name());
+				startActivity(projectViewIntent);
 			}
 		});
 	}
