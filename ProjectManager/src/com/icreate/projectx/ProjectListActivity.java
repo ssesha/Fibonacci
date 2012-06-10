@@ -118,6 +118,14 @@ public class ProjectListActivity extends Activity {
 								+ globalState.getProjectList().getProjects()
 										.get(position).getLeader_name(),
 						Toast.LENGTH_LONG).show();
+				Intent projectViewIntent = new Intent(cont,
+						projectViewActivity.class);
+				//String currentUserId = globalData.getUserid();
+			//	if (!(currentUserId.isEmpty())) {
+					projectViewIntent.putExtra("projectid",selectedProject.getProject_id() );
+				//}
+				//System.out.println(fullObject.getProject_name());
+				startActivity(projectViewIntent);
 			}
 		});
 	}
