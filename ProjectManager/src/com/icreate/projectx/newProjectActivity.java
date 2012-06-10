@@ -42,32 +42,32 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
-public class newProjectActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class newProjectActivity extends Activity implements
+		AdapterView.OnItemSelectedListener {
 	private ListView membersListView;
-	private EditText  membersTextBox1, nameTextBox, aboutTextBox,dueTextBox;
+	private EditText membersTextBox1, nameTextBox, aboutTextBox, dueTextBox;
 	private Spinner moduleTextBox;
 	private DatePicker dp1;
 	private Button createProjectButton;
 	private Button t;
-	private List<Button> alltv = new ArrayList<Button>();
-	private List<String> moduleList = new ArrayList<String>();
+	private final List<Button> alltv = new ArrayList<Button>();
+	private final List<String> moduleList = new ArrayList<String>();
 	private List<String> studentList = new ArrayList<String>();
-	private List<String> student_id_list = new ArrayList<String>();
-	private ArrayList<String> moduleListFilter = new ArrayList<String>();
-	private ArrayList<String> studentListFilter = new ArrayList<String>();
-	private ArrayList<String> members = new ArrayList<String>();
-	private ArrayList<String> memberid = new ArrayList<String>();
+	private final List<String> student_id_list = new ArrayList<String>();
+	private final ArrayList<String> moduleListFilter = new ArrayList<String>();
+	private final ArrayList<String> studentListFilter = new ArrayList<String>();
+	private final ArrayList<String> members = new ArrayList<String>();
+	private final ArrayList<String> memberid = new ArrayList<String>();
 	private View.OnClickListener clickListener;
-	private ArrayAdapter<String> dataAdapter ;
+	private ArrayAdapter<String> dataAdapter;
 
 	// TODO: is this list needed here? Look for better ways. Maybe add it to
 	// global state.
-	private List<String> moduleId = new ArrayList<String>();
+	private final List<String> moduleId = new ArrayList<String>();
 
 	int textLength1 = 0;
 	int textLength2 = 0;
@@ -87,7 +87,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		final Context cont = this;
 		final Activity currentActivity = this;
-		
+
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersList);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
@@ -98,33 +98,37 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 
-		//List<String> items = new ArrayList<String>();
-		//items.add("this");
-		//items.add("is");
+		// List<String> items = new ArrayList<String>();
+		// items.add("this");
+		// items.add("is");
 		moduleList.add("Select Module");
-		//moduleTextBox.setOnItemSelectedListener(this);
-		dataAdapter= new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, moduleList){
-				public boolean isEnabled(int position) {
-            if(position == 0){
-                return false; 
-            }else{
-                return true;
-            }
-          } 
-          public boolean areAllItemsEnabled() { 
-            return false; 
-          } 
-        };;
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// moduleTextBox.setOnItemSelectedListener(this);
+		dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, moduleList) {
+			@Override
+			public boolean isEnabled(int position) {
+				if (position == 0) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+
+			@Override
+			public boolean areAllItemsEnabled() {
+				return false;
+			}
+		};
+		;
+		dataAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		moduleTextBox.setAdapter(dataAdapter);
 		GetModuleList task = new GetModuleList();
 		task.execute();
-		moduleTextBox.setOnItemSelectedListener(this);	
-		
-	//	moduleTextBox.setSelection(0,true);
-		
-		
-			    
+		moduleTextBox.setOnItemSelectedListener(this);
+
+		// moduleTextBox.setSelection(0,true);
+
 		/*
 		 * studentList.add("Oinker"); studentList.add("Abs");
 		 * studentList.add("Abbinayaa"); studentList.add("oink");
@@ -133,24 +137,23 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		 * studentList.add("piggy");
 		 */
 
-		//moduleListView.setAdapter(new ArrayAdapter<String>(this, R.layout.list,
-				//R.id.tv1, moduleList));
+		// moduleListView.setAdapter(new ArrayAdapter<String>(this,
+		// R.layout.list,
+		// R.id.tv1, moduleList));
 		membersListView.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.list, R.id.tv1, studentList));
 
-
-		
 		clickListener = new OnClickListener() {
-		    public void onClick(View v) {
-		        // do something here
-		    	int index=v.getId();
-		    	LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
-		    	members.remove(index);
-		    	ll.removeView(alltv.get(index));
-		    	
-		    }
+			public void onClick(View v) {
+				// do something here
+				int index = v.getId();
+				LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
+				members.remove(index);
+				ll.removeView(alltv.get(index));
+
+			}
 		};
-		
+
 		membersListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> myAdapter, View myView,
 					int myItemInt, long mylng) {
@@ -175,8 +178,6 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 				membersListView.setVisibility(View.INVISIBLE);
 			}
 		});
-		
-		
 
 		dueTextBox.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -194,46 +195,34 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			}
 		});
 
-	/*	moduleTextBox.addTextChangedListener(new TextWatcher() {
-
-			public void afterTextChanged(Editable s) {
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-
-				textLength1 = moduleTextBox.getText().length();
-
-				if (textLength1 == 0)
-					moduleListView.setVisibility(View.INVISIBLE);
-				moduleListFilter.clear();
-				for (int i = 0; i < moduleList.size(); i++) {
-					if (textLength1 <= moduleList.get(i).length()) {
-						if (moduleTextBox
-								.getText()
-								.toString()
-								.equalsIgnoreCase(
-										(String) moduleList.get(i).subSequence(
-												0, textLength1))) {
-							moduleListFilter.add(moduleList.get(i));
-						}
-					}
-				}
-
-				moduleListView.setAdapter(new ArrayAdapter<String>(
-						newProjectActivity.this, R.layout.list, R.id.tv1,
-						moduleListFilter));
-
-				if (moduleListView.getCount() >= 1 && textLength1 > 0) {
-					moduleListView.setVisibility(View.VISIBLE);
-				}
-
-			}
-		});*/		
+		/*
+		 * moduleTextBox.addTextChangedListener(new TextWatcher() {
+		 * 
+		 * public void afterTextChanged(Editable s) { }
+		 * 
+		 * public void beforeTextChanged(CharSequence s, int start, int count,
+		 * int after) { }
+		 * 
+		 * public void onTextChanged(CharSequence s, int start, int before, int
+		 * count) {
+		 * 
+		 * textLength1 = moduleTextBox.getText().length();
+		 * 
+		 * if (textLength1 == 0) moduleListView.setVisibility(View.INVISIBLE);
+		 * moduleListFilter.clear(); for (int i = 0; i < moduleList.size(); i++)
+		 * { if (textLength1 <= moduleList.get(i).length()) { if (moduleTextBox
+		 * .getText() .toString() .equalsIgnoreCase( (String)
+		 * moduleList.get(i).subSequence( 0, textLength1))) {
+		 * moduleListFilter.add(moduleList.get(i)); } } }
+		 * 
+		 * moduleListView.setAdapter(new ArrayAdapter<String>(
+		 * newProjectActivity.this, R.layout.list, R.id.tv1, moduleListFilter));
+		 * 
+		 * if (moduleListView.getCount() >= 1 && textLength1 > 0) {
+		 * moduleListView.setVisibility(View.VISIBLE); }
+		 * 
+		 * } });
+		 */
 
 		membersTextBox1.addTextChangedListener(new TextWatcher() {
 
@@ -298,8 +287,10 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
 					dialog.setMessage("Create Project...");
-					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1, dialog);
-					createProjectTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject.php");
+					CreateProjectTask createProjectTask = new CreateProjectTask(
+							cont, currentActivity, json1, dialog);
+					createProjectTask
+							.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -311,14 +302,14 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	public void onItemSelected(AdapterView<?> parent, View v, int position,
 			long id) {
 		studentList = new ArrayList<String>();
-		String selectedFromList=(String) moduleTextBox.getSelectedItem();
+		String selectedFromList = (String) moduleTextBox.getSelectedItem();
 		GetStudentList task2 = new GetStudentList();
-        task2.execute(moduleList.indexOf(selectedFromList));
+		task2.execute(moduleList.indexOf(selectedFromList));
 	}
 
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
-	
+
 	private class GetModuleList extends AsyncTask<Void, Void, String> {
 
 		@Override
@@ -335,38 +326,36 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 				HttpGet get = new HttpGet(getURL);
 				HttpResponse responseGet = client.execute(get);
 				HttpEntity mResEntityGet = responseGet.getEntity();
-				
 
-				//JSONObject json = new JSONObject();
+				// JSONObject json = new JSONObject();
 
 				if (mResEntityGet != null) {
 					content = EntityUtils.toString(mResEntityGet);
 					Log.d("response", content);
-					/*json = new JSONObject(content);
-					String xyz = json.getString("Results");
-					JSONArray arr = new JSONArray(xyz);
-					// Log.d("json", json.toString(3));
-
-					for (int i = 0; i < arr.length(); i++) {
-						JSONObject obj = arr.getJSONObject(i);
-						String courseid = obj.getString("CourseCode");
-						moduleList.add(courseid);
-						
-						moduleId.add(obj.getString("ID"));
-						Log.d("module - result", courseid);
-					}*/
+					/*
+					 * json = new JSONObject(content); String xyz =
+					 * json.getString("Results"); JSONArray arr = new
+					 * JSONArray(xyz); // Log.d("json", json.toString(3));
+					 * 
+					 * for (int i = 0; i < arr.length(); i++) { JSONObject obj =
+					 * arr.getJSONObject(i); String courseid =
+					 * obj.getString("CourseCode"); moduleList.add(courseid);
+					 * 
+					 * moduleId.add(obj.getString("ID"));
+					 * Log.d("module - result", courseid); }
+					 */
 				}
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				Log.e("module-error", "could not get modules");
 			}
 			return content;
 		}
-		
+
 		@Override
 		protected void onPostExecute(String result) {
-			try{
+			try {
 				JSONObject json = new JSONObject();
 				json = new JSONObject(result);
 				String xyz = json.getString("Results");
@@ -377,27 +366,25 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					JSONObject obj = arr.getJSONObject(i);
 					String courseid = obj.getString("CourseCode");
 					dataAdapter.add(courseid);
-					
+
 					moduleId.add(obj.getString("ID"));
 					Log.d("module - result", courseid);
-			}
-			}
-			catch(Exception e)
-			{
+				}
+			} catch (Exception e) {
 				Log.e("module-error", "could not get modules");
 			}
-			
 
+		}
 	}
-	}
-	
+
 	public class CreateProjectTask extends AsyncTask<String, Void, String> {
-		private Context context;
-		private Activity callingActivity;
-		private ProgressDialog dialog;
-		private JSONObject requestJson;
+		private final Context context;
+		private final Activity callingActivity;
+		private final ProgressDialog dialog;
+		private final JSONObject requestJson;
 
-		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+		public CreateProjectTask(Context context, Activity callingActivity,
+				JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -407,7 +394,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		@Override
 		protected void onPreExecute() {
 			System.out.println(this.dialog.isShowing());
-			if(!(this.dialog.isShowing())){
+			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
 			}
 		}
@@ -445,10 +432,10 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
-				if(resultJson.getString("msg").equals("success")){
-				context.startActivity(new Intent(context, homeActivity.class));
-				}
-				else{
+				if (resultJson.getString("msg").equals("success")) {
+					context.startActivity(new Intent(context,
+							homeActivity.class));
+				} else {
 					Toast.makeText(context, R.string.login_error,
 							Toast.LENGTH_LONG).show();
 				}
@@ -513,13 +500,10 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			}
 			return moduleList;
 		}
-		
+
 		@Override
-        protected void onPostExecute(List<String> result) {
-			
-			
-				
-			
-        }
+		protected void onPostExecute(List<String> result) {
+
+		}
 	}
 }

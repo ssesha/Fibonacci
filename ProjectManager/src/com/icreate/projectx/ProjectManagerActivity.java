@@ -38,104 +38,109 @@ public class ProjectManagerActivity extends Activity {
 	private Activity activity;
 	private Context cont;
 	private ProgressDialog dialog;
-	private TextView usernameView,passwordView;
-	private EditText usernameText,passwordText;
-	
-	
+	private TextView usernameView, passwordView;
+	private EditText usernameText, passwordText;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
-		
-		
-		Typeface font = Typeface.createFromAsset(getAssets(),"EraserDust.ttf"); 
-		usernameView = (TextView) findViewById(R.id.unameView);
-		usernameView.setTypeface(font);
-		passwordView = (TextView) findViewById(R.id.passView);
-		passwordView.setTypeface(font);
+
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		/*
+		 * usernameView = (TextView) findViewById(R.id.unameView);
+		 * usernameView.setTypeface(font); passwordView = (TextView)
+		 * findViewById(R.id.passView); passwordView.setTypeface(font);
+		 */
 		usernameText = (EditText) findViewById(R.id.uname);
 		usernameText.setTypeface(font);
 		passwordText = (EditText) findViewById(R.id.pass);
 		passwordText.setTypeface(font);
-		
+
 		cont = this;
 		activity = this;
-		//final ProgressBar progressBar = (ProgressBar) findViewById(R.id.loginProgress);
+		// final ProgressBar progressBar = (ProgressBar)
+		// findViewById(R.id.loginProgress);
 		dialog = new ProgressDialog(cont);
 		dialog.setMessage("Logging in...");
-		appGlobalState = (ProjectxGlobalState)getApplication();
+		appGlobalState = (ProjectxGlobalState) getApplication();
 		Button loginButton = (Button) findViewById(R.id.loginButton);
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
+		loginButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				loginAttempts = 0;
 				dialog.show();
-				//progressBar.setVisibility(View.VISIBLE);
+				// progressBar.setVisibility(View.VISIBLE);
 				WebView wv = (WebView) findViewById(R.id.WebViewLogin);
 				wv.getSettings().setJavaScriptEnabled(true);
 				WebSettings settings = wv.getSettings();
 				settings.setSavePassword(false);
-				wv.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
-				wv.setWebViewClient(new WebViewClient() 
-		        {               
-		        	@Override               
-		        	public void onPageFinished(WebView view, String url) 
-		        	{
-		        		
-		        		Log.d("login", "came here");
-		        		EditText uName = (EditText) findViewById(R.id.uname);
+				wv.addJavascriptInterface(new MyJavaScriptInterface(),
+						"HTMLOUT");
+				wv.setWebViewClient(new WebViewClient() {
+					@Override
+					public void onPageFinished(WebView view, String url) {
+
+						Log.d("login", "came here");
+						EditText uName = (EditText) findViewById(R.id.uname);
 						EditText pass = (EditText) findViewById(R.id.pass);
 						String userName = uName.getText().toString();
 						appGlobalState.setUserid(userName);
 						String password = pass.getText().toString();
-						
-						if(loginAttempts==0){
-						Log.d("url: " + url, "LoadURL executed");
-		        		view.loadUrl("javascript:(function() { " +  "document.getElementById('userid').value = '"+ userName +"'; "+ "document.getElementById('password').value = '"+password+"'; " + "document.getElementById('loginimg1').click(); " + "})()");
+
+						if (loginAttempts == 0) {
+							Log.d("url: " + url, "LoadURL executed");
+							view.loadUrl("javascript:(function() { "
+									+ "document.getElementById('userid').value = '"
+									+ userName
+									+ "'; "
+									+ "document.getElementById('password').value = '"
+									+ password
+									+ "'; "
+									+ "document.getElementById('loginimg1').click(); "
+									+ "})()");
 						}
-		        		// when login is complete, the url will be login_result.ashx?r=0
-						if (url.indexOf("/api/login/login_result.ashx") > 0)
-		        		{
-		        			// When login is successful, there will be a &r=0 in the url. It also means the return data is the token itself.
-		        			if (url.indexOf("&r=0") > 0)
-		        			{	Log.d("login", "came here");
-		        				Log.d("success", "onPageFinished");        				
-		        				Log.i("onPageFinished - before loading javascript", "");
-		        				view.loadUrl("javascript:window.HTMLOUT.processHTML(document.getElementsByTagName('body')[0].innerHTML);");
-		        				//progressBar.setVisibility(View.GONE);
-		        			}
-		        		}
-		        		else if(loginAttempts>0)
-		        		{	
-		        			Log.d("error","login not complete");
-		        			//progressBar.setVisibility(View.GONE);
-		        			if (dialog.isShowing()) {
-	        					dialog.dismiss();
-	        				}
-		        			Toast.makeText(cont, R.string.login_error,
+						// when login is complete, the url will be
+						// login_result.ashx?r=0
+						if (url.indexOf("/api/login/login_result.ashx") > 0) {
+							// When login is successful, there will be a &r=0 in
+							// the url. It also means the return data is the
+							// token itself.
+							if (url.indexOf("&r=0") > 0) {
+								Log.d("login", "came here");
+								Log.d("success", "onPageFinished");
+								Log.i("onPageFinished - before loading javascript",
+										"");
+								view.loadUrl("javascript:window.HTMLOUT.processHTML(document.getElementsByTagName('body')[0].innerHTML);");
+								// progressBar.setVisibility(View.GONE);
+							}
+						} else if (loginAttempts > 0) {
+							Log.d("error", "login not complete");
+							// progressBar.setVisibility(View.GONE);
+							if (dialog.isShowing()) {
+								dialog.dismiss();
+							}
+							Toast.makeText(cont, R.string.login_error,
 									Toast.LENGTH_LONG).show();
-		        		}
+						}
 						System.out.println(loginAttempts);
 						loginAttempts++;
-		        	}
-		        });
-				
+					}
+				});
+
 				wv.loadUrl("https://ivle.nus.edu.sg/api/login/?apikey=tlXXFhEsNoTIVTJQruS2o");
 				wv.clearCache(true);
 			}
 		});
 	}
-	
-	
-	class MyJavaScriptInterface
-    {
-        public void processHTML(String html)
-        {
-        	Log.d("onPageFinished ", "inside javascript interface");
-        	Log.d("authToken", html);
-        	appGlobalState.setAuthToken(html);
-        	JSONObject requestJson = new JSONObject();
+
+	class MyJavaScriptInterface {
+		public void processHTML(String html) {
+			Log.d("onPageFinished ", "inside javascript interface");
+			Log.d("authToken", html);
+			appGlobalState.setAuthToken(html);
+			JSONObject requestJson = new JSONObject();
 			try {
 				requestJson.put("user_id", appGlobalState.getUserid());
 				requestJson.put("auth_token", appGlobalState.getAuthToken());
@@ -144,17 +149,20 @@ public class ProjectManagerActivity extends Activity {
 			}
 			Log.i("sdjkfhdkjs", requestJson.toString());
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createUser.php";
-			LoginTask loginTask = new LoginTask(cont, activity, requestJson, dialog);
+			LoginTask loginTask = new LoginTask(cont, activity, requestJson,
+					dialog);
 			loginTask.execute(url);
-        }
-    }
-	public class LoginTask extends AsyncTask<String, Void, String> {
-		private Context context;
-		private Activity callingActivity;
-		private ProgressDialog dialog;
-		private JSONObject requestJson;
+		}
+	}
 
-		public LoginTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+	public class LoginTask extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+		private final ProgressDialog dialog;
+		private final JSONObject requestJson;
+
+		public LoginTask(Context context, Activity callingActivity,
+				JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -163,7 +171,7 @@ public class ProjectManagerActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			if(!this.dialog.isShowing()){
+			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Logging in...");
 				this.dialog.show();
 			}
@@ -203,10 +211,10 @@ public class ProjectManagerActivity extends Activity {
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
-				if(resultJson.getString("msg").equals("success")){
-				context.startActivity(new Intent(context, homeActivity.class));
-				}
-				else{
+				if (resultJson.getString("msg").equals("success")) {
+					context.startActivity(new Intent(context,
+							homeActivity.class));
+				} else {
 					Toast.makeText(context, R.string.login_error,
 							Toast.LENGTH_LONG).show();
 				}
