@@ -47,31 +47,38 @@ public class ProjectManagerActivity extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 
+		cont = this;
+		activity = this;
+		appGlobalState = (ProjectxGlobalState) getApplication();
+
+		String userName = ProjectXPreferences.readString(cont,
+				ProjectXPreferences.USER, "");
+		String passwordString = ProjectXPreferences.readString(cont,
+				ProjectXPreferences.PASS, "");
+		String authToken = ProjectXPreferences.readString(cont,
+				ProjectXPreferences.TOKEN, "");
+		if (authToken.length() != 0 && userName.length() != 0
+				&& passwordString.length() != 0) {
+			appGlobalState.setAuthToken(authToken);
+			appGlobalState.setUserid(userName);
+			startActivity(new Intent(cont, homeActivity.class));
+		}
+
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		/*
-		 * usernameView = (TextView) findViewById(R.id.unameView);
-		 * usernameView.setTypeface(font); passwordView = (TextView)
-		 * findViewById(R.id.passView); passwordView.setTypeface(font);
-		 */
 		usernameText = (EditText) findViewById(R.id.uname);
 		usernameText.setTypeface(font);
 		passwordText = (EditText) findViewById(R.id.pass);
 		passwordText.setTypeface(font);
 
-		cont = this;
-		activity = this;
-		// final ProgressBar progressBar = (ProgressBar)
-		// findViewById(R.id.loginProgress);
 		dialog = new ProgressDialog(cont);
 		dialog.setMessage("Logging in...");
-		appGlobalState = (ProjectxGlobalState) getApplication();
+
 		Button loginButton = (Button) findViewById(R.id.loginButton);
 
 		loginButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				loginAttempts = 0;
 				dialog.show();
-				// progressBar.setVisibility(View.VISIBLE);
 				WebView wv = (WebView) findViewById(R.id.WebViewLogin);
 				wv.getSettings().setJavaScriptEnabled(true);
 				WebSettings settings = wv.getSettings();
@@ -85,11 +92,15 @@ public class ProjectManagerActivity extends Activity {
 						Log.d("login", "came here");
 						EditText uName = (EditText) findViewById(R.id.uname);
 						EditText pass = (EditText) findViewById(R.id.pass);
-						String userName = uName.getText().toString();
-						appGlobalState.setUserid(userName);
+						appGlobalState.setUserid(uName.getText().toString());
+						String userName = appGlobalState.getUserid();
 						String password = pass.getText().toString();
 
 						if (loginAttempts == 0) {
+							ProjectXPreferences.writeString(cont,
+									ProjectXPreferences.USER, userName);
+							ProjectXPreferences.writeString(cont,
+									ProjectXPreferences.PASS, password);
 							Log.d("url: " + url, "LoadURL executed");
 							view.loadUrl("javascript:(function() { "
 									+ "document.getElementById('userid').value = '"
@@ -113,14 +124,13 @@ public class ProjectManagerActivity extends Activity {
 								Log.i("onPageFinished - before loading javascript",
 										"");
 								view.loadUrl("javascript:window.HTMLOUT.processHTML(document.getElementsByTagName('body')[0].innerHTML);");
-								// progressBar.setVisibility(View.GONE);
 							}
 						} else if (loginAttempts > 0) {
 							Log.d("error", "login not complete");
-							// progressBar.setVisibility(View.GONE);
 							if (dialog.isShowing()) {
 								dialog.dismiss();
 							}
+							ProjectXPreferences.getEditor(cont).clear();
 							Toast.makeText(cont, R.string.login_error,
 									Toast.LENGTH_LONG).show();
 						}
@@ -140,6 +150,8 @@ public class ProjectManagerActivity extends Activity {
 			Log.d("onPageFinished ", "inside javascript interface");
 			Log.d("authToken", html);
 			appGlobalState.setAuthToken(html);
+			ProjectXPreferences.writeString(cont, ProjectXPreferences.TOKEN,
+					html);
 			JSONObject requestJson = new JSONObject();
 			try {
 				requestJson.put("user_id", appGlobalState.getUserid());
