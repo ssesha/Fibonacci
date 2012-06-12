@@ -130,7 +130,8 @@ public class ProjectManagerActivity extends Activity {
 							if (dialog.isShowing()) {
 								dialog.dismiss();
 							}
-							ProjectXPreferences.getEditor(cont).clear();
+							ProjectXPreferences.getEditor(cont).clear()
+									.commit();
 							Toast.makeText(cont, R.string.login_error,
 									Toast.LENGTH_LONG).show();
 						}
