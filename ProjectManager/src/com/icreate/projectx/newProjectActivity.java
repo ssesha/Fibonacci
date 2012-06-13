@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -55,6 +56,7 @@ public class newProjectActivity extends Activity implements
 	private Button createProjectButton;
 	private Button t;
 	private final List<Button> alltv = new ArrayList<Button>();
+	private final List<Integer> allMemberLayouts = new ArrayList<Integer>();
 	private final List<String> moduleList = new ArrayList<String>();
 	private List<String> studentList = new ArrayList<String>();
 	private final List<String> student_id_list = new ArrayList<String>();
@@ -64,9 +66,10 @@ public class newProjectActivity extends Activity implements
 	private final ArrayList<String> memberid = new ArrayList<String>();
 	private View.OnClickListener clickListener;
 	private ArrayAdapter<String> dataAdapter;
-
-	// TODO: is this list needed here? Look for better ways. Maybe add it to
-	// global state.
+	private static int numOfMembers = 0;
+	private static int currentHoriLayoutID = 1000;
+	private static int currentButtonID = 0;
+	private static int currentWidth = 0;
 	private final List<String> moduleId = new ArrayList<String>();
 
 	int textLength1 = 0;
@@ -87,7 +90,7 @@ public class newProjectActivity extends Activity implements
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		final Context cont = this;
 		final Activity currentActivity = this;
-
+		
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersList);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
@@ -127,39 +130,92 @@ public class newProjectActivity extends Activity implements
 		task.execute();
 		moduleTextBox.setOnItemSelectedListener(this);
 
-		// moduleTextBox.setSelection(0,true);
-
-		/*
-		 * studentList.add("Oinker"); studentList.add("Abs");
-		 * studentList.add("Abbinayaa"); studentList.add("oink");
-		 * studentList.add("oinky"); studentList.add("piggy"); RelativeLayout rl
-		 * = (RelativeLayout)findViewById(R.id.rlayout);
-		 * studentList.add("piggy");
-		 */
-
-		// moduleListView.setAdapter(new ArrayAdapter<String>(this,
-		// R.layout.list,
-		// R.id.tv1, moduleList));
 		membersListView.setAdapter(new ArrayAdapter<String>(this,
 				R.layout.list, R.id.tv1, studentList));
 
 		clickListener = new OnClickListener() {
 			public void onClick(View v) {
-				// do something here
-				int index = v.getId();
-				LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
+				int index = alltv.indexOf(v);
+				int currentLayoutId = allMemberLayouts.remove(index);
+				LinearLayout currentLayout = (LinearLayout) findViewById(currentLayoutId);
+				LinearLayout previous;
 				members.remove(index);
-				ll.removeView(alltv.get(index));
-
-			}
+				currentLayout.removeView(alltv.remove(index));				
+				//LinearLayout next; 
+				int maxWidth = currentLayout.getWidth() - 10;
+				for(int j = index; j < alltv.size(); j++)
+				{
+					int previousId = allMemberLayouts.get(j-1);
+					currentWidth  = 0;
+					alltv.get(j).measure(0,0);
+					int buttonWidth = alltv.get(j).getWidth();
+					currentLayout = (LinearLayout) findViewById(currentLayoutId);
+					if((allMemberLayouts.get(j) == currentLayoutId && j==index)|| (allMemberLayouts.get(j+1) == currentLayoutId && j!=index) ||(j == alltv.size()-1))//next button in same layout will get auto adjusted
+					{
+						if(previousId != currentLayoutId)//check if there is place in the previous layout
+						{
+							previous = (LinearLayout) findViewById(previousId);
+							for(int i = allMemberLayouts.indexOf(previousId); i <= allMemberLayouts.lastIndexOf(previousId); i++)
+							{
+								alltv.get(i).measure(0,0);
+								currentWidth += alltv.get(i).getWidth();
+							}
+							if(currentWidth + buttonWidth <= maxWidth)
+							{	
+								//LinearLayout next = (LinearLayout) findViewById(currentLayoutId+1);
+								currentLayout.removeView(alltv.get(j));
+								previous.addView(alltv.get(j));
+								allMemberLayouts.add(j, previousId);
+								currentWidth += buttonWidth;
+							}
+						}
+						else
+						{
+							continue;
+						}	
+					}
+					else
+					{
+						for(int i = allMemberLayouts.indexOf(currentLayoutId); i <= allMemberLayouts.lastIndexOf(currentLayoutId); i++)
+						{
+							alltv.get(i).measure(0,0);
+							currentWidth += alltv.get(i).getWidth();
+						}
+						if(currentWidth + buttonWidth <= maxWidth)
+						{	
+							LinearLayout next = (LinearLayout) findViewById(currentLayoutId+1);
+							next.removeView(alltv.get(j));
+							currentLayout.addView(alltv.get(j));
+							allMemberLayouts.add(j, currentLayoutId);
+							currentWidth += buttonWidth;
+							currentLayout = next;
+							currentLayoutId++;
+						}
+					}
+					
+				}
+				/*LinearLayout oldLayout;
+				while((oldLayout=(LinearLayout)findViewById(currentLayoutId))!= null)
+				{
+					if(oldLayout.getChildAt(0)==membersTextBox1)
+					{
+						oldLayout.removeAllViews();
+						oldLayout.setVisibility(View.GONE);
+						LinearLayout lastLayout = (LinearLayout)findViewById(currentLayoutId-1);
+						lastLayout.addView(membersTextBox1);
+					}
+					currentLayoutId++;						
+				}*/
+			}			
 		};
 
-		membersListView.setOnItemClickListener(new OnItemClickListener() {
+		/*membersListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> myAdapter, View myView,
 					int myItemInt, long mylng) {
 				String selectedFromList = (String) (membersListView
 						.getItemAtPosition(myItemInt));
-				LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
+				//LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
+				LinearLayout ll = (LinearLayout) findViewById(R.id.memberLayout);
 				t = new Button(newProjectActivity.this);
 				int name_i = selectedFromList.indexOf(" ");
 				String name = selectedFromList.substring(0, name_i);
@@ -172,6 +228,68 @@ public class newProjectActivity extends Activity implements
 				membersTextBox1.setText("");
 				members.add(selectedFromList);
 				t.setId(alltv.size());
+				alltv.add(t);
+				int index = studentList.indexOf(selectedFromList);
+				memberid.add(student_id_list.get(index));
+				membersListView.setVisibility(View.INVISIBLE);
+			}
+		});*/
+		membersListView.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> myAdapter, View myView,
+					int myItemInt, long mylng) {
+				String selectedFromList = (String) (membersListView
+						.getItemAtPosition(myItemInt));				
+				LinearLayout memberLayout = (LinearLayout) findViewById(R.id.memberLayout);
+				int maxWidth = memberLayout.getWidth() - 10;
+				
+				//Log.d("maxWidth", new Integer(maxWidth).toString());
+				//Log.d("old width", new Integer(currentWidth).toString());
+				t = new Button(newProjectActivity.this);
+				int name_i = selectedFromList.indexOf(" ");
+				String name = selectedFromList.substring(0, name_i);
+				t.setText(name);
+				t.setTextSize(15);
+				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+						LayoutParams.WRAP_CONTENT));
+				t.setOnClickListener(clickListener);
+				t.setId(currentButtonID);
+				currentButtonID++;
+				t.measure(0, 0);
+				int buttonWidth = t.getMeasuredWidth();
+				LinearLayout currentLayout = (LinearLayout) findViewById(currentHoriLayoutID);
+				Log.d("button width", new Integer(buttonWidth).toString());
+				if (numOfMembers == 0) {
+					memberLayout.removeView(membersTextBox1);
+					memberLayout.addView(CreateNewHorizontalLayout(currentHoriLayoutID));
+					currentWidth += buttonWidth;
+				}
+				else if(currentWidth + buttonWidth > maxWidth)
+				{
+					//LinearLayout Hori = (LinearLayout)findViewById(currentHoriLayoutID);
+					currentLayout.removeView(membersTextBox1);
+					currentHoriLayoutID++;
+					memberLayout.addView(CreateNewHorizontalLayout(currentHoriLayoutID));
+					currentWidth = buttonWidth;
+				}
+				else if(currentWidth + buttonWidth <= maxWidth)
+				{
+					//LinearLayout Hori = (LinearLayout)findViewById(currentHoriLayoutID);
+					t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT));
+					currentLayout.removeView(membersTextBox1);
+					currentLayout.addView(t);
+					membersTextBox1.setText("");
+					membersTextBox1.setHint("");
+					Log.d("same linear layout", new Integer(currentHoriLayoutID).toString());
+					currentLayout.addView(membersTextBox1);
+					currentLayout.setVisibility(View.VISIBLE);
+					t.setVisibility(View.VISIBLE);
+					currentWidth += buttonWidth;
+					allMemberLayouts.add(currentHoriLayoutID);
+				}
+				Log.d("old width", new Integer(currentWidth).toString());
+				numOfMembers++;
+				members.add(selectedFromList);				
 				alltv.add(t);
 				int index = studentList.indexOf(selectedFromList);
 				memberid.add(student_id_list.get(index));
@@ -298,7 +416,23 @@ public class newProjectActivity extends Activity implements
 			}
 		});
 	}
-
+	
+	private LinearLayout CreateNewHorizontalLayout(int id){
+		LinearLayout Hori = new LinearLayout(newProjectActivity.this);
+		Hori.setId(id);
+		allMemberLayouts.add(id);
+		Hori.setOrientation(LinearLayout.HORIZONTAL);
+		t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
+				LayoutParams.WRAP_CONTENT));
+		Hori.addView(t);
+		Log.d("new linear layout", "huuuurrayyyyy");
+		membersTextBox1.setText("");
+		membersTextBox1.setHint("");
+		Hori.addView(membersTextBox1);
+		Hori.setVisibility(View.VISIBLE);
+		return Hori;
+	}
+	
 	public void onItemSelected(AdapterView<?> parent, View v, int position,
 			long id) {
 		studentList = new ArrayList<String>();
@@ -479,14 +613,15 @@ public class newProjectActivity extends Activity implements
 
 					for (int i = 0; i < arr.length(); i++) {
 						JSONObject obj = arr.getJSONObject(i);
-						String name = obj.getString("Name");
-						name = name.toLowerCase();
-						int index = name.indexOf(" ");
-						name = name.substring(0, 1).toUpperCase()
-								+ name.subSequence(1, index + 1)
-								+ name.substring(index + 1, index + 2)
-										.toUpperCase()
-								+ name.substring(index + 2);
+						String name = obj.getString("Name").toLowerCase();
+						StringTokenizer st = new StringTokenizer(name, " ", true);
+						String token;
+						name = "";
+						while(st.hasMoreTokens())
+						{
+							token = st.nextToken();
+							name += token.substring(0, 1).toUpperCase() + token.substring(1);
+						}						
 						studentList.add(name);
 						student_id_list.add(obj.getString("UserID"));
 						System.out.println("result - project group: " + name);
@@ -499,11 +634,6 @@ public class newProjectActivity extends Activity implements
 				Log.e("project members-error", "could not get modules");
 			}
 			return moduleList;
-		}
-
-		@Override
-		protected void onPostExecute(List<String> result) {
-
 		}
 	}
 }
