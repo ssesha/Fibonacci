@@ -107,10 +107,25 @@ public class ProjectListActivity extends Activity {
 				Project selectedProject = (Project) o;
 				Toast.makeText(
 						cont,
-						"You have chosen: " + " "
-								+ selectedProject.getProject_name() + " "
-								+ selectedProject.getProject_id(),
+						"You have chosen: "
+								+ " "
+								+ selectedProject.getProject_name()
+								+ " "
+								+ selectedProject.getProject_id()
+								+ " "
+								+ position
+								+ " "
+								+ globalState.getProjectList().getProjects()
+										.get(position).getLeader_name(),
 						Toast.LENGTH_LONG).show();
+				Intent projectViewIntent = new Intent(cont,
+						projectViewActivity.class);
+				//String currentUserId = globalData.getUserid();
+			//	if (!(currentUserId.isEmpty())) {
+					projectViewIntent.putExtra("position",position );
+				//}
+				//System.out.println(fullObject.getProject_name());
+				startActivity(projectViewIntent);
 			}
 		});
 	}
@@ -174,6 +189,7 @@ public class ProjectListActivity extends Activity {
 					Gson gson = new Gson();
 					ProjectList projectsContainer = gson.fromJson(result,
 							ProjectList.class);
+					globalState.setProjectList(projectsContainer);
 					ArrayList<Project> projects = projectsContainer
 							.getProjects();
 					projectListView.setAdapter(new ProjectListBaseAdapter(

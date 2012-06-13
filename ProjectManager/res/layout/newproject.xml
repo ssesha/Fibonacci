@@ -88,7 +88,7 @@
                     android:background="#00ffffff"/>
             </LinearLayout>
 
-            <LinearLayout
+          <!--   <LinearLayout
                 android:id="@+id/LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,15 +98,24 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/members" />
+                    android:src="@drawable/members" /> -->
 
-                <EditText
+                <LinearLayout
+                    android:id="@+id/memberLayout"
+                    android:layout_marginLeft="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" 
+                    android:orientation="vertical" >
+                                        
+                    <EditText
                     android:id="@+id/membersTextBox1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="#00ffffff"
                     android:hint="Enter name to add more members" />
-            </LinearLayout>
+                    
+                </LinearLayout>
+         <!--    </LinearLayout> -->
 
             <LinearLayout
                 android:id="@+id/layout1"
