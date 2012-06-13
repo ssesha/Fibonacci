@@ -29,7 +29,6 @@ public class homeActivity extends Activity {
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
 		logoText.setText("Project-X");
-		logoText.setTextColor(R.color.white);
 
 		globalData = (ProjectxGlobalState) getApplication();
 		// globalData.getApiKey();

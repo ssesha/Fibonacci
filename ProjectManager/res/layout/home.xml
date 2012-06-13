@@ -14,15 +14,23 @@
 
         <Button
             android:id="@+id/profileButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Profile" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="Profile"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/myProjectButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Projects" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="My Projects"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -33,15 +41,23 @@
 
         <Button
             android:id="@+id/myTaskButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="My Tasks" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="My Tasks"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/calenderButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Calendar" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="Calendar"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,15 +68,23 @@
 
         <Button
             android:id="@+id/findButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Find" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="Find"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
 
         <Button
             android:id="@+id/oinkoinkButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="OINK OINK" />
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:background="@drawable/menubutton"
+            android:text="OINK OINK"
+            android:layout_margin="10dp"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
     </LinearLayout>
 
 </LinearLayout>
