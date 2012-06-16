@@ -44,6 +44,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+import com.icreate.projectx.FlowLayout;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
@@ -71,6 +72,9 @@ public class newProjectActivity extends Activity implements
 	private static int currentButtonID = 0;
 	private static int currentWidth = 0;
 	private final List<String> moduleId = new ArrayList<String>();
+	private Activity currentActivity;
+	private Context cont;
+	private ProgressDialog dialog;
 
 	int textLength1 = 0;
 	int textLength2 = 0;
@@ -88,9 +92,9 @@ public class newProjectActivity extends Activity implements
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newproject);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
-		final Context cont = this;
-		final Activity currentActivity = this;
-		
+		cont = this;
+		currentActivity = this;
+		dialog = new ProgressDialog(cont);
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		membersListView = (ListView) findViewById(R.id.membersList);
 		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
@@ -101,32 +105,14 @@ public class newProjectActivity extends Activity implements
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 
-		// List<String> items = new ArrayList<String>();
-		// items.add("this");
-		// items.add("is");
-		moduleList.add("Select Module");
-		// moduleTextBox.setOnItemSelectedListener(this);
 		dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, moduleList) {
-			@Override
-			public boolean isEnabled(int position) {
-				if (position == 0) {
-					return false;
-				} else {
-					return true;
-				}
-			}
-
-			@Override
-			public boolean areAllItemsEnabled() {
-				return false;
-			}
+				android.R.layout.simple_spinner_item, moduleList) {			
 		};
 		;
 		dataAdapter
 				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		moduleTextBox.setAdapter(dataAdapter);
-		GetModuleList task = new GetModuleList();
+		GetModuleList task = new GetModuleList(this.cont, this.currentActivity, this.dialog);
 		task.execute();
 		moduleTextBox.setOnItemSelectedListener(this);
 
@@ -136,114 +122,19 @@ public class newProjectActivity extends Activity implements
 		clickListener = new OnClickListener() {
 			public void onClick(View v) {
 				int index = alltv.indexOf(v);
-				int currentLayoutId = allMemberLayouts.remove(index);
-				LinearLayout currentLayout = (LinearLayout) findViewById(currentLayoutId);
-				LinearLayout previous;
+				FlowLayout memberLayout = (FlowLayout) findViewById(R.id.memberLayout);
+				memberLayout.removeView(v);
 				members.remove(index);
-				currentLayout.removeView(alltv.remove(index));				
-				//LinearLayout next; 
-				int maxWidth = currentLayout.getWidth() - 10;
-				for(int j = index; j < alltv.size(); j++)
-				{
-					int previousId = allMemberLayouts.get(j-1);
-					currentWidth  = 0;
-					alltv.get(j).measure(0,0);
-					int buttonWidth = alltv.get(j).getWidth();
-					currentLayout = (LinearLayout) findViewById(currentLayoutId);
-					if((allMemberLayouts.get(j) == currentLayoutId && j==index)|| (allMemberLayouts.get(j+1) == currentLayoutId && j!=index) ||(j == alltv.size()-1))//next button in same layout will get auto adjusted
-					{
-						if(previousId != currentLayoutId)//check if there is place in the previous layout
-						{
-							previous = (LinearLayout) findViewById(previousId);
-							for(int i = allMemberLayouts.indexOf(previousId); i <= allMemberLayouts.lastIndexOf(previousId); i++)
-							{
-								alltv.get(i).measure(0,0);
-								currentWidth += alltv.get(i).getWidth();
-							}
-							if(currentWidth + buttonWidth <= maxWidth)
-							{	
-								//LinearLayout next = (LinearLayout) findViewById(currentLayoutId+1);
-								currentLayout.removeView(alltv.get(j));
-								previous.addView(alltv.get(j));
-								allMemberLayouts.add(j, previousId);
-								currentWidth += buttonWidth;
-							}
-						}
-						else
-						{
-							continue;
-						}	
-					}
-					else
-					{
-						for(int i = allMemberLayouts.indexOf(currentLayoutId); i <= allMemberLayouts.lastIndexOf(currentLayoutId); i++)
-						{
-							alltv.get(i).measure(0,0);
-							currentWidth += alltv.get(i).getWidth();
-						}
-						if(currentWidth + buttonWidth <= maxWidth)
-						{	
-							LinearLayout next = (LinearLayout) findViewById(currentLayoutId+1);
-							next.removeView(alltv.get(j));
-							currentLayout.addView(alltv.get(j));
-							allMemberLayouts.add(j, currentLayoutId);
-							currentWidth += buttonWidth;
-							currentLayout = next;
-							currentLayoutId++;
-						}
-					}
-					
-				}
-				/*LinearLayout oldLayout;
-				while((oldLayout=(LinearLayout)findViewById(currentLayoutId))!= null)
-				{
-					if(oldLayout.getChildAt(0)==membersTextBox1)
-					{
-						oldLayout.removeAllViews();
-						oldLayout.setVisibility(View.GONE);
-						LinearLayout lastLayout = (LinearLayout)findViewById(currentLayoutId-1);
-						lastLayout.addView(membersTextBox1);
-					}
-					currentLayoutId++;						
-				}*/
+				alltv.remove(index);
 			}			
 		};
 
-		/*membersListView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> myAdapter, View myView,
-					int myItemInt, long mylng) {
-				String selectedFromList = (String) (membersListView
-						.getItemAtPosition(myItemInt));
-				//LinearLayout ll = (LinearLayout) findViewById(R.id.layout1);
-				LinearLayout ll = (LinearLayout) findViewById(R.id.memberLayout);
-				t = new Button(newProjectActivity.this);
-				int name_i = selectedFromList.indexOf(" ");
-				String name = selectedFromList.substring(0, name_i);
-				t.setText(name);
-				t.setTextSize(15);
-				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
-				ll.addView(t);
-				t.setOnClickListener(clickListener);
-				membersTextBox1.setText("");
-				members.add(selectedFromList);
-				t.setId(alltv.size());
-				alltv.add(t);
-				int index = studentList.indexOf(selectedFromList);
-				memberid.add(student_id_list.get(index));
-				membersListView.setVisibility(View.INVISIBLE);
-			}
-		});*/
 		membersListView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> myAdapter, View myView,
 					int myItemInt, long mylng) {
 				String selectedFromList = (String) (membersListView
-						.getItemAtPosition(myItemInt));				
-				LinearLayout memberLayout = (LinearLayout) findViewById(R.id.memberLayout);
-				int maxWidth = memberLayout.getWidth() - 10;
-				
-				//Log.d("maxWidth", new Integer(maxWidth).toString());
-				//Log.d("old width", new Integer(currentWidth).toString());
+						.getItemAtPosition(myItemInt));
+				FlowLayout memberLayout = (FlowLayout) findViewById(R.id.memberLayout);
 				t = new Button(newProjectActivity.this);
 				int name_i = selectedFromList.indexOf(" ");
 				String name = selectedFromList.substring(0, name_i);
@@ -251,52 +142,26 @@ public class newProjectActivity extends Activity implements
 				t.setTextSize(15);
 				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 						LayoutParams.WRAP_CONTENT));
-				t.setOnClickListener(clickListener);
 				t.setId(currentButtonID);
+				t.setOnClickListener(clickListener);
+				t.setVisibility(View.VISIBLE);
+				//memberLayout.removeView(membersTextBox1);
+				memberLayout.addView(t);
+				//memberLayout.addView(membersTextBox1);				
+				membersTextBox1.setText(" ");
+				/*membersTextBox1.setHint("here");
+				membersTextBox1.setVisibility(View.VISIBLE);*/
+				members.add(selectedFromList);
+				/*membersTextBox1.requestFocus();
+				membersTextBox1.setCursorVisible(true);*/
 				currentButtonID++;
-				t.measure(0, 0);
-				int buttonWidth = t.getMeasuredWidth();
-				LinearLayout currentLayout = (LinearLayout) findViewById(currentHoriLayoutID);
-				Log.d("button width", new Integer(buttonWidth).toString());
-				if (numOfMembers == 0) {
-					memberLayout.removeView(membersTextBox1);
-					memberLayout.addView(CreateNewHorizontalLayout(currentHoriLayoutID));
-					currentWidth += buttonWidth;
-				}
-				else if(currentWidth + buttonWidth > maxWidth)
-				{
-					//LinearLayout Hori = (LinearLayout)findViewById(currentHoriLayoutID);
-					currentLayout.removeView(membersTextBox1);
-					currentHoriLayoutID++;
-					memberLayout.addView(CreateNewHorizontalLayout(currentHoriLayoutID));
-					currentWidth = buttonWidth;
-				}
-				else if(currentWidth + buttonWidth <= maxWidth)
-				{
-					//LinearLayout Hori = (LinearLayout)findViewById(currentHoriLayoutID);
-					t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-							LayoutParams.WRAP_CONTENT));
-					currentLayout.removeView(membersTextBox1);
-					currentLayout.addView(t);
-					membersTextBox1.setText("");
-					membersTextBox1.setHint("");
-					Log.d("same linear layout", new Integer(currentHoriLayoutID).toString());
-					currentLayout.addView(membersTextBox1);
-					currentLayout.setVisibility(View.VISIBLE);
-					t.setVisibility(View.VISIBLE);
-					currentWidth += buttonWidth;
-					allMemberLayouts.add(currentHoriLayoutID);
-				}
-				Log.d("old width", new Integer(currentWidth).toString());
-				numOfMembers++;
-				members.add(selectedFromList);				
 				alltv.add(t);
 				int index = studentList.indexOf(selectedFromList);
 				memberid.add(student_id_list.get(index));
 				membersListView.setVisibility(View.INVISIBLE);
 			}
 		});
-
+		
 		dueTextBox.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dp1.setVisibility(View.VISIBLE);
@@ -445,7 +310,24 @@ public class newProjectActivity extends Activity implements
 	}
 
 	private class GetModuleList extends AsyncTask<Void, Void, String> {
-
+		private final ProgressDialog dialog;
+		private final Context context;
+		private final Activity callingActivity;
+		
+		public GetModuleList(Context context, Activity callingActivity,
+				ProgressDialog dialog) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			//this.requestJson = requestData;
+			this.dialog = dialog;
+		}
+		@Override
+		protected void onPreExecute() {
+			if (!this.dialog.isShowing()) {
+				this.dialog.setMessage("Retrieving Module List...");
+				this.dialog.show();
+			}
+		}
 		@Override
 		protected String doInBackground(Void... params) {
 			// TODO Auto-generated method stub
@@ -489,6 +371,9 @@ public class newProjectActivity extends Activity implements
 
 		@Override
 		protected void onPostExecute(String result) {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
 			try {
 				JSONObject json = new JSONObject();
 				json = new JSONObject(result);
@@ -543,7 +428,6 @@ public class newProjectActivity extends Activity implements
 					httpPut.setEntity(new StringEntity(requestJson.toString()));
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
-
 					BufferedReader buffer = new BufferedReader(
 							new InputStreamReader(content));
 					String s = "";
@@ -585,16 +469,16 @@ public class newProjectActivity extends Activity implements
 	private class GetStudentList extends AsyncTask<Integer, Void, List<String>> {
 
 		@Override
-		protected List<String> doInBackground(Integer... params) {
-
+		protected List<String> doInBackground(Integer... modules) {
+			for (Integer module : modules) {
 			try {
-
+				
 				HttpClient client = new DefaultHttpClient();
 				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
 				String getURL = "https://ivle.nus.edu.sg/API/Lapi.svc/Class_Roster?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken="
 						+ globalData.getAuthToken()
 						+ "&CourseID="
-						+ moduleId.get(params[0]);
+						+ moduleId.get(module);
 
 				HttpGet get = new HttpGet(getURL);
 				HttpResponse responseGet = client.execute(get);
@@ -627,11 +511,11 @@ public class newProjectActivity extends Activity implements
 						System.out.println("result - project group: " + name);
 					}
 					System.out.println(arr.length());
-
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				Log.e("project members-error", "could not get modules");
+				Log.e("project members-error", "could not get members");
+			}
 			}
 			return moduleList;
 		}
