@@ -37,6 +37,7 @@ public class homeActivity extends Activity {
 		ImageButton newProjectButton = (ImageButton) findViewById(R.id.logoImageButton);
 		newProjectButton.setBackgroundResource(R.drawable.houseicon);
 		Button myProjectButton = (Button) findViewById(R.id.myProjectButton);
+		Button myTaskButton= (Button) findViewById(R.id.myTaskButton);
 		Button oinkOinkButton = (Button) findViewById(R.id.oinkoinkButton);
 
 		final Context cont = this;
@@ -55,6 +56,19 @@ public class homeActivity extends Activity {
 				}
 				System.out.println(currentUserId);
 				startActivity(projectListIntent);
+			}
+		});
+		
+		myTaskButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent TaskListIntent = new Intent(cont,
+						TaskListActivity.class);
+				String currentUserId = globalData.getUserid();
+				if (!(currentUserId.isEmpty())) {
+					TaskListIntent.putExtra("requiredId", currentUserId);
+				}
+				System.out.println(currentUserId);
+				startActivity(TaskListIntent);
 			}
 		});
 
