@@ -21,4 +21,20 @@
              android:textSize="20sp" />
 
 	</LinearLayout>
+
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="horizontal"
+         android:gravity="center"
+         android:paddingRight="20dp" >
+     
+     <Button
+         android:id="@+id/createNewTaskButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Create new Task"/>
+     
+     </LinearLayout>
+
 </LinearLayout>

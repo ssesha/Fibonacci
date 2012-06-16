@@ -25,6 +25,9 @@
         <activity android:name="loginActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name=".ProjectListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="projectViewActivity"></activity>
+        <activity android:name="newTaskActivity"></activity>
+        <activity android:name="TaskListActivity"></activity>
+        <activity android:name="TaskListBaseAdapter"></activity>
     </application>
 
 </manifest>
