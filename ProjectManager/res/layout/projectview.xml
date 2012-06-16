@@ -5,78 +5,61 @@
     android:layout_height="fill_parent"
     android:background="@drawable/backgrounddown"
     android:orientation="vertical"
-    android:paddingTop="5dp">
-	
-     
-	
+    android:paddingTop="5dp">	       	    
 	<LinearLayout 
-	    android:orientation="horizontal"
-        android:weightSum="2"
-        android:layout_width="fill_parent"
-    	android:layout_height="wrap_content" >
-
-    	<ScrollView
-    	    android:layout_width="fill_parent"
-    	    android:layout_height="wrap_content"
-    	    android:gravity="top"
-    	    android:orientation="vertical"
-    	    android:paddingLeft="25dp"
-    	    android:layout_weight="1" >
-    	        	    
-			<LinearLayout 
-			    android:layout_width="fill_parent"
-    	    	android:layout_height="wrap_content"
-    	    	android:orientation="vertical" >
-			    
-		        <TextView
-		            android:id="@+id/projDesc"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:text="Hello world. I am the first project in this awesome app!"
-		            android:textSize="15sp"
-		            android:textStyle="bold"
-		            android:textColor="#FFFFFF" />
-		        
-		        <TextView
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:text="Members:"
-		            android:textSize="15sp"
-		            android:textStyle="bold"
-		            android:textColor="#FFF380"
-		            android:paddingTop="5dp" />
-		        <TextView
-		            android:id="@+id/projMembers"
-		            android:layout_width="match_parent"
-		            android:layout_height="wrap_content"
-		            android:text="Abbinayaa; Achyut; Sesha; Vandhanaa; Srivatsa; Narasimhan; "
-		            android:textSize="15sp"
-		            android:textStyle="bold"
-		            android:textColor="#FFFFFF"
-		            android:paddingTop="2dp" />		        
-	        </LinearLayout>
-    	</ScrollView>
-
-	   <!-- <LinearLayout
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_weight="1"
-	        android:gravity="top"
-	        android:orientation="vertical"
-	        android:paddingRight="20dp" >
-								
-		</LinearLayout> -->
-		
+	    android:layout_width="fill_parent"
+	   	android:layout_height="wrap_content"
+	   	android:orientation="vertical"
+	   	android:paddingLeft="25dp"
+	   	android:paddingRight="25dp"
+	   	android:paddingTop="25dp"
+	   	android:gravity="center_vertical" >
+	    
+        <TextView
+            android:id="@+id/projDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:text="Hello world. I am the first project in this awesome app!"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:gravity="center" />    
     </LinearLayout>
-    <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal"
-         android:paddingRight="20dp"
-         android:paddingTop="20dp" >
+    <LinearLayout 
+		android:orientation="vertical" 
+		android:layout_width="fill_parent"
+	 	android:layout_height="wrap_content"
+	 	android:paddingTop="25dp" >
+		<ListView
+		     android:id="@+id/memberProgressList"
+		     android:layout_width="fill_parent"
+		     android:layout_height="160dp"
+		     android:layout_marginBottom="20dp"
+		     android:layout_marginLeft="20dp"
+		     android:layout_marginRight="20dp" />
 
-	</LinearLayout>
+	</LinearLayout>	
+	<LinearLayout
+        android:id="@+id/linearlayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="25dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
+        <Button
+            android:id="@+id/createNewTaskButton"
+            android:layout_width="148dp"
+            android:layout_height="54dp"
+            android:background="@drawable/scribble1"
+            android:text="Create Task"
+            android:textColor="#05261f"
+            android:textSize="22sp" />
+   	</LinearLayout>
+	
+	
     <!-- <LinearLayout        
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -112,24 +95,5 @@
             android:paddingTop="2dp"
             android:paddingLeft="20dp" />        
     </LinearLayout> -->
-
-
-	
-
-
-     <LinearLayout
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:orientation="horizontal"
-         android:gravity="center"
-         android:paddingRight="20dp" >
-     
-     <Button
-         android:id="@+id/createNewTaskButton"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:text="Create new Task"/>
-     
-     </LinearLayout>
 
 </LinearLayout>
