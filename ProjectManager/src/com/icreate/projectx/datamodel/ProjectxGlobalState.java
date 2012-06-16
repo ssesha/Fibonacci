@@ -32,6 +32,7 @@ public class ProjectxGlobalState extends Application {
 	public void setUserid(String userid) {
 		if (userid.indexOf("@") > 0) {
 			userid = userid.substring(0, userid.indexOf("@"));
+			System.out.println(userid);
 		}
 		this.userid = userid;
 	}
