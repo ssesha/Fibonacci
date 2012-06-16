@@ -188,16 +188,17 @@ public class TaskListActivity extends Activity {
 				Log.d("TaskList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					TaskList tasksContainer = gson.fromJson(result,
-							TaskList.class);
+					TaskList tasksContainer = gson.fromJson(result,TaskList.class);
 					globalState.setTaskList(tasksContainer);
 					ArrayList<Task> tasks = tasksContainer.getTasks();
 					taskListView.setAdapter(new TaskListBaseAdapter(
 							context, tasks));
+					Log.d("testing",""+tasks.size());
 					for (Task task : tasks) {
-						System.out.println(task.getTask_name());
-						//System.out.println(task.getProject_name());
-						System.out.println(task.getDue_date());
+						Log.d("testing","test test");
+						System.out.println("task name"+task.getTask_name());
+						System.out.println("project name"+task.getProject_name());
+						System.out.println("task date"+task.getDue_date());
 					}
 				} else {
 					Toast.makeText(context, "Task Lists empty",

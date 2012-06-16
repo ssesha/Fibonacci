@@ -130,8 +130,8 @@ public class newTaskActivity extends Activity  implements AdapterView.OnItemSele
 		tasklayout.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				taskDateTextBox.setText(taskDate.getDayOfMonth() + "-"
-						+ (taskDate.getMonth() + 1) + "-" + taskDate.getYear());
+				taskDateTextBox.setText(taskDate.getYear() + "-"
+						+ (taskDate.getMonth() + 1) + "-" + taskDate.getDayOfMonth());
 				taskDate.setVisibility(View.INVISIBLE);
 			}
 		});
@@ -149,7 +149,7 @@ public class newTaskActivity extends Activity  implements AdapterView.OnItemSele
 					json1.put("duedate", taskDateTextBox.getText());
 					if(Assignto.getSelectedItem().equals("Assign Task to"))
 					{
-						//json1.put("assignee",44);
+						json1.put("assignee",44);
 					}
 					else
 						json1.put("assignee",Assignto.getSelectedItem());
