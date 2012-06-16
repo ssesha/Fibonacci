@@ -41,8 +41,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.txtName = (TextView) convertView
 					.findViewById(R.id.tasklistname);
-			//holder.txtModuleCode = (TextView) convertView
-				//	.findViewById(R.id.projectmoduleCode);
+			holder.txtProjectName = (TextView) convertView
+					.findViewById(R.id.taskProjectName);
 			holder.txtdate = (TextView) convertView
 					.findViewById(R.id.tasklistduedate);
 
@@ -51,8 +51,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.txtName.setText(taskList.get(position).getTask_name());
-		//holder.txtModuleCode
-				//.setText(projectList.get(position).getModule_code());
+		holder.txtProjectName.setText(taskList.get(position).getProject_name());
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		return convertView;
@@ -60,7 +59,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView txtName;
-		//TextView txtModuleCode;
+		TextView txtProjectName;
 		TextView txtdate;
 	}
 
