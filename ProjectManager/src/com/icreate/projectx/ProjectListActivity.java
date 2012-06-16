@@ -25,9 +25,13 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -38,10 +42,14 @@ import com.google.gson.Gson;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectList;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.net.DeleteProjectTask;
 
 public class ProjectListActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
+	private ListView projectListView;
+	private Context cont;
+	private Activity currentActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +58,8 @@ public class ProjectListActivity extends Activity {
 		setContentView(R.layout.projectlist);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
-		final Context cont = this;
-		final Activity currentActivity = this;
+		cont = this;
+		currentActivity = this;
 
 		globalState = (ProjectxGlobalState) getApplication();
 
@@ -71,8 +79,9 @@ public class ProjectListActivity extends Activity {
 			}
 		});
 
-		final ListView projectListView = (ListView) findViewById(R.id.ListView01);
+		projectListView = (ListView) findViewById(R.id.ListView01);
 		projectListView.setTextFilterEnabled(true);
+		registerForContextMenu(projectListView);
 
 		Bundle extras = getIntent().getExtras();
 		String passedUserId = null;
@@ -120,11 +129,11 @@ public class ProjectListActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				Intent projectViewIntent = new Intent(cont,
 						projectViewActivity.class);
-				//String currentUserId = globalData.getUserid();
-			//	if (!(currentUserId.isEmpty())) {
-					projectViewIntent.putExtra("position",position );
-				//}
-				//System.out.println(fullObject.getProject_name());
+				// String currentUserId = globalData.getUserid();
+				// if (!(currentUserId.isEmpty())) {
+				projectViewIntent.putExtra("position", position);
+				// }
+				// System.out.println(fullObject.getProject_name());
 				startActivity(projectViewIntent);
 			}
 		});
@@ -208,5 +217,39 @@ public class ProjectListActivity extends Activity {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.setHeaderTitle("Context Menu");
+		menu.add(0, v.getId(), 0, "Delete");
+		menu.add(0, v.getId(), 0, "Action 2");
+	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+				.getMenuInfo();
+		Project selectedProject = (Project) projectListView
+				.getItemAtPosition(info.position);
+		System.out.println(selectedProject.getProject_name() + " "
+				+ selectedProject.getLeader_name());
+		if (item.getTitle() == "Delete") {
+			ProjectListBaseAdapter projectListBaseAdapter = (ProjectListBaseAdapter) projectListView
+					.getAdapter();
+
+			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id="
+					+ selectedProject.getProject_id();
+			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont,
+					currentActivity, projectListBaseAdapter, info,
+					selectedProject);
+			deleteProjectTask.execute(url);
+			return true;
+		} else {
+			System.out.println("blsldsdlflsfsdf");
+		}
+		return false;
 	}
 }
