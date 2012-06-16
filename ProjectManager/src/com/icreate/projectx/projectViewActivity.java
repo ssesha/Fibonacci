@@ -1,5 +1,8 @@
 package com.icreate.projectx;
 
+import java.util.ArrayList;
+
+import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 import android.app.Activity;
@@ -31,6 +34,20 @@ public class projectViewActivity extends Activity {
 		final Activity currentActivity = this;
 				
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
+		TextView projDesc = (TextView) findViewById(R.id.projDesc);
+		//projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
+		projDesc.setText("Hello world. I am the first project in this awesome app!");
+		
+		final ListView memberListView = (ListView) findViewById(R.id.memberProgressList);		
+		memberListView.setTextFilterEnabled(true);
+		registerForContextMenu(memberListView);
+		ArrayList<String> memberList = new ArrayList<String>();
+		memberList.add("Abbinayaa Subramanian");
+		memberList.add("Achyut Balaji");
+		memberList.add("Sesha Sendhil");
+		memberList.add("Vandhanaa Lakshminarayanan");
+		System.out.println(memberList.toString());
+		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList));
 		
 		Bundle extras = getIntent().getExtras();
 		globalState = (ProjectxGlobalState)getApplication();
@@ -42,9 +59,7 @@ public class projectViewActivity extends Activity {
 			Toast.makeText(cont, "" + globalState.getProjectList().getProjects().get(position).getProject_name(),
 				Toast.LENGTH_LONG).show();
 		}
-		final ListView projectListView = (ListView) findViewById(R.id.memberProgressList);
 		
-		projectListView.setTextFilterEnabled(true);
 		createTask.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent newTaskIntent = new Intent(cont,
@@ -53,6 +68,7 @@ public class projectViewActivity extends Activity {
 				startActivity(newTaskIntent);				
 			}			
 		});
+		
 	}
 
 }
