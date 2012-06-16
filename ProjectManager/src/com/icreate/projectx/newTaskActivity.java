@@ -178,8 +178,7 @@ public class newTaskActivity extends Activity  implements AdapterView.OnItemSele
 		if(position!=0)
 		{
 			status="Assigned";
-		}
-			
+		}			
 	}
 
 	public void onNothingSelected(AdapterView<?> parent) {

@@ -34,6 +34,10 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 		return position;
 	}
 
+	public void removeItem(int position) {
+		projectList.remove(position);
+	}
+
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {

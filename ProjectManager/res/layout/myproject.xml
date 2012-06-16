@@ -1,7 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/projectViewLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/backgrounddown"
     android:orientation="vertical"
-    android:background="@drawable/backgrounddown" >
+    android:paddingTop="5dp">
+    
+    <!-- <LinearLayout android:orientation="horizontal"
+        android:weightSum="2"
+        android:layout_width="fill_parent"
+    	android:layout_height="wrap_content" >
+
+    	<ScrollView
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:gravity="top"
+    	    android:orientation="vertical"
+    	    android:paddingLeft="25dp"
+    	    android:layout_weight="1" >
+    	        	    
+			<LinearLayout 
+			    android:layout_width="fill_parent"
+    	    	android:layout_height="wrap_content"
+    	    	android:orientation="vertical" >
+			    
+		        <TextView
+		            android:id="@+id/projDesc"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Hello world. I am the first project in this awesome app!"
+		            android:textSize="15sp"
+		            android:textStyle="bold"
+		            android:textColor="#FFFFFF" />
+		        
+		        <TextView
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Members:"
+		            android:textSize="15sp"
+		            android:textStyle="bold"
+		            android:textColor="#FFF380"
+		            android:paddingTop="5dp" />
+		        <TextView
+		            android:id="@+id/projMembers"
+		            android:layout_width="match_parent"
+		            android:layout_height="wrap_content"
+		            android:text="Abbinayaa; Achyut; Sesha; Vandhanaa; Srivatsa; Narasimhan; "
+		            android:textSize="15sp"
+		            android:textStyle="bold"
+		            android:textColor="#FFFFFF"
+		            android:paddingTop="2dp" />		        
+	        </LinearLayout>
+    	</ScrollView>
+    
+	   <LinearLayout
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:gravity="top"
+	        android:orientation="vertical"
+	        android:paddingRight="20dp" > 
+
+			<ImageView
+			    android:layout_width="wrap_content"
+			    android:layout_height="145dp"
+			    android:layout_gravity="top"
+			    android:scaleType="fitStart"
+			    android:src="@drawable/bargraph" />
+								
+		</LinearLayout>
+    </LinearLayout>
+    <LinearLayout        
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="30dp" >
+    	
+   		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Abbinayaa is singing"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:paddingTop="2dp"
+            android:paddingLeft="20dp" />
+   		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sesha is moraching"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:paddingTop="2dp"
+            android:paddingLeft="20dp" />
+   		<TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="We like telling OInk OInk"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:paddingTop="2dp"
+            android:paddingLeft="20dp" />        
+    </LinearLayout>  -->
 </LinearLayout>
