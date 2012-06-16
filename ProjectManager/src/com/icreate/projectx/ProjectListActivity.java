@@ -43,6 +43,7 @@ import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectList;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.net.DeleteProjectTask;
+import com.icreate.projectx.net.GetProjectTask;
 
 public class ProjectListActivity extends Activity {
 	private TextView logoText;
@@ -129,12 +130,17 @@ public class ProjectListActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				Intent projectViewIntent = new Intent(cont,
 						projectViewActivity.class);
-				// String currentUserId = globalData.getUserid();
-				// if (!(currentUserId.isEmpty())) {
-				projectViewIntent.putExtra("position", position);
-				// }
-				// System.out.println(fullObject.getProject_name());
-				startActivity(projectViewIntent);
+
+				int projectId = globalState.getProjectList().getProjects()
+						.get(position).getProject_id();
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id="
+						+ projectId;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Getting Project Info...");
+				dialog.show();
+				GetProjectTask getProjectTask = new GetProjectTask(cont,
+						currentActivity, dialog);
+				getProjectTask.execute(url);
 			}
 		});
 	}
