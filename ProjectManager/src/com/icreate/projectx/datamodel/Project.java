@@ -1,5 +1,7 @@
 package com.icreate.projectx.datamodel;
 
+import java.util.List;
+
 public class Project {
 	private int project_id;
 	private String module_code;
@@ -7,6 +9,8 @@ public class Project {
 	private String due_date;
 	private int leader_id;
 	private String leader_name;
+	private String project_desc;
+	private List<ProjectMembers> members;
 
 	public String getLeader_name() {
 		return leader_name;
@@ -54,5 +58,21 @@ public class Project {
 
 	public void setProject_id(int project_id) {
 		this.project_id = project_id;
+	}
+
+	public String getProject_desc() {
+		return project_desc;
+	}
+
+	public void setProject_desc(String project_desc) {
+		this.project_desc = project_desc;
+	}
+
+	public List<ProjectMembers> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<ProjectMembers> members) {
+		this.members = members;
 	}
 }

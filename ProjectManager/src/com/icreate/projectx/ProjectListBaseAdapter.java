@@ -58,7 +58,6 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 		holder.txtModuleCode
 				.setText(projectList.get(position).getModule_code());
 		holder.txtLeader.setText(projectList.get(position).getLeader_name());
-
 		return convertView;
 	}
 

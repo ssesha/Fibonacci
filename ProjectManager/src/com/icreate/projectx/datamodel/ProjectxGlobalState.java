@@ -6,8 +6,8 @@ public class ProjectxGlobalState extends Application {
 	private String authToken;
 	private String apiKey;
 	private String userid;
-	private ProjectList projectList;
-	private TaskList taskList;
+	private ProjectList projectList = new ProjectList();
+	private TaskList taskList = new TaskList();
 
 	public String getAuthToken() {
 		return authToken;
