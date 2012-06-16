@@ -8,6 +8,7 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -17,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class projectViewActivity extends Activity {
-
+	private TextView logoText;
 	private TextView ProjectName;
 	private Button createTask;
 	private int position;
@@ -26,13 +27,19 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 	    super.onCreate(savedInstanceState);
-	    //requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	    requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 	    setContentView(R.layout.projectview);
-	    //getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+	    getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 	    	    
 		final Context cont = this;
 		final Activity currentActivity = this;
-				
+		
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		logoText = (TextView) findViewById(R.id.logoText);
+		logoText.setTypeface(font);
+		logoText.setTextColor(R.color.white);
+		
+		
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
 		TextView projDesc = (TextView) findViewById(R.id.projDesc);
 		//projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
@@ -50,9 +57,12 @@ public class projectViewActivity extends Activity {
 		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList));
 		
 		Bundle extras = getIntent().getExtras();
+		String passedUserId = null;
 		globalState = (ProjectxGlobalState)getApplication();
 		if(extras!=null)
 		{
+			logoText.setText(globalState.getProjectList().getProjects().get(position).getProject_name());
+			
 			position=extras.getInt("position");
 			System.out.println(position);
 			
