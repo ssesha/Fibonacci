@@ -19,8 +19,7 @@ public class projectViewActivity extends Activity {
 	    setContentView(R.layout.projectview);
 		final Context cont = this;
 		final Activity currentActivity = this;
-		
-		ProjectName=(TextView)findViewById(R.id.projectName);
+				
 		Bundle extras = getIntent().getExtras();
 		ProjectxGlobalState global = (ProjectxGlobalState)getApplication();
 		int position=0;
