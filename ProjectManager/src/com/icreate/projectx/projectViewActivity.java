@@ -25,7 +25,9 @@ public class projectViewActivity extends Activity {
 		final Context cont = this;
 		final Activity currentActivity = this;
 		
-		ProjectName=(TextView)findViewById(R.id.projectName);
+		//ProjectName=(TextView)findViewById(R.id.projectName);
+				
+		
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
 		
 		Bundle extras = getIntent().getExtras();
@@ -39,7 +41,7 @@ public class projectViewActivity extends Activity {
 				Toast.LENGTH_LONG).show();
 		}
 		
-		ProjectName.setText(global.getProjectList().getProjects().get(position).getProject_name());
+		//ProjectName.setText(global.getProjectList().getProjects().get(position).getProject_name());
 		//Log.d("project id", project_id);
 		
 		createTask.setOnClickListener(new View.OnClickListener() {

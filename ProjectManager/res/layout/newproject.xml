@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx" 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -18,18 +20,17 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="vertical" >
-            
-            
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
-                
+
                 <Spinner
                     android:id="@+id/moduleTextBox"
-                    android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
                     android:prompt="@string/module" />
             </LinearLayout>
 
@@ -85,10 +86,11 @@
                     android:id="@+id/deadlineTextBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#00ffffff"/>
+                    android:background="#00ffffff" />
             </LinearLayout>
 
-          <!--   <LinearLayout
+            <!--
+                 <LinearLayout
                 android:id="@+id/LL1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,31 +100,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/members" /> -->
+                    android:src="@drawable/members" />
+            -->
 
-                <LinearLayout
-                    android:id="@+id/memberLayout"
-                    android:layout_marginLeft="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:orientation="vertical" >
-                                        
-                    <EditText
+            <com.icreate.projectx.FlowLayout
+                f:horizontalSpacing="6dip"
+    			f:verticalSpacing="12dip"
+                android:id="@+id/memberLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp" >                
+                
+                <EditText
                     android:id="@+id/membersTextBox1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:background="#00ffffff"
-                    android:hint="Enter name to add more members" />
-                    
-                </LinearLayout>
-         <!--    </LinearLayout> -->
+                    android:hint="Enter name to add more members"
+                    android:cursorVisible="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" ></EditText>"
+                
+            </com.icreate.projectx.FlowLayout>
+            <!-- </LinearLayout> -->
 
-            <LinearLayout
-                android:id="@+id/layout1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -146,7 +147,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal" >
+
         <ListView
             android:id="@+id/membersList"
             android:layout_width="match_parent"
@@ -168,7 +170,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="60dp"
             android:visibility="invisible" />
-
     </RelativeLayout>
 
 </RelativeLayout>
