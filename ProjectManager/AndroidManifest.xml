@@ -28,6 +28,9 @@
         <activity android:name="loginActivity"></activity>
         <activity android:name=".ProjectListActivity"></activity>
         <activity android:name="projectViewActivity"></activity>
+        <activity android:name="newTaskActivity"></activity>
+        <activity android:name="TaskListActivity"></activity>
+        <activity android:name="TaskListBaseAdapter"></activity>
     </application>
 
 </manifest>
