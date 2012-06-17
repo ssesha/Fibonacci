@@ -14,7 +14,7 @@ import android.widget.Toast;
 public class projectViewActivity extends Activity {
 
 	private TextView ProjectName;
-	private Button createTask;
+	private Button createTask, TaskView;
 	private int position;
 	/** Called when the activity is first created. */
 	@Override
@@ -29,6 +29,7 @@ public class projectViewActivity extends Activity {
 				
 		
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
+		TaskView=(Button)findViewById(R.id.TaskViewButton);
 		
 		Bundle extras = getIntent().getExtras();
 		ProjectxGlobalState global = (ProjectxGlobalState)getApplication();
@@ -50,6 +51,17 @@ public class projectViewActivity extends Activity {
 						newTaskActivity.class);
 					newTaskIntent.putExtra("position",position );
 				startActivity(newTaskIntent);
+				
+			}
+			
+		});
+		
+		TaskView.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent TaskViewIntent = new Intent(cont,
+						expandTaskViewActivity.class);
+				TaskViewIntent.putExtra("position",position );
+				startActivity(TaskViewIntent);
 				
 			}
 			

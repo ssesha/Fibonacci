@@ -130,6 +130,12 @@
          android:layout_height="wrap_content"
          android:text="Create new Task"/>
      
+      <Button
+         android:id="@+id/TaskViewButton"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="View Task"/>
+     
      </LinearLayout>
 
 </LinearLayout>
