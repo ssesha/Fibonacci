@@ -62,6 +62,7 @@ public class ProjectManagerActivity extends Activity {
 			appGlobalState.setAuthToken(authToken);
 			appGlobalState.setUserid(userName);
 			startActivity(new Intent(cont, homeActivity.class));
+			finish();
 		}
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -227,11 +228,12 @@ public class ProjectManagerActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					context.startActivity(new Intent(context,
 							homeActivity.class));
+					callingActivity.finish();
 				} else {
 					Toast.makeText(context, R.string.login_error,
 							Toast.LENGTH_LONG).show();
 				}
-				callingActivity.finish();
+
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error,
 						Toast.LENGTH_LONG).show();

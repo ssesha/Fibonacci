@@ -11,7 +11,7 @@
         android:icon="@drawable/trialicon"
         android:label="@string/app_name"
         android:theme="@style/CustomTheme" 
-        android:name="com.icreate.projectx.datamodel.ProjectxGlobalState" >
+        android:name=".datamodel.ProjectxGlobalState" >
         <activity android:label="@string/app_name" android:name=".ProjectManagerActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +28,7 @@
         <activity android:name="newTaskActivity"></activity>
         <activity android:name="TaskListActivity"></activity>
         <activity android:name="TaskListBaseAdapter"></activity>
+        <activity android:name="expandTaskViewActivity"></activity>
     </application>
 
 </manifest>

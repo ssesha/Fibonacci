@@ -1,5 +1,7 @@
 package com.icreate.projectx.datamodel;
 
+import java.util.List;
+
 public class Project {
 	private int project_id;
 	private String module_code;
@@ -7,14 +9,15 @@ public class Project {
 	private String due_date;
 	private int leader_id;
 	private String leader_name;
-
-	public String getLeader_name() {
-		return leader_name;
-	}
-
-	public void setLeader_name(String leader_name) {
-		this.leader_name = leader_name;
-	}
+	private String project_desc;
+	private List<ProjectMembers> members;
+	private List<Task> tasks;
+	private int totalTasks;
+	private int tasksAssigned;
+	private int tasksCompleted;
+	private int tasksInProgress;
+	private int tasksOpen;
+	private double progress;
 
 	public int getLeader_id() {
 		return leader_id;
@@ -54,5 +57,85 @@ public class Project {
 
 	public void setProject_id(int project_id) {
 		this.project_id = project_id;
+	}
+
+	public String getProject_desc() {
+		return project_desc;
+	}
+
+	public void setProject_desc(String project_desc) {
+		this.project_desc = project_desc;
+	}
+
+	public List<ProjectMembers> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<ProjectMembers> members) {
+		this.members = members;
+	}
+
+	public void setTasks(List<Task> tasks) {
+		this.tasks = tasks;
+	}
+
+	public List<Task> getTasks() {
+		return tasks;
+	}
+
+	public void setTotalTasks(int totalTasks) {
+		this.totalTasks = totalTasks;
+	}
+
+	public int getTotalTasks() {
+		return totalTasks;
+	}
+
+	public void setTasksAssigned(int tasksAssigned) {
+		this.tasksAssigned = tasksAssigned;
+	}
+
+	public int getTasksAssigned() {
+		return tasksAssigned;
+	}
+
+	public void setTasksCompleted(int tasksCompleted) {
+		this.tasksCompleted = tasksCompleted;
+	}
+
+	public int getTasksCompleted() {
+		return tasksCompleted;
+	}
+
+	public void setTasksInProgress(int tasksInProgress) {
+		this.tasksInProgress = tasksInProgress;
+	}
+
+	public int getTasksInProgress() {
+		return tasksInProgress;
+	}
+
+	public void setTasksOpen(int tasksOpen) {
+		this.tasksOpen = tasksOpen;
+	}
+
+	public int getTasksOpen() {
+		return tasksOpen;
+	}
+
+	public void setProgress(double progress) {
+		this.progress = progress;
+	}
+
+	public double getProgress() {
+		return progress;
+	}
+
+	public void setLeader_name(String leader_name) {
+		this.leader_name = leader_name;
+	}
+
+	public String getLeader_name() {
+		return leader_name;
 	}
 }

@@ -207,8 +207,8 @@ public class newProjectActivity extends Activity implements
 		rl.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				dueTextBox.setText(dp1.getDayOfMonth() + "-"
-						+ (dp1.getMonth() + 1) + "-" + dp1.getYear());
+				dueTextBox.setText(dp1.getYear() + "-"
+						+ (dp1.getMonth() + 1) + "-" + dp1.getDayOfMonth());
 				dp1.setVisibility(View.INVISIBLE);
 			}
 		});

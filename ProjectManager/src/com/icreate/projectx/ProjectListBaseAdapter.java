@@ -1,6 +1,7 @@
 package com.icreate.projectx;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectMembers;
 
 public class ProjectListBaseAdapter extends BaseAdapter {
 	private static ArrayList<Project> projectList;
@@ -37,7 +39,7 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 	public void removeItem(int position) {
 		projectList.remove(position);
 	}
-
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
@@ -58,7 +60,6 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 		holder.txtModuleCode
 				.setText(projectList.get(position).getModule_code());
 		holder.txtLeader.setText(projectList.get(position).getLeader_name());
-
 		return convertView;
 	}
 
