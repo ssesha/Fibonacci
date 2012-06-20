@@ -3,7 +3,8 @@
 	android:orientation="horizontal" 
 	android:layout_width="fill_parent"
  	android:layout_height="fill_parent"
- 	android:weightSum="5" >
+ 	android:weightSum="5" 
+ 	android:baselineAligned="false" >
  	<LinearLayout 
  	    android:orientation="vertical" 
 		android:layout_width="0dip"
