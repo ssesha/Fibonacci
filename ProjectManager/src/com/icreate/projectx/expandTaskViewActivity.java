@@ -86,18 +86,19 @@ public class expandTaskViewActivity extends Activity {
 		registerForContextMenu(task_projectListView);
 
 		Bundle extras = getIntent().getExtras();
-		String passedUserId = null;
+		int project_id = 0;
 		if (extras != null) {
-			passedUserId = extras.getString("requiredId");
+			project_id = extras.getInt("project_Id");
 				logoText.setText("Tasks");
+		System.out.println("project_id="+project_id);
 			
 
-			Toast.makeText(cont, extras.getString("requiredId"),
+			Toast.makeText(cont, extras.getString("project_Id"),
 					Toast.LENGTH_LONG).show();
-			passedUserId = extras.getString("requiredId");
+			//passedUserId = extras.getString("requiredId");
 			 String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/project_TaskList.php";
 			 List<NameValuePair> params = new LinkedList<NameValuePair>();
-			 params.add(new BasicNameValuePair("user_id", passedUserId));
+			 params.add(new BasicNameValuePair("project_id", new Integer(project_id).toString()));
 			 String paramString = URLEncodedUtils.format(params, "utf-8");
 			 url += "?" + paramString;
 			
@@ -204,8 +205,9 @@ public class expandTaskViewActivity extends Activity {
 					task_projectListView.setAdapter(new TaskListBaseAdapter(
 							context, tasks));
 					for (Task task : tasks) {
-						System.out.println(task.getTask_name());
-						System.out.println(task.getProject_name());
+						System.out.println("hello");
+						//System.out.println(task.getTask_name());
+						//System.out.println(task.getProject_name());
 					}
 				} else {
 					Toast.makeText(context, "Project Lists empty",

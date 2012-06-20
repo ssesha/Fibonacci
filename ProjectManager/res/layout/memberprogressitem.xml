@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="horizontal" 
+	android:layout_width="fill_parent"
+ 	android:layout_height="fill_parent"
+ 	android:weightSum="5" >
+ 	<LinearLayout 
+ 	    android:orientation="vertical" 
+		android:layout_width="0dip"
+ 		android:layout_height="fill_parent"
+ 	    android:layout_weight="3">
+ 	    
+ 	    <TextView android:id="@+id/memberName"
+			android:textSize="14sp" 
+			android:textStyle="bold" 
+			android:textColor="#FFFF00" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"/>
+		<TextView android:id="@+id/totalTask" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"/>
+		<TextView android:id="@+id/completedTask" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"/>
+ 	</LinearLayout>
+ 	
+ 	<LinearLayout
+ 	    android:layout_width="0dip"
+ 	    android:layout_weight="2"
+ 	    android:gravity="center"
+ 	    android:orientation="horizontal"
+ 	    android:layout_height="fill_parent" > 
+		<ImageView
+ 	        android:layout_width="fill_parent"
+ 	        android:layout_height="fill_parent"
+ 	        android:scaleType="centerInside"
+ 	        android:src="@drawable/bargraph"
+ 	        android:adjustViewBounds="true" />
+
+ 	</LinearLayout>
+ 	
+</LinearLayout>
