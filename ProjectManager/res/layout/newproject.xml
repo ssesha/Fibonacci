@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx" 
+<RelativeLayout xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rlayout"
     android:layout_width="fill_parent"
@@ -26,11 +25,20 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
+                <TextView
+                    android:id="@+id/newProjectModuletext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20dp"
+                    android:text="Module : "
+                    android:textColor="#ffff00"
+                    android:textSize="25sp" />
+
                 <Spinner
                     android:id="@+id/moduleTextBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/textbackground"
                     android:prompt="@string/module" />
             </LinearLayout>
 
@@ -39,17 +47,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <ImageView
+                <TextView
+                    android:id="@+id/newProjectNametext"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/name" />
+                    android:text="Name : "
+                    android:textColor="#ffff00"
+                    android:textSize="25sp" />
 
                 <EditText
                     android:id="@+id/nameTextBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#00ffffff" />
+                    android:background="@drawable/textbackground"
+                    android:textColor="#ffffff" />
             </LinearLayout>
 
             <LinearLayout
@@ -57,18 +69,22 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <ImageView
+                <TextView
+                    android:id="@+id/newProjectAbouttext"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/about" />
+                    android:text="About : "
+                    android:textColor="#f5ad24"
+                    android:textSize="25sp" />
 
                 <EditText
                     android:id="@+id/aboutTextBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#00ffffff"
-                    android:inputType="textMultiLine" />
+                    android:background="@drawable/textbackground"
+                    android:inputType="textMultiLine"
+                    android:textColor="#ffffff" />
             </LinearLayout>
 
             <LinearLayout
@@ -76,17 +92,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <ImageView
+                <TextView
+                    android:id="@+id/newProjectDeadlinetext"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/deadline" />
+                    android:text="Deadline : "
+                    android:textColor="#f5ad24"
+                    android:textSize="25sp" />
 
                 <EditText
                     android:id="@+id/deadlineTextBox"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="#00ffffff" />
+                    android:background="@drawable/textbackground"
+                    android:textColor="#ffffff" />
             </LinearLayout>
 
             <!--
@@ -100,27 +120,30 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/members" />
+                    android:src="@drawable/members" />
             -->
 
             <com.icreate.projectx.FlowLayout
-                f:horizontalSpacing="6dip"
-    			f:verticalSpacing="12dip"
                 android:id="@+id/memberLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="20dp" >                
-                
+                android:layout_marginLeft="20dp"
+                f:horizontalSpacing="6dip"
+                f:verticalSpacing="12dip" >
+
                 <EditText
                     android:id="@+id/membersTextBox1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#00ffffff"
-                    android:hint="Enter name to add more members"
                     android:cursorVisible="true"
                     android:focusable="true"
-                    android:focusableInTouchMode="true" ></EditText>"
+                    android:focusableInTouchMode="true"
+                    android:hint="Enter name to add more members" >
+                </EditText>
+"
                 
+            
             </com.icreate.projectx.FlowLayout>
             <!-- </LinearLayout> -->
 
@@ -129,7 +152,9 @@
         <LinearLayout
             android:id="@+id/linearlayout4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="20dp"
             android:gravity="center"
             android:orientation="horizontal" >
 
@@ -137,7 +162,9 @@
                 android:id="@+id/loginButton"
                 android:layout_width="148dp"
                 android:layout_height="54dp"
-                android:background="@drawable/scribble1"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button"
                 android:text="Create"
                 android:textColor="#05261f"
                 android:textSize="30sp" />

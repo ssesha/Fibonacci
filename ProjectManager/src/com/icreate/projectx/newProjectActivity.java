@@ -23,8 +23,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.DeadObjectException;
 import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -39,10 +41,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.icreate.projectx.FlowLayout;
 
@@ -51,7 +55,8 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 public class newProjectActivity extends Activity implements
 		AdapterView.OnItemSelectedListener {
 	private ListView membersListView;
-	private EditText membersTextBox1, nameTextBox, aboutTextBox, dueTextBox;
+	private EditText membersTextBox1, nameTextBox, aboutTextBox, dueTextBox, deadlineTextBox;
+	private TextView newProjectDeadlinetext, newProjectNametext, newProjectAbouttext, newProjectModuletext, logoText;
 	private Spinner moduleTextBox;
 	private DatePicker dp1;
 	private Button createProjectButton;
@@ -102,6 +107,36 @@ public class newProjectActivity extends Activity implements
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
 		dueTextBox = (EditText) findViewById(R.id.deadlineTextBox);
 		createProjectButton = (Button) findViewById(R.id.loginButton);
+		
+		newProjectDeadlinetext = (TextView) findViewById(R.id.newProjectDeadlinetext);
+		newProjectAbouttext = (TextView) findViewById(R.id.newProjectAbouttext);
+		newProjectNametext = (TextView) findViewById(R.id.newProjectNametext);
+		newProjectModuletext = (TextView) findViewById(R.id.newProjectModuletext);
+		logoText = (TextView) findViewById(R.id.logoText);
+		
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		newProjectDeadlinetext.setTypeface(font);
+		newProjectAbouttext.setTypeface(font);
+		newProjectNametext.setTypeface(font);
+		newProjectModuletext.setTypeface(font);
+		nameTextBox.setTypeface(font);
+		aboutTextBox.setTypeface(font);
+		//deadlineTextBox.setTypeface(font);
+		
+		logoText.setTypeface(font);
+		logoText.setText("New Project");
+		
+		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
+		homeButton.setBackgroundResource(R.drawable.home_button);
+
+		homeButton.setOnClickListener(new View.OnClickListener() {
+
+			public void onClick(View v) {
+				startActivity(new Intent(cont, homeActivity.class));
+
+			}
+		});
+		
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 

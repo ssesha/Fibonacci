@@ -12,22 +12,20 @@
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <Button
+        <ImageButton
             android:id="@+id/profileButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="Profile"
+            android:layout_height="110dp"
+            android:background="@drawable/profilebutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/myProjectButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="My Projects"
+            android:layout_height="110dp"
+            android:background="@drawable/projectsbutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />
@@ -39,22 +37,20 @@
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <Button
+        <ImageButton
             android:id="@+id/myTaskButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="My Tasks"
+            android:layout_height="110dp"
+            android:background="@drawable/tasksbutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />
 
-        <Button
+        <ImageButton
             android:id="@+id/calenderButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="Calendar"
+            android:layout_height="110dp"
+            android:background="@drawable/calendarbutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />
@@ -63,25 +59,24 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <Button
+        <ImageButton
             android:id="@+id/findButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="Find"
+            android:layout_height="110dp"
+            android:background="@drawable/findbutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />
 
-        <Button
-            android:id="@+id/oinkoinkButton"
+        <ImageButton
+            android:id="@+id/logoutButton"
             android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:background="@drawable/menubutton"
-            android:text="OINK OINK"
+            android:layout_height="110dp"
+            android:background="@drawable/logoutbutton"
             android:layout_margin="10dp"
             android:textColor="#05261f"
             android:textSize="30sp" />

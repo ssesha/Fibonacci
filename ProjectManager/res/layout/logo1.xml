@@ -21,9 +21,8 @@
         android:id="@+id/logoImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="15dp"
         android:layout_marginRight="27dp"
-        android:layout_marginTop="15dp" />
+        android:layout_marginTop="25dp" />
 </RelativeLayout>

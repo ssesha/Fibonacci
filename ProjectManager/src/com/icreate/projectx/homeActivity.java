@@ -34,10 +34,10 @@ public class homeActivity extends Activity {
 		// globalData.getApiKey();
 
 		ImageButton newProjectButton = (ImageButton) findViewById(R.id.logoImageButton);
-		newProjectButton.setBackgroundResource(R.drawable.houseicon);
-		Button myProjectButton = (Button) findViewById(R.id.myProjectButton);
-		Button myTaskButton= (Button) findViewById(R.id.myTaskButton);
-		Button oinkOinkButton = (Button) findViewById(R.id.oinkoinkButton);
+		newProjectButton.setBackgroundResource(R.drawable.newprojectbutton);
+		ImageButton myProjectButton = (ImageButton) findViewById(R.id.myProjectButton);
+		ImageButton myTaskButton= (ImageButton) findViewById(R.id.myTaskButton);
+		ImageButton oinkOinkButton = (ImageButton) findViewById(R.id.logoutButton);
 
 		final Context cont = this;
 		newProjectButton.setOnClickListener(new View.OnClickListener() {
