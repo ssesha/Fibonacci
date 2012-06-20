@@ -9,12 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.Task;
-import com.icreate.projectx.datamodel.TaskList;
-import com.icreate.projectx.datamodel.Project;
 
 public class MemberProgressBaseAdapter extends BaseAdapter {
 	private static List<ProjectMembers> memberList;
@@ -60,45 +59,57 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 					.findViewById(R.id.totalTask);
 			holder.CompletedTask = (TextView) convertView
 					.findViewById(R.id.completedTask);
+			holder.MemberProgress = (ProgressBar) convertView
+					.findViewById(R.id.memberProgress);
 
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		double totalTasks = GetTotalTasks(memberList.get(position)
+				.getMember_id());
+		double completedTasks = GetCompletedTasks(memberList.get(position)
+				.getMember_id());
+		double progress = 0;
+		if (totalTasks != 0) {
+			progress = (completedTasks / totalTasks) * 100.0;
+		}
 		holder.MemberName.setText(memberList.get(position).getUser_name());
-		holder.TotalTask.setText("Total Tasks: " + GetTotalTasks(memberList.get(position).getMember_id()));
-		holder.CompletedTask.setText("No of completed Tasks: " + GetCompletedTasks(memberList.get(position).getMember_id()));
+		holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
+		holder.CompletedTask
+				.setText("Completed Tasks: " + (int) completedTasks);
+		holder.MemberProgress.setProgress((int) progress);
 		return convertView;
 	}
-	
-	public String GetTotalTasks(int userId){
+
+	public int GetTotalTasks(int userId) {
 		int totalTasks = 0;
-		
-		for(int i = 0; i < tasks.size(); i++)
-		{
-			Log.d("Assignee", new Integer(tasks.get(i).getAssignee()).toString());
-			if(tasks.get(i).getAssignee() == userId)
+
+		for (int i = 0; i < tasks.size(); i++) {
+			Log.d("Assignee",
+					new Integer(tasks.get(i).getAssignee()).toString());
+			if (tasks.get(i).getAssignee() == userId)
 				totalTasks++;
 		}
-		return new Integer(totalTasks).toString();		
+		return totalTasks;
 	}
-	
-	public String GetCompletedTasks(int userId){
-		int totalTasks = 0;
-		for(int i = 0; i < tasks.size(); i++)
-		{
+
+	public int GetCompletedTasks(int userId) {
+		int completedTasks = 0;
+		for (int i = 0; i < tasks.size(); i++) {
 			Log.d("Status", tasks.get(i).getTask_status());
-			if(tasks.get(i).getAssignee() == userId && tasks.get(i).getTask_status().equals("COMPLETE"))
-				totalTasks++;
+			if (tasks.get(i).getAssignee() == userId
+					&& tasks.get(i).getTask_status().equals("COMPLETE"))
+				completedTasks++;
 		}
-		return new Integer(totalTasks).toString();		
-	}	
-	
+		return completedTasks;
+	}
+
 	static class ViewHolder {
 		TextView MemberName;
 		TextView TotalTask;
 		TextView CompletedTask;
+		ProgressBar MemberProgress;
 	}
-	
-	
+
 }

@@ -30,12 +30,14 @@
  	    android:gravity="center"
  	    android:orientation="horizontal"
  	    android:layout_height="fill_parent" > 
-		<ImageView
- 	        android:layout_width="fill_parent"
- 	        android:layout_height="fill_parent"
- 	        android:scaleType="centerInside"
- 	        android:src="@drawable/bargraph"
- 	        android:adjustViewBounds="true" />
+		<ProgressBar        
+         android:layout_width="fill_parent"        
+         android:layout_height="wrap_content"         
+         style="@android:style/Widget.ProgressBar.Horizontal"        
+         android:layout_marginRight="5dp"
+         android:progressDrawable="@drawable/search_progress_drawable"
+         android:id = "@+id/memberProgress"
+         android:progress="50"/>
 
  	</LinearLayout>
  	
