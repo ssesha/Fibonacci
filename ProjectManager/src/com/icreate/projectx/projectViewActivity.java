@@ -43,11 +43,12 @@ import com.icreate.projectx.datamodel.TaskList;
 public class projectViewActivity extends Activity {
 	private TextView logoText;
 	private TextView ProjectName;
-	private Button createTask;
+	private Button createTask,TaskView;
 	private Button editProject;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private List<ProjectMembers> memberList; 
+	String projectString;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -67,6 +68,7 @@ public class projectViewActivity extends Activity {
 		
 		
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
+		TaskView=(Button)findViewById(R.id.taskListButton);
 		TextView projDesc = (TextView) findViewById(R.id.projDesc);
 		editProject = (Button) findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
@@ -86,7 +88,7 @@ public class projectViewActivity extends Activity {
 		globalState = (ProjectxGlobalState) getApplication();
 		if (extras != null) {
 			
-			String projectString = extras.getString("projectJson", "");
+			 projectString = extras.getString("projectJson", "");
 			Log.d("sdcsd", projectString);
 			System.out.println(projectString.isEmpty());
 			if (!(projectString.isEmpty())) {
@@ -124,6 +126,17 @@ public class projectViewActivity extends Activity {
 			}			
 		});
 		
+		TaskView.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent TaskViewIntent = new Intent(cont,
+						expandTaskViewActivity.class);
+				System.out.println("project_id"+ project.getProject_id());
+				TaskViewIntent.putExtra("project_Id", project.getProject_id());
+				startActivity(TaskViewIntent);
+				
+			}
+			
+		});
 		editProject.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {

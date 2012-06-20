@@ -51,7 +51,11 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.txtName.setText(taskList.get(position).getTask_name());
-		holder.txtProjectName.setText(taskList.get(position).getProject_name());
+		
+		int parent_id=taskList.get(position).getParentId();
+		if(parent_id!=0)
+		holder.txtProjectName.setText(parent_id);
+		
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		return convertView;
