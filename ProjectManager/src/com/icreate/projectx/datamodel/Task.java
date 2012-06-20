@@ -23,6 +23,7 @@ public class Task {
 	private int tasksOpen;
 	private double progress;
 	private List<Integer> subTasks;
+	private List<Integer> topSubTasks;
 	
 	
 	public int getTask_id() {
@@ -145,5 +146,11 @@ public class Task {
 	}
 	public List<Integer> getSubTasks() {
 		return subTasks;
+	}
+	public List<Integer> getTopSubTasks() {
+		return topSubTasks;
+	}
+	public void setTopSubTasks(List<Integer> topSubTasks) {
+		this.topSubTasks = topSubTasks;
 	}
 }

@@ -188,7 +188,7 @@ public class TaskListActivity extends Activity {
 					TaskList tasksContainer = gson.fromJson(result,TaskList.class);
 					globalState.setTaskList(tasksContainer);
 					ArrayList<Task> tasks = tasksContainer.getTasks();
-					taskListView.setAdapter(new TaskListBaseAdapter(
+					taskListView.setAdapter(new muTasksBaseAdapter(
 							context, tasks));
 					Log.d("testing",""+tasks.size());
 					for (Task task : tasks) {

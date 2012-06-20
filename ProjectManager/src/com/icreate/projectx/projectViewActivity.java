@@ -121,7 +121,7 @@ public class projectViewActivity extends Activity {
 		createTask.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
-				newTaskIntent.putExtra("project_Id", project.getProject_id());
+				newTaskIntent.putExtra("project", projectString);
 				startActivity(newTaskIntent);
 			}
 		});
