@@ -126,7 +126,7 @@ public class ProjectListActivity extends Activity {
 								+ position
 								+ " "
 								+ globalState.getProjectList().getProjects()
-										.get(position).getLeader_name(),
+										.get(position).getLeader_id(),
 						Toast.LENGTH_LONG).show();
 				Intent projectViewIntent = new Intent(cont,
 						projectViewActivity.class);

@@ -44,6 +44,7 @@ public class projectViewActivity extends Activity {
 	private TextView logoText;
 	private TextView ProjectName;
 	private Button createTask;
+	private Button editProject;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private List<ProjectMembers> memberList; 
@@ -67,6 +68,7 @@ public class projectViewActivity extends Activity {
 		
 		createTask=(Button)findViewById(R.id.createNewTaskButton);
 		TextView projDesc = (TextView) findViewById(R.id.projDesc);
+		editProject = (Button) findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 		
 
@@ -120,6 +122,15 @@ public class projectViewActivity extends Activity {
 				newTaskIntent.putExtra("project_Id", project.getProject_id());
 				startActivity(newTaskIntent);
 			}			
+		});
+		
+		editProject.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent editProjectIntent = new Intent(cont, editProjectActivity.class);
+				editProjectIntent.putExtra("project_Id", project.getProject_id());
+				startActivity(editProjectIntent);			
+			}
 		});
 	}
 	
