@@ -52,6 +52,7 @@ public class expandTaskViewActivity extends Activity {
 	private ListView task_projectListView;
 	private Context cont;
 	private Activity currentActivity;
+	private String projectString;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

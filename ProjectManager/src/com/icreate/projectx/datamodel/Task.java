@@ -1,5 +1,7 @@
 package com.icreate.projectx.datamodel;
 
+import java.util.List;
+
 public class Task {
 	private int task_id;
 	private int projectId;
@@ -14,6 +16,14 @@ public class Task {
 	private String description;
 	private String task_status;
 	private String task_priority;
+	private int totalTasks;
+	private int tasksAssigned;
+	private int tasksCompleted;
+	private int tasksInProgress;
+	private int tasksOpen;
+	private double progress;
+	private List<Integer> subTasks;
+	
 	
 	public int getTask_id() {
 		return task_id;
@@ -94,5 +104,46 @@ public class Task {
 	public void setTask_priority(String task_priority) {
 		this.task_priority = task_priority;
 	}
-
+	public void setProgress(double progress) {
+		this.progress = progress;
+	}
+	public double getProgress() {
+		return progress;
+	}
+	public void setTasksOpen(int tasksOpen) {
+		this.tasksOpen = tasksOpen;
+	}
+	public int getTasksOpen() {
+		return tasksOpen;
+	}
+	public void setTasksInProgress(int tasksInProgress) {
+		this.tasksInProgress = tasksInProgress;
+	}
+	public int getTasksInProgress() {
+		return tasksInProgress;
+	}
+	public void setTasksCompleted(int tasksCompleted) {
+		this.tasksCompleted = tasksCompleted;
+	}
+	public int getTasksCompleted() {
+		return tasksCompleted;
+	}
+	public void setTasksAssigned(int tasksAssigned) {
+		this.tasksAssigned = tasksAssigned;
+	}
+	public int getTasksAssigned() {
+		return tasksAssigned;
+	}
+	public void setTotalTasks(int totalTasks) {
+		this.totalTasks = totalTasks;
+	}
+	public int getTotalTasks() {
+		return totalTasks;
+	}
+	public void setSubTasks(List<Integer> subTasks) {
+		this.subTasks = subTasks;
+	}
+	public List<Integer> getSubTasks() {
+		return subTasks;
+	}
 }
