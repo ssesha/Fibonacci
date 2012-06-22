@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -43,30 +44,37 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.txtName = (TextView) convertView
 					.findViewById(R.id.tasklistname);
-			//holder.txtParentName = (TextView) convertView
-					//.findViewById(R.id.taskParentName);
+			holder.txtParentName = (TextView) convertView
+					.findViewById(R.id.taskParentName);
 			holder.txtdate = (TextView) convertView
 					.findViewById(R.id.tasklistduedate);
 			holder.TaskProgress = (ProgressBar) convertView
 					.findViewById(R.id.taskProgress);
-
+			holder.arrow = (ImageView) convertView
+					.findViewById(R.id.imageViewarrow);
+			holder.priority = (ImageView) convertView
+					.findViewById(R.id.imageViewPriority);
+			
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
-		/*int parent_id = taskList.get(position).getParentId();
-		for(int i=0;i<taskList.size();i++)
-		{
-			if(parent_id==taskList.get(i).getTask_id())
-			{
-				holder.txtParentName.setText(taskList.get(i).getTask_name());
-				break;
-			}
-			holder.txtParentName.setText("no parent");
-			
-		}*/
+		String priority=null;
+		
+		priority=taskList.get(position).getTask_priority();
+		if(priority.equals("LOW"))
+			holder.priority.setImageResource(R.drawable.icon_priority_low);
+		else if(priority.equals("MEDIUM"))
+			holder.priority.setImageResource(R.drawable.icon_priority_medium);
+		else if(priority.equals("HIGH"))
+			holder.priority.setImageResource(R.drawable.icon_priority_high);
+		else if(priority.equals("CRITICAL"))
+			holder.priority.setImageResource(R.drawable.icon_priority_critical);
+		
+		holder.txtParentName.setVisibility(View.GONE);
+		holder.arrow.setVisibility(View.GONE);
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		holder.TaskProgress.setProgress((int) taskList.get(position)
@@ -77,9 +85,11 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView txtName;
-		//TextView txtParentName;
+		TextView txtParentName;
 		TextView txtdate;
+		ImageView arrow;
 		ProgressBar TaskProgress;
+		ImageView priority;
 	}
 
 }

@@ -7,14 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.icreate.projectx.TaskListBaseAdapter.ViewHolder;
 import com.icreate.projectx.datamodel.Task;
 
 public class muTasksBaseAdapter extends BaseAdapter {
-	
+
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
@@ -39,16 +39,13 @@ public class muTasksBaseAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.tasklistitem, null);
+			convertView = mInflater.inflate(R.layout.mytaskitem, null);
 			holder = new ViewHolder();
-			holder.txtName = (TextView) convertView
-					.findViewById(R.id.tasklistname);
-			holder.txtProjectName = (TextView) convertView
-					.findViewById(R.id.taskParentName);
-			holder.txtdate = (TextView) convertView
-					.findViewById(R.id.tasklistduedate);
-			holder.TaskProgress = (ProgressBar) convertView
-					.findViewById(R.id.taskProgress);
+			holder.txtName = (TextView) convertView.findViewById(R.id.mytasklistname);
+			holder.txtProjectName = (TextView) convertView.findViewById(R.id.mytaskProjectName);
+			holder.txtdate = (TextView) convertView.findViewById(R.id.mytasklistduedate);
+			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.mytaskProgress);
+			holder.priority = (ImageView) convertView.findViewById(R.id.myimageViewPriority);
 
 			convertView.setTag(holder);
 		} else {
@@ -57,11 +54,22 @@ public class muTasksBaseAdapter extends BaseAdapter {
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
 		holder.txtProjectName.setText(taskList.get(position).getProject_name());
-		
+
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
-		holder.TaskProgress.setProgress((int) taskList.get(position)
-				.getProgress());
+		holder.TaskProgress.setProgress((int) taskList.get(position).getProgress());
+
+		String priority = null;
+
+		priority = taskList.get(position).getTask_priority();
+		if (priority.equals("LOW"))
+			holder.priority.setImageResource(R.drawable.icon_priority_low);
+		else if (priority.equals("MEDIUM"))
+			holder.priority.setImageResource(R.drawable.icon_priority_medium);
+		else if (priority.equals("HIGH"))
+			holder.priority.setImageResource(R.drawable.icon_priority_high);
+		else if (priority.equals("CRITICAL"))
+			holder.priority.setImageResource(R.drawable.icon_priority_critical);
 
 		return convertView;
 	}
@@ -71,6 +79,7 @@ public class muTasksBaseAdapter extends BaseAdapter {
 		TextView txtProjectName;
 		TextView txtdate;
 		ProgressBar TaskProgress;
+		ImageView priority;
 	}
 
 }

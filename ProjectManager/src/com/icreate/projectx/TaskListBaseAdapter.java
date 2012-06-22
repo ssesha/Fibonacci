@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -47,7 +48,11 @@ public class TaskListBaseAdapter extends BaseAdapter {
 					.findViewById(R.id.tasklistduedate);
 			holder.TaskProgress = (ProgressBar) convertView
 					.findViewById(R.id.taskProgress);
-
+			holder.arrow = (ImageView) convertView
+					.findViewById(R.id.imageViewarrow);
+			holder.priority = (ImageView) convertView
+					.findViewById(R.id.imageViewPriority);
+			
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -55,16 +60,34 @@ public class TaskListBaseAdapter extends BaseAdapter {
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
 		int parent_id = taskList.get(position).getParentId();
+		int flag=0;
 		for(int i=0;i<taskList.size();i++)
 		{
 			if(parent_id==taskList.get(i).getTask_id())
 			{
 				holder.txtParentName.setText(taskList.get(i).getTask_name());
+				flag=1;
 				break;
 			}
-			holder.txtParentName.setText("no parent");
 			
 		}
+		if(flag==0) 
+		{
+			holder.arrow.setVisibility(View.GONE);
+			holder.txtParentName.setVisibility(View.GONE);
+		}
+		String priority=null;
+		
+		priority=taskList.get(position).getTask_priority();
+		if(priority.equals("LOW"))
+			holder.priority.setImageResource(R.drawable.icon_priority_low);
+		else if(priority.equals("MEDIUM"))
+			holder.priority.setImageResource(R.drawable.icon_priority_medium);
+		else if(priority.equals("HIGH"))
+			holder.priority.setImageResource(R.drawable.icon_priority_high);
+		else if(priority.equals("CRITICAL"))
+			holder.priority.setImageResource(R.drawable.icon_priority_critical);
+		
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		holder.TaskProgress.setProgress((int) taskList.get(position)
@@ -76,8 +99,10 @@ public class TaskListBaseAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView txtName;
 		TextView txtParentName;
+		ImageView arrow;
 		TextView txtdate;
 		ProgressBar TaskProgress;
+		ImageView priority;
 	}
 
 }

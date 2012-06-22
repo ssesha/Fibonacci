@@ -77,22 +77,7 @@ public class expandTaskViewActivity extends Activity {
 			task_projectListView.setAdapter(new TaskListBaseAdapter(cont,
 					(ArrayList<Task>) project.getTasks()));
 
-			// passedUserId = extras.getString("requiredId");
-			/*
-			 * String url =
-			 * "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/project_TaskList.php"
-			 * ; List<NameValuePair> params = new LinkedList<NameValuePair>();
-			 * params.add(new BasicNameValuePair("project_id", new Integer(
-			 * project_id).toString())); String paramString =
-			 * URLEncodedUtils.format(params, "utf-8"); url += "?" +
-			 * paramString;
-			 * 
-			 * ProgressDialog dialog = new ProgressDialog(cont);
-			 * dialog.setMessage("Getting Tasks"); task_ProjectList
-			 * projectListTask = new task_ProjectList(cont, currentActivity,
-			 * dialog, task_projectListView); System.out.println(url);
-			 * projectListTask.execute(url);
-			 */
+			
 		}
 
 		task_projectListView.setOnItemClickListener(new OnItemClickListener() {
@@ -108,60 +93,14 @@ public class expandTaskViewActivity extends Activity {
 						Toast.LENGTH_LONG).show();
 				 Intent TaskViewIntent = new Intent(cont,
 				 TaskViewActivity.class);
-				// String currentUserId = globalData.getUserid();
-				// if (!(currentUserId.isEmpty())) {
 				 TaskViewIntent.putExtra("project", projectString);
 				 TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
-				// }
-				// System.out.println(fullObject.getProject_name());
 				 startActivity(TaskViewIntent);
 			}
 		});
 	}
 
-	/*
-	 * public class task_ProjectList extends AsyncTask<String, Void, String> {
-	 * private final Context context; private final Activity callingActivity;
-	 * private final ProgressDialog dialog; private final ListView
-	 * task_projectListView;
-	 * 
-	 * public task_ProjectList(Context context, Activity callingActivity,
-	 * ProgressDialog dialog, ListView task_projectListView) { this.context =
-	 * context; this.callingActivity = callingActivity; this.dialog = dialog;
-	 * this.task_projectListView = task_projectListView; }
-	 * 
-	 * @Override protected void onPreExecute() { if (!this.dialog.isShowing()) {
-	 * this.dialog.setMessage("Getting Tasks..."); this.dialog.show(); } }
-	 * 
-	 * @Override protected String doInBackground(String... urls) { String
-	 * response = ""; System.out.println("checking"); for (String url : urls) {
-	 * HttpClient client = new DefaultHttpClient(); HttpGet httpGet = new
-	 * HttpGet(url); try { HttpResponse execute = client.execute(httpGet);
-	 * InputStream content = execute.getEntity().getContent();
-	 * 
-	 * BufferedReader buffer = new BufferedReader( new
-	 * InputStreamReader(content)); String s = ""; while ((s =
-	 * buffer.readLine()) != null) { response += s; }
-	 * 
-	 * } catch (Exception e) { e.printStackTrace(); } } return response; }
-	 * 
-	 * @Override protected void onPostExecute(String result) { if
-	 * (this.dialog.isShowing()) { this.dialog.dismiss(); }
-	 * System.out.println("checking post execute"); System.out.println(result);
-	 * try { JSONObject resultJson = new JSONObject(result); Log.d("TaskList",
-	 * resultJson.toString()); if
-	 * (resultJson.getString("msg").equals("success")) { Gson gson = new Gson();
-	 * TaskList tasksContainer = gson.fromJson(result, TaskList.class);
-	 * globalState.setTaskList(tasksContainer); ArrayList<Task> tasks =
-	 * tasksContainer.getTasks(); task_projectListView.setAdapter(new
-	 * TaskListBaseAdapter( context, tasks)); for (Task task : tasks) {
-	 * System.out.println("hello"); // System.out.println(task.getTask_name());
-	 * // System.out.println(task.getProject_name()); } } else {
-	 * Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
-	 * } } catch (JSONException e) { Toast.makeText(context,
-	 * R.string.server_error, Toast.LENGTH_LONG).show(); e.printStackTrace(); }
-	 * } }
-	 */
+	
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,

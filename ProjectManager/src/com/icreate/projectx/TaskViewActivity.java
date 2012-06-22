@@ -87,7 +87,12 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 			logoText.setText(task.getTask_name());
+			if(task.getDescription()!=null)
+			{
 			TaskDesc.setText(task.getDescription());
+			}
+			else
+				TaskDesc.setVisibility(View.GONE);
 			TaskDeadline.setText(task.getDue_date());
 			System.out.println(alltasks.size());
 			int sub_taskid;
