@@ -1,5 +1,6 @@
 package com.icreate.projectx.datamodel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Project {
@@ -10,8 +11,8 @@ public class Project {
 	private int leader_id;
 	private String leader_name;
 	private String project_desc;
-	private List<ProjectMembers> members;
-	private List<Task> tasks;
+	private List<ProjectMembers> members = new ArrayList<ProjectMembers>();
+	private List<Task> tasks = new ArrayList<Task>();
 	private int totalTasks;
 	private int tasksAssigned;
 	private int tasksCompleted;
