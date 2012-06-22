@@ -29,6 +29,7 @@
         <activity android:name="TaskListActivity"></activity>
         <activity android:name="TaskListBaseAdapter"></activity>
         <activity android:name="expandTaskViewActivity"></activity>
+        <activity android:name="TaskViewActivity"></activity>
     </application>
 
 </manifest>

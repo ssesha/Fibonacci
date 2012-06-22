@@ -33,6 +33,9 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class newTaskActivity extends Activity implements
@@ -41,12 +44,13 @@ public class newTaskActivity extends Activity implements
 	private EditText taskNameTextBox, taskAboutTextBox, taskDateTextBox;
 	private DatePicker taskDate;
 	private Button createTask;
-	private final List<String> memberList = new ArrayList<String>();
+	private List<ProjectMembers> memberList ;
 	private final List<String> prioriList = new ArrayList<String>();
+	private final List<String> Members = new ArrayList<String>();
 	private Spinner Assignto, Priority;
 	private ArrayAdapter<String> dataAdapter, prioriAdapter;
-	private int projectId;
-
+	private String projectString;
+	private Project project;
 	private String status;
 
 	/** Called when the activity is first created. */
@@ -67,11 +71,19 @@ public class newTaskActivity extends Activity implements
 		ProjectxGlobalState global = (ProjectxGlobalState) getApplication();
 
 		if (extras != null) {
-			projectId = extras.getInt("project_Id");
-			System.out.println(projectId);
-			Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
+			projectString = extras.getString("project");
+			System.out.println(projectString);
+			//Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
 			// get members of project and store in memberlist
-			// memberList=global.getProjectList().getProjects().get(position).getMembers();
+			Members.add("Assign Task to");
+			Gson gson = new Gson();
+			project = gson.fromJson(projectString, Project.class);
+			 memberList=project.getMembers();
+			 System.out.println("size"+memberList.size());
+			for(int i=0;i<memberList.size();i++)
+			 {
+				 Members.add(i+1, memberList.get(i).getUser_name());
+			 }
 		}
 
 		taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
@@ -84,7 +96,7 @@ public class newTaskActivity extends Activity implements
 
 		RelativeLayout tasklayout = (RelativeLayout) findViewById(R.id.newTaskLayout);
 		status = "Open";
-		memberList.add("Assign Task to");
+		
 		prioriList.add("Low");
 		prioriList.add("Medium");
 		prioriList.add("High");
@@ -97,7 +109,7 @@ public class newTaskActivity extends Activity implements
 		Priority.setAdapter(prioriAdapter);
 
 		dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, memberList) {
+				android.R.layout.simple_spinner_item, Members) {
 			@Override
 			public boolean isEnabled(int position) {
 				if (position == 0) {
@@ -141,15 +153,15 @@ public class newTaskActivity extends Activity implements
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
 
-					json1.put("projectId", projectId);
+					json1.put("projectId", project.getProject_id());
 					json1.put("name", taskNameTextBox.getText());
 					json1.put("description", taskAboutTextBox.getText());
 					json1.put("createdBy", glob_data.getUserid());
 					json1.put("duedate", taskDateTextBox.getText());
 					if (Assignto.getSelectedItem().equals("Assign Task to")) {
-						json1.put("assignee", 44);
+						
 					} else
-						json1.put("assignee", Assignto.getSelectedItem());
+						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition()-1).getMember_id());
 					json1.put("status", status);
 					json1.put("priority", Priority.getSelectedItem());
 

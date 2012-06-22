@@ -10,14 +10,16 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.icreate.projectx.TaskListBaseAdapter.ViewHolder;
 import com.icreate.projectx.datamodel.Task;
 
-public class TaskListBaseAdapter extends BaseAdapter {
+public class muTasksBaseAdapter extends BaseAdapter {
+	
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
 
-	public TaskListBaseAdapter(Context context, ArrayList<Task> taskList) {
+	public muTasksBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
 		mInflater = LayoutInflater.from(context);
 	}
@@ -41,7 +43,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder = new ViewHolder();
 			holder.txtName = (TextView) convertView
 					.findViewById(R.id.tasklistname);
-			holder.txtParentName = (TextView) convertView
+			holder.txtProjectName = (TextView) convertView
 					.findViewById(R.id.taskParentName);
 			holder.txtdate = (TextView) convertView
 					.findViewById(R.id.tasklistduedate);
@@ -54,17 +56,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 		}
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
-		int parent_id = taskList.get(position).getParentId();
-		for(int i=0;i<taskList.size();i++)
-		{
-			if(parent_id==taskList.get(i).getTask_id())
-			{
-				holder.txtParentName.setText(taskList.get(i).getTask_name());
-				break;
-			}
-			holder.txtParentName.setText("no parent");
-			
-		}
+		holder.txtProjectName.setText(taskList.get(position).getProject_name());
+		
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		holder.TaskProgress.setProgress((int) taskList.get(position)
@@ -75,7 +68,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
 	static class ViewHolder {
 		TextView txtName;
-		TextView txtParentName;
+		TextView txtProjectName;
 		TextView txtdate;
 		ProgressBar TaskProgress;
 	}

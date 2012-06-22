@@ -104,17 +104,17 @@ public class expandTaskViewActivity extends Activity {
 						cont,
 						"You have chosen: " + " " + selectedTask.getTask_name()
 								+ " " + selectedTask.getTask_id() + " "
-								+ position + " "
-								+ selectedTask.getAssignee_name(),
+								+ selectedTask.getAssignee(),
 						Toast.LENGTH_LONG).show();
-				// Intent projectViewIntent = new Intent(cont,
-				// projectViewActivity.class);
+				 Intent TaskViewIntent = new Intent(cont,
+				 TaskViewActivity.class);
 				// String currentUserId = globalData.getUserid();
 				// if (!(currentUserId.isEmpty())) {
-				// projectViewIntent.putExtra("position", position);
+				 TaskViewIntent.putExtra("project", projectString);
+				 TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				// }
 				// System.out.println(fullObject.getProject_name());
-				// startActivity(projectViewIntent);
+				 startActivity(TaskViewIntent);
 			}
 		});
 	}
