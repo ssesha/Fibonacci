@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -26,56 +25,36 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.DeadObjectException;
 import android.os.StrictMode;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.icreate.projectx.FlowLayout;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
-public class newProjectActivity extends Activity implements
-		AdapterView.OnItemSelectedListener {
-	private ListView membersListView;
-	private EditText membersTextBox1, nameTextBox, aboutTextBox, dueTextBox, deadlineTextBox;
+public class newProjectActivity extends Activity implements AdapterView.OnItemSelectedListener {
+	private EditText nameTextBox, aboutTextBox, dueTextBox;
 	private TextView newProjectDeadlinetext, newProjectNametext, newProjectAbouttext, newProjectModuletext, logoText;
 	private Spinner moduleTextBox;
 	private DatePicker dp1;
-	private Button createProjectButton;
-	private Button t;
+	private Button createProjectButton, addMemberButton;
 	private final List<Button> alltv = new ArrayList<Button>();
-	private final List<Integer> allMemberLayouts = new ArrayList<Integer>();
 	private final List<String> moduleList = new ArrayList<String>();
 	private List<String> studentList = new ArrayList<String>();
 	private final List<String> student_id_list = new ArrayList<String>();
-	private final ArrayList<String> moduleListFilter = new ArrayList<String>();
-	private final ArrayList<String> studentListFilter = new ArrayList<String>();
 	private final ArrayList<String> members = new ArrayList<String>();
 	private final ArrayList<String> memberid = new ArrayList<String>();
-	private View.OnClickListener clickListener;
 	private ArrayAdapter<String> dataAdapter;
-	private static int numOfMembers = 0;
-	private static int currentHoriLayoutID = 1000;
-	private static int currentButtonID = 0;
-	private static int currentWidth = 0;
 	private final List<String> moduleId = new ArrayList<String>();
 	private Activity currentActivity;
 	private Context cont;
@@ -84,15 +63,15 @@ public class newProjectActivity extends Activity implements
 	int textLength1 = 0;
 	int textLength2 = 0;
 	int index = 0;
+	int moduleIndex = 0;
+	Intent addMemberIntent;
 	String text;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-				.detectAll().penaltyLog().penaltyDeath().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-				.penaltyLog().penaltyDeath().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newproject);
@@ -101,19 +80,18 @@ public class newProjectActivity extends Activity implements
 		currentActivity = this;
 		dialog = new ProgressDialog(cont);
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
-		membersListView = (ListView) findViewById(R.id.membersList);
-		membersTextBox1 = (EditText) findViewById(R.id.membersTextBox1);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
 		dueTextBox = (EditText) findViewById(R.id.deadlineTextBox);
 		createProjectButton = (Button) findViewById(R.id.loginButton);
-		
+		addMemberButton = (Button) findViewById(R.id.addMemberButton);
+
 		newProjectDeadlinetext = (TextView) findViewById(R.id.newProjectDeadlinetext);
 		newProjectAbouttext = (TextView) findViewById(R.id.newProjectAbouttext);
 		newProjectNametext = (TextView) findViewById(R.id.newProjectNametext);
 		newProjectModuletext = (TextView) findViewById(R.id.newProjectModuletext);
 		logoText = (TextView) findViewById(R.id.logoText);
-		
+
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		newProjectDeadlinetext.setTypeface(font);
 		newProjectAbouttext.setTypeface(font);
@@ -121,11 +99,11 @@ public class newProjectActivity extends Activity implements
 		newProjectModuletext.setTypeface(font);
 		nameTextBox.setTypeface(font);
 		aboutTextBox.setTypeface(font);
-		//deadlineTextBox.setTypeface(font);
-		
+		// deadlineTextBox.setTypeface(font);
+
 		logoText.setTypeface(font);
 		logoText.setText("New Project");
-		
+
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
@@ -136,67 +114,36 @@ public class newProjectActivity extends Activity implements
 
 			}
 		});
-		
+
+		addMemberButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				addMemberIntent = new Intent(cont, AddMemberActivity.class);
+				startActivity(addMemberIntent);
+			}
+		});
+
 		dp1 = (DatePicker) findViewById(R.id.datePicker1);
 		RelativeLayout rl = (RelativeLayout) findViewById(R.id.rlayout);
 
-		dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, moduleList) {			
+		dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, moduleList) {
 		};
 		;
-		dataAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		moduleTextBox.setAdapter(dataAdapter);
 		GetModuleList task = new GetModuleList(this.cont, this.currentActivity, this.dialog);
 		task.execute();
+
+		ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
+		globalData.setModuleId(moduleId);
 		moduleTextBox.setOnItemSelectedListener(this);
 
-		membersListView.setAdapter(new ArrayAdapter<String>(this,
-				R.layout.list, R.id.tv1, studentList));
+		/*
+		 * clickListener = new OnClickListener() { public void onClick(View v) {
+		 * int index = alltv.indexOf(v); FlowLayout memberLayout = (FlowLayout)
+		 * findViewById(R.id.memberLayout); memberLayout.removeView(v);
+		 * members.remove(index); alltv.remove(index); } };
+		 */
 
-		clickListener = new OnClickListener() {
-			public void onClick(View v) {
-				int index = alltv.indexOf(v);
-				FlowLayout memberLayout = (FlowLayout) findViewById(R.id.memberLayout);
-				memberLayout.removeView(v);
-				members.remove(index);
-				alltv.remove(index);
-			}			
-		};
-
-		membersListView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> myAdapter, View myView,
-					int myItemInt, long mylng) {
-				String selectedFromList = (String) (membersListView
-						.getItemAtPosition(myItemInt));
-				FlowLayout memberLayout = (FlowLayout) findViewById(R.id.memberLayout);
-				t = new Button(newProjectActivity.this);
-				int name_i = selectedFromList.indexOf(" ");
-				String name = selectedFromList.substring(0, name_i);
-				t.setText(name);
-				t.setTextSize(15);
-				t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT));
-				t.setId(currentButtonID);
-				t.setOnClickListener(clickListener);
-				t.setVisibility(View.VISIBLE);
-				//memberLayout.removeView(membersTextBox1);
-				memberLayout.addView(t);
-				//memberLayout.addView(membersTextBox1);				
-				membersTextBox1.setText(" ");
-				/*membersTextBox1.setHint("here");
-				membersTextBox1.setVisibility(View.VISIBLE);*/
-				members.add(selectedFromList);
-				/*membersTextBox1.requestFocus();
-				membersTextBox1.setCursorVisible(true);*/
-				currentButtonID++;
-				alltv.add(t);
-				int index = studentList.indexOf(selectedFromList);
-				memberid.add(student_id_list.get(index));
-				membersListView.setVisibility(View.INVISIBLE);
-			}
-		});
-		
 		dueTextBox.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				dp1.setVisibility(View.VISIBLE);
@@ -207,79 +154,8 @@ public class newProjectActivity extends Activity implements
 		rl.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 
-				dueTextBox.setText(dp1.getYear() + "-"
-						+ (dp1.getMonth() + 1) + "-" + dp1.getDayOfMonth());
+				dueTextBox.setText(dp1.getYear() + "-" + (dp1.getMonth() + 1) + "-" + dp1.getDayOfMonth());
 				dp1.setVisibility(View.INVISIBLE);
-			}
-		});
-
-		/*
-		 * moduleTextBox.addTextChangedListener(new TextWatcher() {
-		 * 
-		 * public void afterTextChanged(Editable s) { }
-		 * 
-		 * public void beforeTextChanged(CharSequence s, int start, int count,
-		 * int after) { }
-		 * 
-		 * public void onTextChanged(CharSequence s, int start, int before, int
-		 * count) {
-		 * 
-		 * textLength1 = moduleTextBox.getText().length();
-		 * 
-		 * if (textLength1 == 0) moduleListView.setVisibility(View.INVISIBLE);
-		 * moduleListFilter.clear(); for (int i = 0; i < moduleList.size(); i++)
-		 * { if (textLength1 <= moduleList.get(i).length()) { if (moduleTextBox
-		 * .getText() .toString() .equalsIgnoreCase( (String)
-		 * moduleList.get(i).subSequence( 0, textLength1))) {
-		 * moduleListFilter.add(moduleList.get(i)); } } }
-		 * 
-		 * moduleListView.setAdapter(new ArrayAdapter<String>(
-		 * newProjectActivity.this, R.layout.list, R.id.tv1, moduleListFilter));
-		 * 
-		 * if (moduleListView.getCount() >= 1 && textLength1 > 0) {
-		 * moduleListView.setVisibility(View.VISIBLE); }
-		 * 
-		 * } });
-		 */
-
-		membersTextBox1.addTextChangedListener(new TextWatcher() {
-
-			public void afterTextChanged(Editable s) {
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				textLength2 = membersTextBox1.getText().length();
-				if (textLength2 == 0)
-					membersListView.setVisibility(View.INVISIBLE);
-
-				studentListFilter.clear();
-				for (int i = 0; i < studentList.size(); i++) {
-					if (textLength2 <= studentList.get(i).length()) {
-						if (membersTextBox1
-								.getText()
-								.toString()
-								.equalsIgnoreCase(
-										(String) studentList.get(i)
-												.subSequence(0, textLength2))) {
-
-							studentListFilter.add(studentList.get(i));
-						}
-					}
-				}
-
-				membersListView.setAdapter(new ArrayAdapter<String>(
-						newProjectActivity.this, R.layout.list, R.id.tv1,
-						studentListFilter));
-
-				if (membersListView.getCount() >= 1 && textLength2 > 0) {
-					membersListView.setVisibility(View.VISIBLE);
-				}
-
 			}
 		});
 
@@ -305,10 +181,8 @@ public class newProjectActivity extends Activity implements
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
 					dialog.setMessage("Create Project...");
-					CreateProjectTask createProjectTask = new CreateProjectTask(
-							cont, currentActivity, json1, dialog);
-					createProjectTask
-							.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject.php");
+					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1, dialog);
+					createProjectTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -316,29 +190,13 @@ public class newProjectActivity extends Activity implements
 			}
 		});
 	}
-	
-	private LinearLayout CreateNewHorizontalLayout(int id){
-		LinearLayout Hori = new LinearLayout(newProjectActivity.this);
-		Hori.setId(id);
-		allMemberLayouts.add(id);
-		Hori.setOrientation(LinearLayout.HORIZONTAL);
-		t.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
-		Hori.addView(t);
-		Log.d("new linear layout", "huuuurrayyyyy");
-		membersTextBox1.setText("");
-		membersTextBox1.setHint("");
-		Hori.addView(membersTextBox1);
-		Hori.setVisibility(View.VISIBLE);
-		return Hori;
-	}
-	
-	public void onItemSelected(AdapterView<?> parent, View v, int position,
-			long id) {
+
+	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 		studentList = new ArrayList<String>();
 		String selectedFromList = (String) moduleTextBox.getSelectedItem();
+		moduleIndex = moduleList.indexOf(selectedFromList);
 		GetStudentList task2 = new GetStudentList();
-		task2.execute(moduleList.indexOf(selectedFromList));
+		task2.execute(moduleIndex);
 	}
 
 	public void onNothingSelected(AdapterView<?> parent) {
@@ -348,14 +206,14 @@ public class newProjectActivity extends Activity implements
 		private final ProgressDialog dialog;
 		private final Context context;
 		private final Activity callingActivity;
-		
-		public GetModuleList(Context context, Activity callingActivity,
-				ProgressDialog dialog) {
+
+		public GetModuleList(Context context, Activity callingActivity, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
-			//this.requestJson = requestData;
+			// this.requestJson = requestData;
 			this.dialog = dialog;
 		}
+
 		@Override
 		protected void onPreExecute() {
 			if (!this.dialog.isShowing()) {
@@ -363,6 +221,7 @@ public class newProjectActivity extends Activity implements
 				this.dialog.show();
 			}
 		}
+
 		@Override
 		protected String doInBackground(Void... params) {
 			// TODO Auto-generated method stub
@@ -371,9 +230,7 @@ public class newProjectActivity extends Activity implements
 			try {
 				HttpClient client = new DefaultHttpClient();
 				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
-				String getURL = "https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Student?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken="
-						+ globalData.getAuthToken()
-						+ "&Duration=0&IncludeAllInfo=false";
+				String getURL = "https://ivle.nus.edu.sg/api/Lapi.svc/Modules_Student?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken=" + globalData.getAuthToken() + "&Duration=0&IncludeAllInfo=false";
 				HttpGet get = new HttpGet(getURL);
 				HttpResponse responseGet = client.execute(get);
 				HttpEntity mResEntityGet = responseGet.getEntity();
@@ -437,8 +294,7 @@ public class newProjectActivity extends Activity implements
 		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateProjectTask(Context context, Activity callingActivity,
-				JSONObject requestData, ProgressDialog dialog) {
+		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -463,8 +319,7 @@ public class newProjectActivity extends Activity implements
 					httpPut.setEntity(new StringEntity(requestJson.toString()));
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -486,16 +341,13 @@ public class newProjectActivity extends Activity implements
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context,
-							homeActivity.class));
+					context.startActivity(new Intent(context, homeActivity.class));
 				} else {
-					Toast.makeText(context, R.string.login_error,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
 				callingActivity.finish();
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
@@ -506,53 +358,36 @@ public class newProjectActivity extends Activity implements
 		@Override
 		protected List<String> doInBackground(Integer... modules) {
 			for (Integer module : modules) {
-			try {
-				
-				HttpClient client = new DefaultHttpClient();
-				ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
-				String getURL = "https://ivle.nus.edu.sg/API/Lapi.svc/Class_Roster?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken="
-						+ globalData.getAuthToken()
-						+ "&CourseID="
-						+ moduleId.get(module);
+				try {
 
-				HttpGet get = new HttpGet(getURL);
-				HttpResponse responseGet = client.execute(get);
-				HttpEntity mResEntityGet = responseGet.getEntity();
-				String content;
+					HttpClient client = new DefaultHttpClient();
+					ProjectxGlobalState globalData = (ProjectxGlobalState) getApplication();
+					String getURL = "https://ivle.nus.edu.sg/API/Lapi.svc/Class_Roster?APIKey=tlXXFhEsNoTIVTJQruS2o&AuthToken=" + globalData.getAuthToken() + "&CourseID=" + moduleId.get(module);
 
-				JSONObject json = new JSONObject();
+					HttpGet get = new HttpGet(getURL);
+					HttpResponse responseGet = client.execute(get);
+					HttpEntity mResEntityGet = responseGet.getEntity();
+					String content;
 
-				if (mResEntityGet != null) {
-					content = EntityUtils.toString(mResEntityGet);
-					Log.d("response", content);
-					json = new JSONObject(content);
-					String xyz = json.getString("Results");
-					JSONArray arr = new JSONArray(xyz);
-					// Log.d("json", json.toString(3));
+					JSONObject json = new JSONObject();
 
-					for (int i = 0; i < arr.length(); i++) {
-						JSONObject obj = arr.getJSONObject(i);
-						String name = obj.getString("Name").toLowerCase();
-						StringTokenizer st = new StringTokenizer(name, " ", true);
-						String token;
-						name = "";
-						while(st.hasMoreTokens())
-						{
-							token = st.nextToken();
-							name += token.substring(0, 1).toUpperCase() + token.substring(1);
-						}						
-						studentList.add(name);
-						student_id_list.add(obj.getString("UserID"));
-						System.out.println("result - project group: " + name);
+					if (mResEntityGet != null) {
+						content = EntityUtils.toString(mResEntityGet);
+						Log.d("response", content);
+						json = new JSONObject(content);
+						String xyz = json.getString("Results");
+
+						addMemberIntent.putExtra("studentListJson", xyz);
+						Log.d("xyz", xyz);
+
 					}
-					System.out.println(arr.length());
+				} catch (Exception e) {
+					e.printStackTrace();
+					Log.e("project members-error", "could not get members");
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				Log.e("project members-error", "could not get members");
 			}
-			}
-			return moduleList;
+			return studentList;
 		}
 	}
+
 }

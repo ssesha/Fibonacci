@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/backgrounddown"
+    android:orientation="vertical" >
+
+    <EditText
+        android:id="@+id/memberSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:textSize="20sp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/textbackground"
+        android:hint="Enter name to add members"
+        android:textColor="#ffffff" />
+
+    <ListView
+        android:id="@+id/addMemberList"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:cacheColorHint="@android:color/transparent" />
+
+</LinearLayout>

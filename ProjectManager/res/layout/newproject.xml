@@ -109,44 +109,32 @@
                     android:textColor="#ffffff" />
             </LinearLayout>
 
-            <!--
-                 <LinearLayout
-                android:id="@+id/LL1"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal" >
 
-                <ImageView
+                <TextView
+                    android:id="@+id/newProjectMemberstext"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="20dp"
-                    android:src="@drawable/members" />
-            -->
+                    android:text="Members "
+                    android:textColor="#f5ad24"
+                    android:textSize="25sp" />
 
-            <com.icreate.projectx.FlowLayout
-                android:id="@+id/memberLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp"
-                f:horizontalSpacing="6dip"
-                f:verticalSpacing="12dip" >
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="right|center_vertical" >
 
-                <EditText
-                    android:id="@+id/membersTextBox1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#00ffffff"
-                    android:cursorVisible="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:hint="Enter name to add more members" >
-                </EditText>
-"
-                
-            
-            </com.icreate.projectx.FlowLayout>
-            <!-- </LinearLayout> -->
-
+                    <Button
+                        android:id="@+id/addMemberButton"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:background="@drawable/newprojectbutton" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -175,19 +163,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
-
-        <ListView
-            android:id="@+id/membersList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="28dp"
-            android:layout_marginRight="28dp"
-            android:layout_marginTop="190dp"
-            android:background="#000000"
-            android:visibility="invisible" >
-        </ListView>
 
         <DatePicker
             android:id="@+id/datePicker1"

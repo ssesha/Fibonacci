@@ -1,5 +1,8 @@
 package com.icreate.projectx.datamodel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Application;
 
 public class ProjectxGlobalState extends Application {
@@ -8,6 +11,7 @@ public class ProjectxGlobalState extends Application {
 	private String userid;
 	private ProjectList projectList = new ProjectList();
 	private TaskList taskList = new TaskList();
+	private List<String> moduleId = new ArrayList<String>();
 
 	public String getAuthToken() {
 		return authToken;
@@ -51,6 +55,14 @@ public class ProjectxGlobalState extends Application {
 
 	public void setTaskList(TaskList taskList) {
 		this.taskList = taskList;
+	}
+
+	public List<String> getModuleId() {
+		return moduleId;
+	}
+
+	public void setModuleId(List<String> moduleId) {
+		this.moduleId = moduleId;
 	}
 
 }
