@@ -12,6 +12,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -51,16 +53,17 @@ public class ProjectManagerActivity extends Activity {
 		activity = this;
 		appGlobalState = (ProjectxGlobalState) getApplication();
 
-		String userName = ProjectXPreferences.readString(cont,
-				ProjectXPreferences.USER, "");
-		String passwordString = ProjectXPreferences.readString(cont,
-				ProjectXPreferences.PASS, "");
-		String authToken = ProjectXPreferences.readString(cont,
-				ProjectXPreferences.TOKEN, "");
-		if (authToken.length() != 0 && userName.length() != 0
-				&& passwordString.length() != 0) {
+		String userName = ProjectXPreferences.readString(cont, ProjectXPreferences.USER, "");
+		String passwordString = ProjectXPreferences.readString(cont, ProjectXPreferences.PASS, "");
+		String authToken = ProjectXPreferences.readString(cont, ProjectXPreferences.TOKEN, "");
+		if (authToken.length() != 0 && userName.length() != 0 && passwordString.length() != 0) {
 			appGlobalState.setAuthToken(authToken);
+			System.out.println(appGlobalState.getAuthToken());
 			appGlobalState.setUserid(userName);
+			Account[] accounts = AccountManager.get(cont).getAccountsByType("com.google");
+			for (Account acc : accounts) {
+				System.out.println(acc.name);
+			}
 			startActivity(new Intent(cont, homeActivity.class));
 			finish();
 		}
@@ -84,8 +87,7 @@ public class ProjectManagerActivity extends Activity {
 				wv.getSettings().setJavaScriptEnabled(true);
 				WebSettings settings = wv.getSettings();
 				settings.setSavePassword(false);
-				wv.addJavascriptInterface(new MyJavaScriptInterface(),
-						"HTMLOUT");
+				wv.addJavascriptInterface(new MyJavaScriptInterface(), "HTMLOUT");
 				wv.setWebViewClient(new WebViewClient() {
 					@Override
 					public void onPageFinished(WebView view, String url) {
@@ -98,20 +100,11 @@ public class ProjectManagerActivity extends Activity {
 						String password = pass.getText().toString();
 
 						if (loginAttempts == 0) {
-							ProjectXPreferences.writeString(cont,
-									ProjectXPreferences.USER, userName);
-							ProjectXPreferences.writeString(cont,
-									ProjectXPreferences.PASS, password);
+							ProjectXPreferences.writeString(cont, ProjectXPreferences.USER, userName);
+							ProjectXPreferences.writeString(cont, ProjectXPreferences.PASS, password);
 							Log.d("url: " + url, "LoadURL executed");
-							view.loadUrl("javascript:(function() { "
-									+ "document.getElementById('userid').value = '"
-									+ userName
-									+ "'; "
-									+ "document.getElementById('password').value = '"
-									+ password
-									+ "'; "
-									+ "document.getElementById('loginimg1').click(); "
-									+ "})()");
+							view.loadUrl("javascript:(function() { " + "document.getElementById('userid').value = '" + userName + "'; " + "document.getElementById('password').value = '" + password
+									+ "'; " + "document.getElementById('loginimg1').click(); " + "})()");
 						}
 						// when login is complete, the url will be
 						// login_result.ashx?r=0
@@ -122,8 +115,7 @@ public class ProjectManagerActivity extends Activity {
 							if (url.indexOf("&r=0") > 0) {
 								Log.d("login", "came here");
 								Log.d("success", "onPageFinished");
-								Log.i("onPageFinished - before loading javascript",
-										"");
+								Log.i("onPageFinished - before loading javascript", "");
 								view.loadUrl("javascript:window.HTMLOUT.processHTML(document.getElementsByTagName('body')[0].innerHTML);");
 							}
 						} else if (loginAttempts > 0) {
@@ -131,10 +123,8 @@ public class ProjectManagerActivity extends Activity {
 							if (dialog.isShowing()) {
 								dialog.dismiss();
 							}
-							ProjectXPreferences.getEditor(cont).clear()
-									.commit();
-							Toast.makeText(cont, R.string.login_error,
-									Toast.LENGTH_LONG).show();
+							ProjectXPreferences.getEditor(cont).clear().commit();
+							Toast.makeText(cont, R.string.login_error, Toast.LENGTH_LONG).show();
 						}
 						System.out.println(loginAttempts);
 						loginAttempts++;
@@ -152,19 +142,19 @@ public class ProjectManagerActivity extends Activity {
 			Log.d("onPageFinished ", "inside javascript interface");
 			Log.d("authToken", html);
 			appGlobalState.setAuthToken(html);
-			ProjectXPreferences.writeString(cont, ProjectXPreferences.TOKEN,
-					html);
+			ProjectXPreferences.writeString(cont, ProjectXPreferences.TOKEN, html);
+			Account[] accounts = AccountManager.get(cont).getAccountsByType("com.google");
 			JSONObject requestJson = new JSONObject();
 			try {
 				requestJson.put("user_id", appGlobalState.getUserid());
 				requestJson.put("auth_token", appGlobalState.getAuthToken());
+				requestJson.put("gAccount", accounts[0].name);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 			Log.i("sdjkfhdkjs", requestJson.toString());
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createUser.php";
-			LoginTask loginTask = new LoginTask(cont, activity, requestJson,
-					dialog);
+			LoginTask loginTask = new LoginTask(cont, activity, requestJson, dialog);
 			loginTask.execute(url);
 		}
 	}
@@ -175,8 +165,7 @@ public class ProjectManagerActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public LoginTask(Context context, Activity callingActivity,
-				JSONObject requestData, ProgressDialog dialog) {
+		public LoginTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -202,8 +191,7 @@ public class ProjectManagerActivity extends Activity {
 					HttpResponse execute = client.execute(httpPost);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -226,17 +214,14 @@ public class ProjectManagerActivity extends Activity {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context,
-							homeActivity.class));
+					context.startActivity(new Intent(context, homeActivity.class));
 					callingActivity.finish();
 				} else {
-					Toast.makeText(context, R.string.login_error,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
 
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
