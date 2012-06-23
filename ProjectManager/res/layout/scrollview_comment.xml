@@ -1,0 +1,39 @@
+<!--
+   <FrameLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="0px"
+    android:background="#00ffffff"
+    android:padding="0px" >
+
+   This ImageView is used as a menu.
+-->
+
+<!--
+    This HorizontalScrollView will contain a LinearLayout that will contain a transparent
+    View (that allows the menu above to show through) and the other application Views.
+-->
+
+<com.icreate.projectx.MyHorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/myScrollView"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="0px"
+    android:background="@drawable/backgrounddown"
+    android:fadingEdge="none"
+    android:fadingEdgeLength="0px"
+    android:padding="0px"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_margin="0px"
+        android:orientation="horizontal"
+        android:padding="0px" >
+
+        <!-- The views inside here will be added programmatically. -->
+    </LinearLayout>
+
+</com.icreate.projectx.MyHorizontalScrollView>

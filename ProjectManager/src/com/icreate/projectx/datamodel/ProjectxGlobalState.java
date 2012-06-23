@@ -8,6 +8,7 @@ public class ProjectxGlobalState extends Application {
 	private String userid;
 	private ProjectList projectList = new ProjectList();
 	private TaskList taskList = new TaskList();
+	private CommentList commentList = new CommentList();
 
 	public String getAuthToken() {
 		return authToken;
@@ -51,6 +52,14 @@ public class ProjectxGlobalState extends Application {
 
 	public void setTaskList(TaskList taskList) {
 		this.taskList = taskList;
+	}
+
+	public CommentList getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(CommentList commentList) {
+		this.commentList = commentList;
 	}
 
 }
