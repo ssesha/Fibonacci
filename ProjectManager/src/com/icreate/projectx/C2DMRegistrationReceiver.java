@@ -13,9 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,25 +21,19 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.provider.Settings.Secure;
 import android.util.Log;
 
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
-
 public class C2DMRegistrationReceiver extends BroadcastReceiver {
-	ProjectxGlobalState global;
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
-		//intent
 		Log.d("C2DM", "Registration Receiver called");
 		if ("com.google.android.c2dm.intent.REGISTRATION".equals(action)) {
 			Log.w("C2DM", "Received registration ID");
 			final String registrationId = intent
 					.getStringExtra("registration_id");
 			String error = intent.getStringExtra("error");
-			//Bundle extra = intent.getExtras();
 			Log.d("C2DM", "dmControl: registrationId = " + registrationId
 					+ ", error = " + error);
 			String deviceId = Secure.getString(context.getContentResolver(),
@@ -59,28 +50,15 @@ public class C2DMRegistrationReceiver extends BroadcastReceiver {
 			paramString = URLEncodedUtils.format(params, "utf-8");
 			url += "&" + paramString;
 			params.clear();
-			//global = (ProjectxGlobalState) getApplication();
 			String userId = ProjectXPreferences.readString(context, ProjectXPreferences.USER, "");
 			Log.d("userid", userId);
-			//Account[] accounts = AccountManager.get(context).getAccountsByType("com.google");
 			params.add(new BasicNameValuePair("userid", userId));
 			paramString = URLEncodedUtils.format(params, "utf-8");
 			url += "&" + paramString;
 			Log.d("create task", url);
 			SendRegistrationIdToServer task = new SendRegistrationIdToServer();
 			task.execute(url);
-			//sendRegistrationIdToServer(deviceId, registrationId);
-			// Also save it in the preference to be able to show it later
-			//saveRegistrationId(context, registrationId);
 		}
-	}
-
-	private void saveRegistrationId(Context context, String registrationId) {
-	/*	SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		Editor edit = prefs.edit();
-		edit.putString(C2DMClientActivity.AUTH, registrationId);
-		edit.commit();*/
 	}
 
 	public void createNotification(Context context, String registrationId) {
@@ -106,38 +84,10 @@ public class C2DMRegistrationReceiver extends BroadcastReceiver {
 		notificationManager.notify(0, notification);
 	}
 
-	// Incorrect usage as the receiver may be canceled at any time
-	// do this in an service and in an own thread
-	/*public void sendRegistrationIdToServer(String deviceId,
-			String registrationId) {
-		Log.d("C2DM", "Sending registration ID to my application server");
-		HttpClient client = new DefaultHttpClient();
-		HttpPost post = new HttpPost("http://vogellac2dm.appspot.com/register");
-		try {
-			List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-			// Get the deviceID
-			nameValuePairs.add(new BasicNameValuePair("deviceid", deviceId));
-			nameValuePairs.add(new BasicNameValuePair("registrationid",
-					registrationId));
-
-			post.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			HttpResponse response = client.execute(post);
-			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
-
-			String line = "";
-			while ((line = rd.readLine()) != null) {
-				Log.e("HttpResponse", line);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	*/
 	private class SendRegistrationIdToServer extends AsyncTask<String, Void, Void> {
 
 		@Override
 		protected Void doInBackground(String... urls) {
-			// TODO Auto-generated method stub
 			Log.d("C2DM", "Sending registration ID to my application server");
 			for(String url:urls)
 			{

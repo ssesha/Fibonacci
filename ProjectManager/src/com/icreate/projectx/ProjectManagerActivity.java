@@ -220,7 +220,6 @@ public class ProjectManagerActivity extends Activity {
 					intent.putExtra("sender", "appsynth.wecreate@gmail.com");
 					intent.putExtra("userid", appGlobalState.getUserid());
 					startService(intent);
-					//ProjectxGlobalState global = new ProjectxGlobalState();
 					Log.d("userid in login", appGlobalState.getUserid());
 					context.startActivity(new Intent(context, homeActivity.class));
 					callingActivity.finish();

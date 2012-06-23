@@ -492,8 +492,7 @@ public class newProjectActivity extends Activity implements
 					json = new JSONObject(content);
 					String xyz = json.getString("Results");
 					JSONArray arr = new JSONArray(xyz);
-					// Log.d("json", json.toString(3));
-
+					
 					for (int i = 0; i < arr.length(); i++) {
 						JSONObject obj = arr.getJSONObject(i);
 						String name = obj.getString("Name").toLowerCase();

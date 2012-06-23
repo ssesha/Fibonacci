@@ -20,15 +20,12 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 			Log.w("C2DM", "Received message");
 			final String message = intent.getStringExtra("message");
 			Log.d("C2DM", "dmControl: message = " + message);
-			createNotification(context, message);
-			Bundle extra = intent.getExtras();
-			
+			createNotification(context, message);			
 		}
 	}
 
 	public void createNotification(Context context, String message) {
 		Intent intent = new Intent(context, homeActivity.class);
-		//Log.d("createNotification", payload);
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);
 		NotificationManager notificationManager = (NotificationManager) context
