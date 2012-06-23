@@ -5,35 +5,73 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="15" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
+        android:name=".datamodel.ProjectxGlobalState"
         android:icon="@drawable/trialicon"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" 
-        android:name=".datamodel.ProjectxGlobalState" >
+        android:theme="@style/CustomTheme" >
         <activity
-            android:label="@string/app_name"
-            android:name=".ProjectManagerActivity" >
-            <intent-filter >
+            android:name=".ProjectManagerActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="headerActivity"></activity>
-        <activity android:name="newProjectActivity"></activity>
-        <activity android:name="homeActivity"></activity>
-        <activity android:name=".myProjectsActivity"></activity>
-        <activity android:name="loginActivity"></activity>
-        <activity android:name=".ProjectListActivity"></activity>
-        <activity android:name="projectViewActivity"></activity>
-        <activity android:name="newTaskActivity"></activity>
-        <activity android:name="TaskListActivity"></activity>
-        <activity android:name="TaskListBaseAdapter"></activity>
-        <activity android:name="expandTaskViewActivity"></activity>
-        <activity android:name="TaskViewActivity"></activity>
+        <activity android:name="headerActivity" >
+        </activity>
+        <activity android:name="newProjectActivity" >
+        </activity>
+        <activity android:name="homeActivity" >
+        </activity>
+        <activity android:name=".myProjectsActivity" >
+        </activity>
+        <activity android:name="loginActivity" >
+        </activity>
+        <activity android:name=".ProjectListActivity" >
+        </activity>
+        <activity android:name="projectViewActivity" >
+        </activity>
+        <activity android:name="newTaskActivity" >
+        </activity>
+        <activity android:name="TaskListActivity" >
+        </activity>
+        <activity android:name="expandTaskViewActivity" >
+        </activity>
+        <activity android:name="TaskViewActivity" >
+        </activity>
+        <activity android:name="MemberViewActivity" >
+        </activity>
+        <activity android:name="RefreshTest" >
+        </activity>
+        RefreshTest
+        <activity
+            android:name=".SelectAttendeesActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".SelectMeetingTimeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".CreateEventActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".PreferencesActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" />
+        <activity
+            android:name=".MeetingSchedulerActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

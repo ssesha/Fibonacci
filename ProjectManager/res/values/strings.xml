@@ -6,4 +6,54 @@
     <string name="module">Select Module</string>
     <string name="assigned">Assigned To</string>
     <string name="priority">Priority</string>
+    <string name="select_attendees_caption">Select attendees for your meeting</string>
+    <string name="select_meeting_time_caption">Available meeting times…</string>
+    <string name="find_meeting_button">Find meetings</string>
+    <string name="create_button">Create event</string>
+    <string name="find_more_button">Find more times…</string>
+    <string name="choose_account_title">Choose account</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_account_found_title">No Account Found</string>
+    <string name="no_account_found">No account found to use</string>
+    <string name="choose_meeting_time">Choose meeting time</string>
+    <string name="use_working_hours">Use working hours</string>
+    <string name="use_working_hours_summary_checked">No meetings beyond office hours</string>
+    <string name="use_working_hours_summary_unchecked">Available to meet any time</string>
+    <string name="use_working_hours_default_value">true</string>
+    <string name="settings">Settings</string>
+    <string name="preferences">Preferences</string>
+    <string name="time_span">Time span</string>
+    <string name="time_span_summary">Number of weeks to look ahead</string>
+    <string name="time_span_default_value">7</string>
+    <string name="skip_weekends">Skip weekends</string>
+    <string name="skip_weekends_summary_checked">No meetings on weekends</string>
+    <string name="skip_weekends_summary_unchecked">Available on weekends</string>
+    <string name="skip_weekends_default_value">true</string>
+    <string name="working_hours_start">Working hours start</string>
+    <string name="working_hours_start_summary">When you get to work</string>
+    <string name="working_hours_start_default_value">9:0</string>
+    <string name="working_hours_end">Working hours end</string>
+    <string name="working_hours_end_summary">When you leave office</string>
+    <string name="working_hours_end_default_value">17:30</string>
+    <string name="available_time_retrieval_failure">Failed to retrieve available meeting times</string>
+    <string name="preferences_screen">preferences_screen</string>
+    <string name="meeting_length">Meeting duration</string>
+    <string name="meeting_length_default_value">60</string>
+    <string name="working_hours_category">Working hours</string>
+    <string name="set_event_details_caption">Event details...</string>
+    <string name="event_title_hint">Title</string>
+    <string name="event_description_hint">Description</string>
+    <string name="event_where_hint">Where</string>
+    <string name="save_event_button">Save</string>
+    <string name="send_event_notifications_label">Send event notifications</string>
+    <string name="event_creation_success">Meeting created</string>
+    <string name="event_creation_failure">Failed to create meeting</string>
+    <string name="selected_account">Selected Account</string>
+    <string name="retrieve_contacts_wait_text">Please wait while retrieving contacts...</string>
+    <string name="find_meeting_time_wait_text">Please wait while querying attendees availabilities...</string>
+    <string name="create_event_wait_text">Creating Event...</string>
+    <string name="authentication_failure">Failed to authenticate on Google, please try again...</string>
+    <string name="test">test</string>
+
 </resources>

@@ -85,42 +85,4 @@
             android:textColor="#05261f"
             android:textSize="23sp" />
     </LinearLayout>
-
-    <!--
-    <LinearLayout        
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="30dp" >
-    	
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Abbinayaa is singing"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sesha is moraching"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="We like telling OInk OInk"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />        
-    </LinearLayout>
-    -->
 </LinearLayout>

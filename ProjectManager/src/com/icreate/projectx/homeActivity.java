@@ -39,17 +39,19 @@ public class homeActivity extends Activity {
 		Button myProjectButton = (Button) findViewById(R.id.myProjectButton);
 		Button myTaskButton = (Button) findViewById(R.id.myTaskButton);
 		Button oinkOinkButton = (Button) findViewById(R.id.oinkoinkButton);
+		Button calendarButton = (Button) findViewById(R.id.calenderButton);
 
 		final Context cont = this;
 		newProjectButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, newProjectActivity.class));
 			}
 		});
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
-				Intent projectListIntent = new Intent(cont,
-						ProjectListActivity.class);
+				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);
@@ -59,6 +61,7 @@ public class homeActivity extends Activity {
 		});
 
 		myTaskButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				System.out.println("WASAAAAAAAAAAAAAAAAAAAAAKJJKLSNJKLSNLKJSN");
 				Intent TaskListIntent = new Intent(cont, TaskListActivity.class);
@@ -72,11 +75,21 @@ public class homeActivity extends Activity {
 		});
 
 		oinkOinkButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				ProjectXPreferences.getEditor(cont).clear().commit();
-				System.out.println(ProjectXPreferences.getPreferences(cont)
-						.getAll().size());
+				System.out.println(ProjectXPreferences.getPreferences(cont).getAll().size());
 				startActivity(new Intent(cont, ProjectManagerActivity.class));
+			}
+		});
+
+		calendarButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(cont, RefreshTest.class));
+				// startActivity(new Intent(cont,
+				// MeetingSchedulerActivity.class));
 			}
 		});
 

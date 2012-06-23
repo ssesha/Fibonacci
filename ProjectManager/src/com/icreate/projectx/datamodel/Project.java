@@ -84,6 +84,16 @@ public class Project {
 		return tasks;
 	}
 
+	public List<Task> getTasks(int taskAssignee) {
+		List<Task> assigneeTasks = new ArrayList<Task>();
+		for (Task task : tasks) {
+			if (task.getAssignee() == taskAssignee) {
+				assigneeTasks.add(task);
+			}
+		}
+		return assigneeTasks;
+	}
+
 	public void setTotalTasks(int totalTasks) {
 		this.totalTasks = totalTasks;
 	}

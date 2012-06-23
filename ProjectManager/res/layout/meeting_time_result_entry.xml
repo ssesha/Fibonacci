@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:paddingRight="5px" android:orientation="horizontal"
+	android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:paddingTop="3dp" android:background="#111">
+	<TextView android:id="@+id/meeting_time_item_text"
+		android:layout_weight="1" android:paddingLeft="40dp"
+		android:layout_width="fill_parent" android:layout_height="wrap_content" />
+	<Button android:id="@+id/meeting_time_create_button"
+		android:text="@string/create_button" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" style="?android:attr/buttonStyleSmall"
+		android:paddingLeft="15dp" android:paddingRight="15dp" />
+</LinearLayout>
