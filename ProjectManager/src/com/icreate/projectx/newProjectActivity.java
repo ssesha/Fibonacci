@@ -318,7 +318,6 @@ public class newProjectActivity extends Activity implements
 				ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
-			//this.requestJson = requestData;
 			this.dialog = dialog;
 		}
 		@Override

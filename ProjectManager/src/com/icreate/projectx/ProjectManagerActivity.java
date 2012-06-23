@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -196,7 +197,6 @@ public class ProjectManagerActivity extends Activity {
 					while ((s = buffer.readLine()) != null) {
 						response += s;
 					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -214,6 +214,14 @@ public class ProjectManagerActivity extends Activity {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
+					Log.w("C2DM", "start registration process");
+					Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
+					intent.putExtra("app", PendingIntent.getBroadcast(cont, 0, new Intent(), 0));
+					intent.putExtra("sender", "appsynth.wecreate@gmail.com");
+					intent.putExtra("userid", appGlobalState.getUserid());
+					startService(intent);
+					//ProjectxGlobalState global = new ProjectxGlobalState();
+					Log.d("userid in login", appGlobalState.getUserid());
 					context.startActivity(new Intent(context, homeActivity.class));
 					callingActivity.finish();
 				} else {
