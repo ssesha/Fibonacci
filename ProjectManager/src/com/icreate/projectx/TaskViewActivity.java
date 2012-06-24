@@ -2,11 +2,6 @@ package com.icreate.projectx;
 
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-import com.icreate.projectx.datamodel.Project;
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.datamodel.Task;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +12,11 @@ import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.datamodel.Task;
 
 public class TaskViewActivity extends Activity {
 

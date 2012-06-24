@@ -17,14 +17,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.Gson;
-import com.icreate.projectx.ProjectListActivity.ProjectListTask;
-import com.icreate.projectx.datamodel.Project;
-import com.icreate.projectx.datamodel.ProjectList;
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.datamodel.Task;
-import com.icreate.projectx.datamodel.TaskList;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -36,11 +28,16 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.google.gson.Gson;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.datamodel.TaskList;
 
 public class TaskListActivity extends Activity {
 	private TextView logoText;

@@ -7,16 +7,16 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class homeActivity extends Activity {
-	private ProjectxGlobalState globalData;
 
+	private ProjectxGlobalState globalData;
 	private TextView logoText;
+	private ImageButton logoButton, myProjectButton, myTaskButton, logoutButton, profileButton, calendarButton, findButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -25,31 +25,39 @@ public class homeActivity extends Activity {
 		setContentView(R.layout.home);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
+		globalData = (ProjectxGlobalState) getApplication();
+		final Context cont = this;
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+
+		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
 		logoText = (TextView) findViewById(R.id.logoText);
+
+		profileButton = (ImageButton) findViewById(R.id.profileButton);
+		myProjectButton = (ImageButton) findViewById(R.id.myProjectButton);
+		myTaskButton = (ImageButton) findViewById(R.id.myTaskButton);
+		calendarButton = (ImageButton) findViewById(R.id.calenderButton);
+		findButton = (ImageButton) findViewById(R.id.findButton);
+		logoutButton = (ImageButton) findViewById(R.id.logoutButton);
+
 		logoText.setTypeface(font);
 		logoText.setText("Project-X");
-		logoText.setTextColor(R.color.white);
+		logoButton.setBackgroundResource(R.drawable.newprojectbutton);
 
-		globalData = (ProjectxGlobalState) getApplication();
-		// globalData.getApiKey();
-
-		ImageButton newProjectButton = (ImageButton) findViewById(R.id.logoImageButton);
-		newProjectButton.setBackgroundResource(R.drawable.houseicon);
-		Button myProjectButton = (Button) findViewById(R.id.myProjectButton);
-		Button myTaskButton = (Button) findViewById(R.id.myTaskButton);
-		Button oinkOinkButton = (Button) findViewById(R.id.oinkoinkButton);
-
-		final Context cont = this;
-		newProjectButton.setOnClickListener(new View.OnClickListener() {
+		logoButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(cont, newProjectActivity.class));
 			}
 		});
+
+		profileButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		});
+
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				Intent projectListIntent = new Intent(cont,
-						ProjectListActivity.class);
+				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);
@@ -60,22 +68,30 @@ public class homeActivity extends Activity {
 
 		myTaskButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				System.out.println("WASAAAAAAAAAAAAAAAAAAAAAKJJKLSNJKLSNLKJSN");
 				Intent TaskListIntent = new Intent(cont, TaskListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					TaskListIntent.putExtra("requiredId", currentUserId);
+					startActivity(TaskListIntent);
 				}
-				System.out.println(currentUserId);
-				startActivity(TaskListIntent);
 			}
 		});
 
-		oinkOinkButton.setOnClickListener(new View.OnClickListener() {
+		calendarButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		});
+
+		findButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			}
+		});
+
+		logoutButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				ProjectXPreferences.getEditor(cont).clear().commit();
-				System.out.println(ProjectXPreferences.getPreferences(cont)
-						.getAll().size());
 				startActivity(new Intent(cont, ProjectManagerActivity.class));
 			}
 		});

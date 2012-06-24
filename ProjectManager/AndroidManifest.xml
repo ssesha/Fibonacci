@@ -13,27 +13,25 @@
         android:label="@string/app_name"
         android:theme="@style/CustomTheme" 
         android:name=".datamodel.ProjectxGlobalState" >
-        <activity
-            android:label="@string/app_name"
-            android:name=".ProjectManagerActivity" >
+        <activity android:label="@string/app_name" android:name=".ProjectManagerActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="headerActivity"></activity>
-        <activity android:name="newProjectActivity"></activity>
-        <activity android:name="homeActivity"></activity>
-        <activity android:name=".myProjectsActivity"></activity>
-        <activity android:name="loginActivity"></activity>
-        <activity android:name=".ProjectListActivity"></activity>
-        <activity android:name="projectViewActivity"></activity>
-        <activity android:name="newTaskActivity"></activity>
-        <activity android:name="TaskListActivity"></activity>
-        <activity android:name="TaskListBaseAdapter"></activity>
-        <activity android:name="expandTaskViewActivity"></activity>
-        <activity android:name="TaskViewActivity"></activity>
+        <activity android:name="headerActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="newProjectActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="homeActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".myProjectsActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="loginActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".ProjectListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="projectViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="newTaskActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="TaskListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="TaskListBaseAdapter" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="expandTaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="TaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".AddMemberActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
     </application>
 
 </manifest>

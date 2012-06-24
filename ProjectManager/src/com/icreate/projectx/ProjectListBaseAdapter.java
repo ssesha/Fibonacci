@@ -1,7 +1,6 @@
 package com.icreate.projectx;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +10,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.Project;
-import com.icreate.projectx.datamodel.ProjectMembers;
 
 public class ProjectListBaseAdapter extends BaseAdapter {
 	private static ArrayList<Project> projectList;

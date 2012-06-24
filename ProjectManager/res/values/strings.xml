@@ -6,4 +6,5 @@
     <string name="module">Select Module</string>
     <string name="assigned">Assigned To</string>
     <string name="priority">Priority</string>
+	<string name="dateSliderTitle">Selected date</string>
 </resources>

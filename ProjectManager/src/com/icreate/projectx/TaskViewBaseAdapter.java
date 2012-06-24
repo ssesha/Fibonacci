@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.icreate.projectx.TaskViewBaseAdapter.ViewHolder;
 import com.icreate.projectx.datamodel.Task;
 
 public class TaskViewBaseAdapter extends BaseAdapter {

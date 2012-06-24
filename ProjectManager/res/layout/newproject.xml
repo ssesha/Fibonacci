@@ -1,175 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx" 
+<LinearLayout xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rlayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/backgrounddown"
-        android:orientation="vertical"
-        android:paddingRight="20dp" >
+        android:layout_weight="0.92"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
 
-                <Spinner
-                    android:id="@+id/moduleTextBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:prompt="@string/module" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/name" />
-
-                <EditText
-                    android:id="@+id/nameTextBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/about" />
-
-                <EditText
-                    android:id="@+id/aboutTextBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff"
-                    android:inputType="textMultiLine" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/deadline" />
-
-                <EditText
-                    android:id="@+id/deadlineTextBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff" />
-            </LinearLayout>
-
-            <!--
-                 <LinearLayout
-                android:id="@+id/LL1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:src="@drawable/members" />
-            -->
-
-            <com.icreate.projectx.FlowLayout
-                f:horizontalSpacing="6dip"
-    			f:verticalSpacing="12dip"
-                android:id="@+id/memberLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="20dp" >                
-                
-                <EditText
-                    android:id="@+id/membersTextBox1"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#00ffffff"
-                    android:hint="Enter name to add more members"
-                    android:cursorVisible="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" ></EditText>"
-                
-            </com.icreate.projectx.FlowLayout>
-            <!-- </LinearLayout> -->
+                    android:orientation="horizontal" >
 
+                    <Spinner
+                        android:id="@+id/moduleTextBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:prompt="@string/module"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/newProjectNametext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <EditText
+                        android:id="@+id/nameTextBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/newProjectAbouttext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <EditText
+                        android:id="@+id/aboutTextBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/newProjectDeadlinetext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Deadline:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <EditText
+                        android:id="@+id/deadlineTextBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/newProjectMemberstext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Members "
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="right|center_vertical" >
+
+                        <Button
+                            android:id="@+id/addMemberButton"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:background="@drawable/newprojectbutton" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/memberlistlayout"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:orientation="vertical" >
+
+                <ListView
+                    android:id="@+id/selectedMemberList"
+                    android:layout_width="fill_parent"
+                    android:layout_height="167dp"
+                    android:cacheColorHint="@android:color/transparent" />
+
+            </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:id="@+id/linearlayout4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/loginButton"
-                android:layout_width="148dp"
-                android:layout_height="54dp"
-                android:background="@drawable/scribble1"
-                android:text="Create"
-                android:textColor="#05261f"
-                android:textSize="30sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <RelativeLayout
+    <LinearLayout
+        android:id="@+id/linearlayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
         android:orientation="horizontal" >
 
-        <ListView
-            android:id="@+id/membersList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="28dp"
-            android:layout_marginRight="28dp"
-            android:layout_marginTop="190dp"
-            android:background="#000000"
-            android:visibility="invisible" >
-        </ListView>
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="148dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button"
+            android:text="Create"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
+    </LinearLayout>
 
-        <DatePicker
-            android:id="@+id/datePicker1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:visibility="invisible" />
-    </RelativeLayout>
-
-</RelativeLayout>
+</LinearLayout>
