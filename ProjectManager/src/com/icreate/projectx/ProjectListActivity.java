@@ -123,7 +123,7 @@ public class ProjectListActivity extends Activity {
 								+ globalState.getProjectList().getProjects().get(position).getLeader_id(), Toast.LENGTH_LONG).show();
 				Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
-				int projectId = globalState.getProjectList().getProjects().get(position).getProject_id();
+				int projectId = selectedProject.getProject_id();
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
