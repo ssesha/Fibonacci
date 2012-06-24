@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.icreate.projectx;
+package com.icreate.projectx.meeting;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -44,6 +44,9 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.icreate.projectx.R;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;

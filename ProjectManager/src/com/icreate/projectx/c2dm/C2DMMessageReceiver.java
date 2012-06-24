@@ -1,4 +1,8 @@
-package com.icreate.projectx;
+package com.icreate.projectx.c2dm;
+
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.R.drawable;
 
 import android.app.Notification;
 import android.app.NotificationManager;

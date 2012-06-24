@@ -1,4 +1,7 @@
-package com.icreate.projectx;
+package com.icreate.projectx.project;
+
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.layout;
 
 import android.app.Activity;
 import android.app.ProgressDialog;

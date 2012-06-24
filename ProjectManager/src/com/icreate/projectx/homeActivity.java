@@ -11,6 +11,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.meeting.MeetingSchedulerActivity;
+import com.icreate.projectx.project.ProjectListActivity;
+import com.icreate.projectx.project.newProjectActivity;
+import com.icreate.projectx.task.TaskListActivity;
 
 public class homeActivity extends Activity {
 
@@ -44,12 +48,14 @@ public class homeActivity extends Activity {
 		logoButton.setBackgroundResource(R.drawable.newprojectbutton);
 
 		logoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, newProjectActivity.class));
 			}
 		});
 
 		profileButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 			}
@@ -80,20 +86,21 @@ public class homeActivity extends Activity {
 		});
 
 		calendarButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, RefreshTest.class));
-				// startActivity(new Intent(cont,
-				// MeetingSchedulerActivity.class));
+				startActivity(new Intent(cont, MeetingSchedulerActivity.class));
 			}
 		});
 
 		findButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 			}
 		});
 
 		logoutButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				ProjectXPreferences.getEditor(cont).clear().commit();
 				startActivity(new Intent(cont, ProjectManagerActivity.class));

@@ -16,8 +16,8 @@ import android.os.AsyncTask;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Toast;
 
-import com.icreate.projectx.ProjectListBaseAdapter;
 import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.project.ProjectListBaseAdapter;
 
 public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 

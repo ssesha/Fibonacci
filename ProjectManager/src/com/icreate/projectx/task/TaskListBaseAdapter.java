@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.task;
 
 import java.util.ArrayList;
 
@@ -11,15 +11,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.drawable;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
 import com.icreate.projectx.datamodel.Task;
 
-public class TaskViewBaseAdapter extends BaseAdapter {
-	
+public class TaskListBaseAdapter extends BaseAdapter {
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
 
-	public TaskViewBaseAdapter(Context context, ArrayList<Task> taskList) {
+	public TaskListBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
 		mInflater = LayoutInflater.from(context);
 	}
@@ -60,6 +63,23 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 		}
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
+		int parent_id = taskList.get(position).getParentId();
+		int flag=0;
+		for(int i=0;i<taskList.size();i++)
+		{
+			if(parent_id==taskList.get(i).getTask_id())
+			{
+				holder.txtParentName.setText(taskList.get(i).getTask_name());
+				flag=1;
+				break;
+			}
+			
+		}
+		if(flag==0) 
+		{
+			holder.arrow.setVisibility(View.GONE);
+			holder.txtParentName.setVisibility(View.GONE);
+		}
 		String priority=null;
 		
 		priority=taskList.get(position).getTask_priority();
@@ -72,8 +92,6 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 		else if(priority.equals("CRITICAL"))
 			holder.priority.setImageResource(R.drawable.icon_priority_critical);
 		
-		holder.txtParentName.setVisibility(View.GONE);
-		holder.arrow.setVisibility(View.GONE);
 		holder.txtdate.setText(taskList.get(position).getDue_date());
 
 		holder.TaskProgress.setProgress((int) taskList.get(position)
@@ -85,8 +103,8 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 	static class ViewHolder {
 		TextView txtName;
 		TextView txtParentName;
-		TextView txtdate;
 		ImageView arrow;
+		TextView txtdate;
 		ProgressBar TaskProgress;
 		ImageView priority;
 	}

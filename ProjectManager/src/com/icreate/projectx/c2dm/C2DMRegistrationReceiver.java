@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.c2dm;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +13,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+
+import com.icreate.projectx.ProjectXPreferences;
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.R.drawable;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;

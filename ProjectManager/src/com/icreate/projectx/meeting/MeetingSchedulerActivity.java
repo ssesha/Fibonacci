@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.meeting;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
@@ -25,6 +25,10 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.google.api.client.http.HttpResponseException;
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.AvailableMeetingTime;
 import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter;

@@ -33,6 +33,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class ProjectManagerActivity extends Activity {

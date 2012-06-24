@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.task;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -35,6 +35,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.R.color;
+import com.icreate.projectx.R.drawable;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datamodel.TaskList;
@@ -185,7 +192,7 @@ public class TaskListActivity extends Activity {
 					TaskList tasksContainer = gson.fromJson(result,TaskList.class);
 					globalState.setTaskList(tasksContainer);
 					ArrayList<Task> tasks = tasksContainer.getTasks();
-					taskListView.setAdapter(new muTasksBaseAdapter(
+					taskListView.setAdapter(new myTasksBaseAdapter(
 							context, tasks));
 					Log.d("testing",""+tasks.size());
 					for (Task task : tasks) {

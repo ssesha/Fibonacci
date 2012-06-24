@@ -1,7 +1,12 @@
-package com.icreate.projectx;
+package com.icreate.projectx.project;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.drawable;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
 
 import android.app.Activity;
 import android.content.Context;

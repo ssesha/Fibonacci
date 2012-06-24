@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.task;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -34,6 +34,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;

@@ -30,32 +30,31 @@
             </intent-filter>
         </activity>
         <activity android:name="headerActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="newProjectActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".project.newProjectActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="homeActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name=".myProjectsActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".project.myProjectsActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="loginActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name=".ProjectListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="projectViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="newTaskActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="TaskListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="TaskListBaseAdapter" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="expandTaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="TaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name=".AddMemberActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name="MemberViewActivity" ></activity>
-        <activity android:name="RefreshTest" ></activity>
-        <activity android:name=".SelectAttendeesActivity" android:label="@string/app_name" ></activity>\
-        <activity  android:name=".SelectMeetingTimeActivity"  android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" />
-        <activity  android:name=".CreateEventActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
-        <activity  android:name=".PreferencesActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
-        <activity  android:name=".MeetingSchedulerActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
-        <receiver  android:name=".C2DMRegistrationReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
+        <activity android:name=".project.ProjectListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".project.projectViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".task.newTaskActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".task.TaskListActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".task.TaskListBaseAdapter" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".task.expandTaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".task.TaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".project.AddMemberActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".project.MemberViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name=".meeting.SelectAttendeesActivity" android:label="@string/app_name" ></activity>\
+        <activity android:name=".meeting.SelectMeetingTimeActivity"  android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" />
+        <activity android:name=".meeting.CreateEventActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <activity android:name=".PreferencesActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <activity android:name=".meeting.MeetingSchedulerActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <receiver android:name=".c2dm.C2DMRegistrationReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" ></action>
                 <category android:name="com.icreate.projectx" />
             </intent-filter>
         </receiver>
-        <receiver  android:name=".C2DMMessageReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
+        <receiver  android:name=".c2dm.C2DMMessageReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" ></action>
                 <category android:name="com.icreate.projectx" />

@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.task;
 
 import java.util.ArrayList;
 
@@ -11,15 +11,19 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.drawable;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
 import com.icreate.projectx.datamodel.Task;
 
-public class muTasksBaseAdapter extends BaseAdapter {
+public class myTasksBaseAdapter extends BaseAdapter {
 
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
 
-	public muTasksBaseAdapter(Context context, ArrayList<Task> taskList) {
+	public myTasksBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
 		mInflater = LayoutInflater.from(context);
 	}

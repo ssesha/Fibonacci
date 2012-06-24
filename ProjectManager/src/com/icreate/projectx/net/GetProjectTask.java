@@ -19,7 +19,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.icreate.projectx.R;
-import com.icreate.projectx.projectViewActivity;
+import com.icreate.projectx.project.projectViewActivity;
 
 public class GetProjectTask extends AsyncTask<String, Void, String> {
 

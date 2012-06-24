@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.project;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.MemberProgressBaseAdapter;
+import com.icreate.projectx.R;
+import com.icreate.projectx.R.color;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.task.expandTaskViewActivity;
+import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
 	private TextView logoText;

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.icreate.projectx;
+package com.icreate.projectx.meeting;
 
 import java.io.NotSerializableException;
 import java.util.ArrayList;
@@ -42,7 +42,12 @@ import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.icreate.projectx.PreferencesActivity;
 import com.icreate.projectx.R;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.menu;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Attendee;
 import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;

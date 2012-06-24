@@ -1,4 +1,4 @@
-package com.icreate.projectx;
+package com.icreate.projectx.project;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -45,6 +45,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.R.drawable;
+import com.icreate.projectx.R.id;
+import com.icreate.projectx.R.layout;
+import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
 import com.icreate.projectx.datepicker.DefaultDateSlider;
