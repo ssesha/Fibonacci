@@ -34,7 +34,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,12 +44,16 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.net.DeleteProjectTask;
 import com.icreate.projectx.net.GetProjectTask;
 
+import eu.erikw.PullToRefreshListView;
+import eu.erikw.PullToRefreshListView.OnRefreshListener;
+
 public class ProjectListActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
-	private ListView projectListView;
+	private PullToRefreshListView projectListView;
 	private Context cont;
 	private Activity currentActivity;
+	private String passedUserId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,18 +77,19 @@ public class ProjectListActivity extends Activity {
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
 			}
 		});
 
-		projectListView = (ListView) findViewById(R.id.ListView01);
+		projectListView = (PullToRefreshListView) findViewById(R.id.ListView01);
 		projectListView.setTextFilterEnabled(true);
 		registerForContextMenu(projectListView);
 
 		Bundle extras = getIntent().getExtras();
-		String passedUserId = null;
+		passedUserId = null;
 		if (extras != null) {
 			passedUserId = extras.getString("requiredId");
 			if (passedUserId.equalsIgnoreCase(globalState.getUserid())) {
@@ -94,8 +98,7 @@ public class ProjectListActivity extends Activity {
 				logoText.setText("Projects");
 			}
 
-			Toast.makeText(cont, extras.getString("requiredId"),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(cont, extras.getString("requiredId"), Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/projectList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -104,43 +107,45 @@ public class ProjectListActivity extends Activity {
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Projects");
-			ProjectListTask projectListTask = new ProjectListTask(cont,
-					currentActivity, dialog, projectListView);
+			ProjectListTask projectListTask = new ProjectListTask(cont, currentActivity, dialog, projectListView);
 			System.out.println(url);
 			projectListTask.execute(url);
 		}
 
 		projectListView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = projectListView.getItemAtPosition(position);
 				Project selectedProject = (Project) o;
 				Toast.makeText(
 						cont,
-						"You have chosen: "
-								+ " "
-								+ selectedProject.getProject_name()
-								+ " "
-								+ selectedProject.getProject_id()
-								+ " "
-								+ position
-								+ " "
-								+ globalState.getProjectList().getProjects()
-										.get(position).getLeader_id(),
-						Toast.LENGTH_LONG).show();
-				Intent projectViewIntent = new Intent(cont,
-						projectViewActivity.class);
+						"You have chosen: " + " " + selectedProject.getProject_name() + " " + selectedProject.getProject_id() + " " + position + " "
+								+ globalState.getProjectList().getProjects().get(position).getLeader_id(), Toast.LENGTH_LONG).show();
+				Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
-				int projectId = globalState.getProjectList().getProjects()
-						.get(position).getProject_id();
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id="
-						+ projectId;
+				int projectId = selectedProject.getProject_id();
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.show();
-				GetProjectTask getProjectTask = new GetProjectTask(cont,
-						currentActivity, dialog);
+				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog);
 				getProjectTask.execute(url);
+			}
+		});
+
+		projectListView.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+				if (passedUserId != null) {
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/projectList.php";
+					List<NameValuePair> params = new LinkedList<NameValuePair>();
+					params.add(new BasicNameValuePair("user_id", passedUserId));
+					String paramString = URLEncodedUtils.format(params, "utf-8");
+					url += "?" + paramString;
+					ProjectListTask projectListTask = new ProjectListTask(cont, currentActivity, projectListView);
+					projectListTask.execute(url);
+				}
 			}
 		});
 	}
@@ -149,21 +154,29 @@ public class ProjectListActivity extends Activity {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
-		private final ListView projectListView;
+		private final PullToRefreshListView projectListView;
 
-		public ProjectListTask(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, PullToRefreshListView projectListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
 			this.projectListView = projectListView;
 		}
 
+		public ProjectListTask(Context context, Activity callingActivity, PullToRefreshListView projectListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.projectListView = projectListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Getting Projects...");
-				this.dialog.show();
+			if (dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Getting Projects...");
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -177,8 +190,7 @@ public class ProjectListActivity extends Activity {
 					HttpResponse execute = client.execute(httpGet);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -193,8 +205,10 @@ public class ProjectListActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -202,32 +216,29 @@ public class ProjectListActivity extends Activity {
 				Log.d("ProjectList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					ProjectList projectsContainer = gson.fromJson(result,
-							ProjectList.class);
+					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					globalState.setProjectList(projectsContainer);
-					ArrayList<Project> projects = projectsContainer
-							.getProjects();
-					projectListView.setAdapter(new ProjectListBaseAdapter(
-							context, projects));
+					ArrayList<Project> projects = projectsContainer.getProjects();
+					projectListView.setAdapter(new ProjectListBaseAdapter(context, projects));
+					if (dialog == null) {
+						projectListView.onRefreshComplete();
+					}
 					for (Project project : projects) {
 						System.out.println(project.getLeader_name());
 						System.out.println(project.getProject_name());
 					}
 				} else {
-					Toast.makeText(context, "Project Lists empty",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.setHeaderTitle("Context Menu");
 		menu.add(0, v.getId(), 0, "Delete");
@@ -236,21 +247,14 @@ public class ProjectListActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		Project selectedProject = (Project) projectListView
-				.getItemAtPosition(info.position);
-		System.out.println(selectedProject.getProject_name() + " "
-				+ selectedProject.getLeader_name());
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Project selectedProject = (Project) projectListView.getItemAtPosition(info.position);
+		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
-			ProjectListBaseAdapter projectListBaseAdapter = (ProjectListBaseAdapter) projectListView
-					.getAdapter();
+			ProjectListBaseAdapter projectListBaseAdapter = (ProjectListBaseAdapter) projectListView.getAdapter();
 
-			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id="
-					+ selectedProject.getProject_id();
-			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont,
-					currentActivity, projectListBaseAdapter, info,
-					selectedProject);
+			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id=" + selectedProject.getProject_id();
+			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, selectedProject);
 			deleteProjectTask.execute(url);
 			return true;
 		} else {

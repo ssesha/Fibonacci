@@ -5,14 +5,24 @@
     android:versionName="1.0" >
 
     <uses-sdk android:minSdkVersion="15" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <permission
+        android:name="com.icreate.projectx.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.icreate.projectx.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
+        android:name=".datamodel.ProjectxGlobalState"
         android:icon="@drawable/trialicon"
         android:label="@string/app_name"
-        android:theme="@style/CustomTheme" 
-        android:name=".datamodel.ProjectxGlobalState" >
+        android:theme="@style/CustomTheme" >
         <activity android:label="@string/app_name" android:name=".ProjectManagerActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard" >
             <intent-filter >
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +42,25 @@
         <activity android:name="expandTaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="TaskViewActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name=".AddMemberActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
+        <activity android:name="MemberViewActivity" ></activity>
+        <activity android:name="RefreshTest" ></activity>
+        <activity android:name=".SelectAttendeesActivity" android:label="@string/app_name" ></activity>\
+        <activity  android:name=".SelectMeetingTimeActivity"  android:configChanges="orientation|keyboardHidden" android:label="@string/app_name" />
+        <activity  android:name=".CreateEventActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <activity  android:name=".PreferencesActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <activity  android:name=".MeetingSchedulerActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        <receiver  android:name=".C2DMRegistrationReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" ></action>
+                <category android:name="com.icreate.projectx" />
+            </intent-filter>
+        </receiver>
+        <receiver  android:name=".C2DMMessageReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" ></action>
+                <category android:name="com.icreate.projectx" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

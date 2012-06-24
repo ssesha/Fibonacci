@@ -56,6 +56,7 @@ public class homeActivity extends Activity {
 		});
 
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
@@ -67,6 +68,7 @@ public class homeActivity extends Activity {
 		});
 
 		myTaskButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				Intent TaskListIntent = new Intent(cont, TaskListActivity.class);
 				String currentUserId = globalData.getUserid();
@@ -79,7 +81,9 @@ public class homeActivity extends Activity {
 
 		calendarButton.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
+				startActivity(new Intent(cont, RefreshTest.class));
+				// startActivity(new Intent(cont,
+				// MeetingSchedulerActivity.class));
 			}
 		});
 

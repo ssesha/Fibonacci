@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen 
+  xmlns:android="http://schemas.android.com/apk/res/android"
+   android:title="@string/preferences"
+  android:persistent="true">
+
+  <Preference 
+    android:key="selected_account_preference"
+    android:title="@string/selected_account" />
+  <ListPreference 
+    android:key="meeting_length_preference" 
+    android:title="@string/meeting_length"
+    android:entries="@array/meeting_length_array_names"
+    android:entryValues="@array/meeting_length_array_values"
+    android:defaultValue="@string/meeting_length_default_value" />
+  <ListPreference 
+    android:key="time_span_preference"
+    android:title="@string/time_span"
+    android:summary="@string/time_span_summary" 
+    android:entries="@array/time_span_array_names"
+    android:entryValues="@array/time_span_array_values" 
+    android:defaultValue="@string/time_span_default_value" />
+  <CheckBoxPreference 
+    android:key="skip_weekends_preference" 
+    android:title="@string/skip_weekends"
+    android:defaultValue="@string/skip_weekends_default_value"
+    android:summaryOn="@string/skip_weekends_summary_checked"
+    android:summaryOff="@string/skip_weekends_summary_unchecked"/>
+
+  <PreferenceCategory 
+    android:title="@string/working_hours_category">
+    <CheckBoxPreference 
+      android:key="use_working_hours_preference"
+      android:title="@string/use_working_hours"
+      android:summaryOn="@string/use_working_hours_summary_checked" 
+      android:summaryOff="@string/use_working_hours_summary_unchecked" 
+      android:defaultValue="@string/use_working_hours_default_value" />
+    <Preference 
+      android:key="working_hours_start_preference"
+      android:title="@string/working_hours_start" 
+      android:summary="@string/working_hours_start_summary"
+      android:defaultValue="@string/working_hours_start_default_value" />
+    <Preference 
+      android:key="working_hours_end_preference"
+      android:title="@string/working_hours_end"
+      android:summary="@string/working_hours_end_summary" 
+      android:defaultValue="@string/working_hours_end_default_value" />
+  </PreferenceCategory>
+</PreferenceScreen>

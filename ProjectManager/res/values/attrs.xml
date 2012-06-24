@@ -7,4 +7,8 @@
     	<attr name="layout_breakLine" format="boolean" />
         <attr name="layout_horizontalSpacing" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="MyHorizontalScrollView">
+        <attr name="horSpacing" format="dimension" />
+        <attr name="verSpacing" format="dimension" />
+    </declare-styleable>
 </resources>

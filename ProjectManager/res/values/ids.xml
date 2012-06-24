@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<item type="id" name="member_total_tasks" />
+<item type="id" name="member_total_completed_tasks" />
+<item type="id" name="member_progress" />
+</resources>

@@ -12,6 +12,7 @@ public class ProjectxGlobalState extends Application {
 	private ProjectList projectList = new ProjectList();
 	private TaskList taskList = new TaskList();
 	private List<String> moduleId = new ArrayList<String>();
+	private CommentList commentList = new CommentList();
 
 	public String getAuthToken() {
 		return authToken;
@@ -63,6 +64,14 @@ public class ProjectxGlobalState extends Application {
 
 	public void setModuleId(List<String> moduleId) {
 		this.moduleId = moduleId;
+	}
+
+	public CommentList getCommentList() {
+		return commentList;
+	}
+
+	public void setCommentList(CommentList commentList) {
+		this.commentList = commentList;
 	}
 
 }
