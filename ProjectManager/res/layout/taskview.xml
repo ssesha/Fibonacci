@@ -86,7 +86,15 @@
             android:paddingTop="15dp" >
 
             <Button
-                android:id="@+id/createNewTaskButton"
+                android:id="@+id/goToParent"
+                android:layout_width="108dp"
+                android:layout_height="54dp"
+                android:background="@drawable/scribble1"
+                android:text="Back"
+                android:textColor="#05261f"
+                android:textSize="22sp" />
+            <Button
+                android:id="@+id/createSubTaskButton"
                 android:layout_width="108dp"
                 android:layout_height="54dp"
                 android:background="@drawable/scribble1"
@@ -94,44 +102,5 @@
                 android:textColor="#05261f"
                 android:textSize="22sp" />
         </LinearLayout>
-   
-
-    <!--
-    <LinearLayout        
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingTop="30dp" >
-    	
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Abbinayaa is singing"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sesha is moraching"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />
-   		<TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="We like telling OInk OInk"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:paddingTop="2dp"
-            android:paddingLeft="20dp" />        
-    </LinearLayout>
-    -->
-	</LinearLayout>
+   	</LinearLayout>
 </LinearLayout>

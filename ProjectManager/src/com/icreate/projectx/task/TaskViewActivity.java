@@ -60,6 +60,7 @@ import com.icreate.projectx.datamodel.CommentList;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.project.projectViewActivity;
 
 public class TaskViewActivity extends Activity {
 
@@ -79,6 +80,8 @@ public class TaskViewActivity extends Activity {
 	private View taskview, commentview, logoView;
 	private final ArrayList<String> commentList = new ArrayList<String>();
 	private ArrayList<Comment> comments;
+	private Bundle extras;
+	private Button createButton, parentTaskButton;
 
 	boolean menuOut = false;
 	Handler handler = new Handler();
@@ -134,7 +137,7 @@ public class TaskViewActivity extends Activity {
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 
-		Bundle extras = getIntent().getExtras();
+		extras = getIntent().getExtras();
 
 		if (extras != null) {
 			projectString = extras.getString("project");
@@ -232,6 +235,49 @@ public class TaskViewActivity extends Activity {
 
 			}
 		});
+		
+		parentTaskButton = (Button) taskview.findViewById(R.id.goToParent);
+		parentTaskButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
+				Intent parentTaskIntent;
+				for(Task taskItem: alltasks)
+				{
+					if(taskItem.getTask_id()==extras.getInt("task_id"))
+					{
+						if(taskItem.getParentId() != 0)
+						{
+							parentTaskIntent = new Intent(cont,
+									TaskViewActivity.class);
+							Log.d("taskview to parent", projectString);
+							Log.d("taskview to parent",""+taskItem.getParentId());
+							parentTaskIntent.putExtra("project", projectString);
+							//parentTaskIntent.putExtra("task_id", ""+taskItem.getParentId());
+							parentTaskIntent.putExtra("task_id", taskItem.getParentId());
+						}
+						else
+						{
+							parentTaskIntent = new Intent(cont,
+									projectViewActivity.class);
+							Log.d("taskview to parent", projectString);
+							parentTaskIntent.putExtra("projectJson", projectString);							
+						}
+						startActivity(parentTaskIntent);						
+					}
+				}				
+			}
+		});
+		
+		createButton = (Button) taskview.findViewById(R.id.createSubTaskButton);
+		createButton.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent createSubTaskIntent = new Intent(cont,
+						newTaskActivity.class);
+				startActivity(createSubTaskIntent);				
+			}
+		});
+		
 
 	};
 
