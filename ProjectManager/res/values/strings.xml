@@ -58,5 +58,6 @@
     <string name="authentication_failure">Failed to authenticate on Google, please try again...
 </string>
     <string name="test">test</string>
+    <string name="Parent">Choose Parent</string>
 
 </resources>

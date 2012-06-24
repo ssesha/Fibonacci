@@ -35,6 +35,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -47,26 +49,22 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
+import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
-import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
-import com.icreate.projectx.R.color;
-import com.icreate.projectx.R.drawable;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Comment;
 import com.icreate.projectx.datamodel.CommentList;
 import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 
 public class TaskViewActivity extends Activity {
 
-	private TextView logoText, TaskDesc, TaskDeadline;
+	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName, TaskAssigneeName, TaskCreatorName, TaskStatus, TaskPriority;
 	private ImageView slide;
 	private EditText commentTextBox;
-	private Button sendComment;
+	private Button sendComment, createTask;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
 	private ListView taskListView, commentListView;
@@ -88,6 +86,7 @@ public class TaskViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
@@ -100,7 +99,6 @@ public class TaskViewActivity extends Activity {
 		taskview = inflater.inflate(R.layout.taskview, null);
 
 		commentview = inflater.inflate(R.layout.task_commentview, null);
-		// commentview.setVisibility(View.INVISIBLE);
 		cont = this;
 		currentActivity = this;
 
@@ -114,12 +112,14 @@ public class TaskViewActivity extends Activity {
 		logoText = (TextView) logoView.findViewById(R.id.logoText);
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
+		logoText.setText("Task View");
 
 		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
@@ -129,21 +129,27 @@ public class TaskViewActivity extends Activity {
 		taskListView = (ListView) taskview.findViewById(R.id.subTaskList);
 		TaskDesc = (TextView) taskview.findViewById(R.id.taskDesc);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
+		TaskAssigneeName = (TextView) taskview.findViewById(R.id.taskAssignedToView);
+		TaskCreatorName = (TextView) taskview.findViewById(R.id.taskCreatedByView);
+		TaskStatus = (TextView) taskview.findViewById(R.id.taskstatusView);
+		TaskPriority = (TextView) taskview.findViewById(R.id.taskPriorityView);
+		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
+		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 
 		commentListView = (ListView) commentview.findViewById(R.id.commentList);
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
-
+		createTask = (Button) taskview.findViewById(R.id.createNewTaskButton);
 		Bundle extras = getIntent().getExtras();
 
 		if (extras != null) {
 			projectString = extras.getString("project");
 			task_id = extras.getInt("task_id");
-			logoText.setText("Comments");
 			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
 			Gson gson = new Gson();
 			project = gson.fromJson(projectString, Project.class);
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
+			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
 			subTasks = new ArrayList<Task>();
 			for (int i = 0; i < alltasks.size(); i++) {
 				if (alltasks.get(i).getTask_id() == task_id) {
@@ -156,6 +162,23 @@ public class TaskViewActivity extends Activity {
 			} else
 				TaskDesc.setVisibility(View.GONE);
 			TaskDeadline.setText(task.getDue_date());
+			TaskName.setText(task.getTask_name());
+			for (int i = 0; i < member.size(); i++) {
+				if (!(task.getTask_status().equals("OPEN"))) {
+					if (member.get(i).getMember_id() == task.getAssignee()) {
+						TaskAssigneeName.setText(member.get(i).getUser_name());
+					}
+				} else
+					TaskAssigneeName.setVisibility(View.GONE);
+			}
+			for (int i = 0; i < member.size(); i++) {
+				if (member.get(i).getMember_id() == task.getCreatedBy()) {
+					TaskCreatorName.setText(member.get(i).getUser_name());
+				}
+			}
+			TaskPriority.setText(task.getTask_priority());
+			TaskStatus.setText(task.getTask_status());
+			ProjectName.setText(task.getProject_name());
 			System.out.println(alltasks.size());
 			int sub_taskid;
 			for (int i = 0; i < task.getTopSubTasks().size(); i++) {
@@ -198,6 +221,7 @@ public class TaskViewActivity extends Activity {
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				JSONObject json1 = new JSONObject();
 				JSONArray json_array = new JSONArray();
@@ -230,6 +254,30 @@ public class TaskViewActivity extends Activity {
 					e.printStackTrace();
 				}
 
+			}
+		});
+
+		taskListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = taskListView.getItemAtPosition(position);
+				Task selectedTask = (Task) o;
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position + " " + selectedTask.getAssignee_name(),
+						Toast.LENGTH_LONG).show();
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				TaskViewIntent.putExtra("project", projectString);
+				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				startActivity(TaskViewIntent);
+			}
+		});
+
+		createTask.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
+				NewTaskIntent.putExtra("project", projectString);
+				startActivity(NewTaskIntent);
 			}
 		});
 
@@ -319,6 +367,7 @@ public class TaskViewActivity extends Activity {
 			this.menu = menu;
 		}
 
+		@Override
 		public void onClick(View v) {
 			Context context = menu.getContext();
 			String msg = "Slide " + new Date();
@@ -359,11 +408,13 @@ public class TaskViewActivity extends Activity {
 			this.btnSlide = btnSlide;
 		}
 
+		@Override
 		public void onGlobalLayout() {
 			btnWidth = btnSlide.getMeasuredWidth() + 50;
 			System.out.println("btnWidth=" + btnWidth);
 		}
 
+		@Override
 		public void getViewSize(int idx, int w, int h, int[] dims) {
 			dims[0] = w;
 			dims[1] = h;
