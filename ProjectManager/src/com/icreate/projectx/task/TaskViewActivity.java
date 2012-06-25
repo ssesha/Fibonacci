@@ -47,14 +47,9 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
+import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
-import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
-import com.icreate.projectx.R.color;
-import com.icreate.projectx.R.drawable;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Comment;
 import com.icreate.projectx.datamodel.CommentList;
 import com.icreate.projectx.datamodel.Project;
@@ -88,9 +83,7 @@ public class TaskViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		LayoutInflater inflater = LayoutInflater.from(this);
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
@@ -105,7 +98,7 @@ public class TaskViewActivity extends Activity {
 		currentActivity = this;
 
 		ViewGroup slidelayout = (ViewGroup) taskview.findViewById(R.id.slidelayout);
-		slide = (ImageView) slidelayout.findViewById(R.id.BtnSlide);
+		slide = (ImageView) slidelayout.findViewById(R.id.rightlogoImageButtontaskview);
 		slide.setOnClickListener(new ClickListenerForScrolling(scrollView, commentview));
 
 		globalState = (ProjectxGlobalState) getApplication();
@@ -120,6 +113,7 @@ public class TaskViewActivity extends Activity {
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
@@ -198,6 +192,7 @@ public class TaskViewActivity extends Activity {
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				JSONObject json1 = new JSONObject();
 				JSONArray json_array = new JSONArray();
@@ -319,6 +314,7 @@ public class TaskViewActivity extends Activity {
 			this.menu = menu;
 		}
 
+		@Override
 		public void onClick(View v) {
 			Context context = menu.getContext();
 			String msg = "Slide " + new Date();
@@ -359,11 +355,13 @@ public class TaskViewActivity extends Activity {
 			this.btnSlide = btnSlide;
 		}
 
+		@Override
 		public void onGlobalLayout() {
 			btnWidth = btnSlide.getMeasuredWidth() + 50;
 			System.out.println("btnWidth=" + btnWidth);
 		}
 
+		@Override
 		public void getViewSize(int idx, int w, int h, int[] dims) {
 			dims[0] = w;
 			dims[1] = h;
