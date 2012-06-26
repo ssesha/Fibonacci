@@ -37,11 +37,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
-import com.icreate.projectx.R.color;
-import com.icreate.projectx.R.drawable;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datamodel.TaskList;
@@ -72,13 +67,14 @@ public class TaskListActivity extends Activity {
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
 			}
 		});
 
-		final ListView TaskListView = (ListView) findViewById(R.id.TaskListView);
+		final ListView TaskListView = (ListView) findViewById(R.id.taskListView);
 		TaskListView.setTextFilterEnabled(true);
 
 		Bundle extras = getIntent().getExtras();
@@ -91,8 +87,7 @@ public class TaskListActivity extends Activity {
 				logoText.setText("Tasks");
 			}
 
-			Toast.makeText(cont, extras.getString("requiredId"),
-					Toast.LENGTH_LONG).show();
+			Toast.makeText(cont, extras.getString("requiredId"), Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/TaskList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -101,33 +96,23 @@ public class TaskListActivity extends Activity {
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Tasks");
-			ListTask ListTasks = new ListTask(cont,
-					currentActivity, dialog, TaskListView);
+			ListTask ListTasks = new ListTask(cont, currentActivity, dialog, TaskListView);
 			System.out.println(url);
 			ListTasks.execute(url);
 		}
 
 		TaskListView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = TaskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(
-						cont,
-						"You have chosen: "
-								+ " "
-								+ selectedTask.getTask_name()
-								+ " "
-								+ selectedTask.getTask_id()
-								+ " "
-								+ position,
-						Toast.LENGTH_LONG).show();
-			//	Intent projectViewIntent = new Intent(cont,
-						//projectViewActivity.class);
-			
-					//projectViewIntent.putExtra("position",position );
-			
-				//startActivity(projectViewIntent);
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position, Toast.LENGTH_LONG).show();
+				// Intent projectViewIntent = new Intent(cont,
+				// projectViewActivity.class);
+
+				// projectViewIntent.putExtra("position",position );
+
+				// startActivity(projectViewIntent);
 			}
 		});
 	}
@@ -138,8 +123,7 @@ public class TaskListActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final ListView taskListView;
 
-		public ListTask(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView taskListView) {
+		public ListTask(Context context, Activity callingActivity, ProgressDialog dialog, ListView taskListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
@@ -164,8 +148,7 @@ public class TaskListActivity extends Activity {
 					HttpResponse execute = client.execute(httpGet);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -189,29 +172,25 @@ public class TaskListActivity extends Activity {
 				Log.d("TaskList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					TaskList tasksContainer = gson.fromJson(result,TaskList.class);
+					TaskList tasksContainer = gson.fromJson(result, TaskList.class);
 					globalState.setTaskList(tasksContainer);
 					ArrayList<Task> tasks = tasksContainer.getTasks();
-					taskListView.setAdapter(new myTasksBaseAdapter(
-							context, tasks));
-					Log.d("testing",""+tasks.size());
+					taskListView.setAdapter(new myTasksBaseAdapter(context, tasks));
+					Log.d("testing", "" + tasks.size());
 					for (Task task : tasks) {
-						Log.d("testing","test test");
-						System.out.println("task name"+task.getTask_name());
-						System.out.println("project name"+task.getProject_name());
-						System.out.println("task date"+task.getDue_date());
+						Log.d("testing", "test test");
+						System.out.println("task name" + task.getTask_name());
+						System.out.println("project name" + task.getProject_name());
+						System.out.println("task date" + task.getDue_date());
 					}
 				} else {
-					Toast.makeText(context, "Task Lists empty",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "Task Lists empty", Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
 	}
-
 
 }

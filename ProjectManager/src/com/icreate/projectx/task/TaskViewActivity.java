@@ -35,6 +35,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -53,15 +55,17 @@ import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Comment;
 import com.icreate.projectx.datamodel.CommentList;
 import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.project.projectViewActivity;
 
 public class TaskViewActivity extends Activity {
 
-	private TextView logoText, TaskDesc, TaskDeadline;
+	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName, TaskAssigneeName, TaskCreatorName, TaskStatus, TaskPriority;
 	private ImageView slide;
 	private EditText commentTextBox;
-	private Button sendComment;
+	private Button sendComment, createTask;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
 	private ListView taskListView, commentListView;
@@ -72,8 +76,9 @@ public class TaskViewActivity extends Activity {
 	private Task task;
 	private ArrayList<Task> subTasks;
 	private View taskview, commentview, logoView;
-	private final ArrayList<String> commentList = new ArrayList<String>();
 	private ArrayList<Comment> comments;
+	private Bundle extras;
+	private Button parentTaskButton;
 
 	boolean menuOut = false;
 	Handler handler = new Handler();
@@ -93,7 +98,6 @@ public class TaskViewActivity extends Activity {
 		taskview = inflater.inflate(R.layout.taskview, null);
 
 		commentview = inflater.inflate(R.layout.task_commentview, null);
-		// commentview.setVisibility(View.INVISIBLE);
 		cont = this;
 		currentActivity = this;
 
@@ -107,6 +111,7 @@ public class TaskViewActivity extends Activity {
 		logoText = (TextView) logoView.findViewById(R.id.logoText);
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
+		logoText.setText("Task View");
 
 		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
@@ -123,21 +128,27 @@ public class TaskViewActivity extends Activity {
 		taskListView = (ListView) taskview.findViewById(R.id.subTaskList);
 		TaskDesc = (TextView) taskview.findViewById(R.id.taskDesc);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
+		TaskAssigneeName = (TextView) taskview.findViewById(R.id.taskAssignedToView);
+		TaskCreatorName = (TextView) taskview.findViewById(R.id.taskCreatedByView);
+		TaskStatus = (TextView) taskview.findViewById(R.id.taskstatusView);
+		TaskPriority = (TextView) taskview.findViewById(R.id.taskPriorityView);
+		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
+		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 
 		commentListView = (ListView) commentview.findViewById(R.id.commentList);
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
-
-		Bundle extras = getIntent().getExtras();
+		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
+		extras = getIntent().getExtras();
 
 		if (extras != null) {
 			projectString = extras.getString("project");
 			task_id = extras.getInt("task_id");
-			logoText.setText("Comments");
 			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
 			Gson gson = new Gson();
 			project = gson.fromJson(projectString, Project.class);
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
+			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
 			subTasks = new ArrayList<Task>();
 			for (int i = 0; i < alltasks.size(); i++) {
 				if (alltasks.get(i).getTask_id() == task_id) {
@@ -150,6 +161,23 @@ public class TaskViewActivity extends Activity {
 			} else
 				TaskDesc.setVisibility(View.GONE);
 			TaskDeadline.setText(task.getDue_date());
+			TaskName.setText(task.getTask_name());
+			for (int i = 0; i < member.size(); i++) {
+				if (!(task.getTask_status().equals("OPEN"))) {
+					if (member.get(i).getMember_id() == task.getAssignee()) {
+						TaskAssigneeName.setText(member.get(i).getUser_name());
+					}
+				} else
+					TaskAssigneeName.setVisibility(View.GONE);
+			}
+			for (int i = 0; i < member.size(); i++) {
+				if (member.get(i).getMember_id() == task.getCreatedBy()) {
+					TaskCreatorName.setText(member.get(i).getUser_name());
+				}
+			}
+			TaskPriority.setText(task.getTask_priority());
+			TaskStatus.setText(task.getTask_status());
+			ProjectName.setText(task.getProject_name());
 			System.out.println(alltasks.size());
 			int sub_taskid;
 			for (int i = 0; i < task.getTopSubTasks().size(); i++) {
@@ -225,6 +253,57 @@ public class TaskViewActivity extends Activity {
 					e.printStackTrace();
 				}
 
+			}
+		});
+
+		parentTaskButton = (Button) taskview.findViewById(R.id.goToParent);
+		parentTaskButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
+				Intent parentTaskIntent;
+				for (Task taskItem : alltasks) {
+					if (taskItem.getTask_id() == extras.getInt("task_id")) {
+						if (taskItem.getParentId() != 0) {
+							parentTaskIntent = new Intent(cont, TaskViewActivity.class);
+							Log.d("taskview to parent", projectString);
+							Log.d("taskview to parent", "" + taskItem.getParentId());
+							parentTaskIntent.putExtra("project", projectString);
+							// parentTaskIntent.putExtra("task_id",
+							// ""+taskItem.getParentId());
+							parentTaskIntent.putExtra("task_id", taskItem.getParentId());
+						} else {
+							parentTaskIntent = new Intent(cont, projectViewActivity.class);
+							Log.d("taskview to parent", projectString);
+							parentTaskIntent.putExtra("projectJson", projectString);
+						}
+						startActivity(parentTaskIntent);
+					}
+				}
+			}
+		});
+
+		taskListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = taskListView.getItemAtPosition(position);
+				Task selectedTask = (Task) o;
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position + " " + selectedTask.getAssignee_name(),
+						Toast.LENGTH_LONG).show();
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				TaskViewIntent.putExtra("project", projectString);
+				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				startActivity(TaskViewIntent);
+			}
+		});
+
+		createTask.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
+				NewTaskIntent.putExtra("project", projectString);
+				startActivity(NewTaskIntent);
 			}
 		});
 
