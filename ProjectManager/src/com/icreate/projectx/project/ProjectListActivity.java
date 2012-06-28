@@ -34,10 +34,13 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -46,13 +49,12 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.net.DeleteProjectTask;
 import com.icreate.projectx.net.GetProjectTask;
 
-import eu.erikw.PullToRefreshListView;
-import eu.erikw.PullToRefreshListView.OnRefreshListener;
-
 public class ProjectListActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
-	private PullToRefreshListView projectListView;
+	private PullToRefreshListView projectListViewWrapper;
+	private ListView projectListView;
+	private ProjectListBaseAdapter projectListBaseAdapter;
 	private Context cont;
 	private Activity currentActivity;
 	private String passedUserId;
@@ -86,7 +88,8 @@ public class ProjectListActivity extends Activity {
 			}
 		});
 
-		projectListView = (PullToRefreshListView) findViewById(R.id.ListView01);
+		projectListViewWrapper = (PullToRefreshListView) findViewById(R.id.ListView01);
+		projectListView = projectListViewWrapper.getRefreshableView();
 		projectListView.setTextFilterEnabled(true);
 		registerForContextMenu(projectListView);
 
@@ -135,7 +138,7 @@ public class ProjectListActivity extends Activity {
 			}
 		});
 
-		projectListView.setOnRefreshListener(new OnRefreshListener() {
+		projectListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
 
 			@Override
 			public void onRefresh() {
@@ -156,16 +159,16 @@ public class ProjectListActivity extends Activity {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
-		private final PullToRefreshListView projectListView;
+		private final ListView projectListView;
 
-		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, PullToRefreshListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, ListView projectListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
 			this.projectListView = projectListView;
 		}
 
-		public ProjectListTask(Context context, Activity callingActivity, PullToRefreshListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ListView projectListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = null;
@@ -221,9 +224,10 @@ public class ProjectListActivity extends Activity {
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					globalState.setProjectList(projectsContainer);
 					ArrayList<Project> projects = projectsContainer.getProjects();
-					projectListView.setAdapter(new ProjectListBaseAdapter(context, projects));
+					projectListBaseAdapter = new ProjectListBaseAdapter(context, projects);
+					projectListView.setAdapter(projectListBaseAdapter);
 					if (dialog == null) {
-						projectListView.onRefreshComplete();
+						projectListViewWrapper.onRefreshComplete();
 					}
 					for (Project project : projects) {
 						System.out.println(project.getLeader_name());
@@ -253,8 +257,6 @@ public class ProjectListActivity extends Activity {
 		Project selectedProject = (Project) projectListView.getItemAtPosition(info.position);
 		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
-			ProjectListBaseAdapter projectListBaseAdapter = (ProjectListBaseAdapter) projectListView.getAdapter();
-
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id=" + selectedProject.getProject_id();
 			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, selectedProject);
 			deleteProjectTask.execute(url);

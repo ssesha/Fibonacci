@@ -4,9 +4,12 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
@@ -15,20 +18,20 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
-import com.icreate.projectx.R.color;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.task.TaskListBaseAdapter;
+import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private String projectString;
+	private ProjectMembers currentMember;
+	private Context cont;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -38,7 +41,7 @@ public class MemberViewActivity extends Activity {
 		setContentView(R.layout.memberview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
-		final Context cont = this;
+		cont = this;
 		final Activity currentActivity = this;
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -58,10 +61,8 @@ public class MemberViewActivity extends Activity {
 			double memberProgress = extras.getDouble("memberProgress", -1);
 			double totaltasks = extras.getDouble("totaltasks", -1);
 			double totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
-			ProjectMembers currentMember = null;
+			currentMember = null;
 			projectString = extras.getString("project", "");
-			Log.d("sdcsd", projectString);
-			System.out.println(projectString.isEmpty());
 			if (!(projectString.isEmpty())) {
 				Gson gson = new Gson();
 				project = gson.fromJson(projectString, Project.class);
@@ -75,6 +76,37 @@ public class MemberViewActivity extends Activity {
 			} else {
 				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
 			}
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.member_view_option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.member_assign_task:
+			Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
+			newTaskIntent.putExtra("projectJson", projectString);
+			newTaskIntent.putExtra("member_id", currentMember.getMember_id());
+			// start activity oink
+			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
+			return true;
+		case R.id.member_create_task:
+			Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
+			newTaskIntent2.putExtra("projectJson", projectString);
+			newTaskIntent2.putExtra("member_id", currentMember.getMember_id());
+			// start activity oink
+			// start activity oink
+			Toast.makeText(cont, "Help", Toast.LENGTH_LONG).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
