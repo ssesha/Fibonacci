@@ -65,19 +65,27 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
-		double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
-		double progress = 0;
-		if (totalTasks != 0) {
-			progress = (completedTasks / totalTasks) * 100.0;
+
+		if ((memberList.get(position).getMember_id() == 0)) {
+			holder.MemberName.setText("Assign To Member");
+			holder.TotalTask.setVisibility(View.GONE);
+			holder.CompletedTask.setVisibility(View.GONE);
+			holder.MemberProgress.setVisibility(View.GONE);
+		} else {
+			double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
+			double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
+			double progress = 0;
+			if (totalTasks != 0) {
+				progress = (completedTasks / totalTasks) * 100.0;
+			}
+			convertView.setTag(R.id.member_total_tasks, totalTasks);
+			convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
+			convertView.setTag(R.id.member_progress, progress);
+			holder.MemberName.setText(memberList.get(position).getUser_name());
+			holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
+			holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
+			holder.MemberProgress.setProgress((int) progress);
 		}
-		convertView.setTag(R.id.member_total_tasks, totalTasks);
-		convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
-		convertView.setTag(R.id.member_progress, progress);
-		holder.MemberName.setText(memberList.get(position).getUser_name());
-		holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
-		holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
-		holder.MemberProgress.setProgress((int) progress);
 		return convertView;
 	}
 

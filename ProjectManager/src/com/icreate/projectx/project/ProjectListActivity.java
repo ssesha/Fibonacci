@@ -130,7 +130,7 @@ public class ProjectListActivity extends Activity {
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.show();
-				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog);
+				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, 0);
 				getProjectTask.execute(url);
 			}
 		});

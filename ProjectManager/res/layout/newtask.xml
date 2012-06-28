@@ -50,6 +50,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" 
+                    android:spinnerMode="dialog"
                     android:prompt="@string/Parent" />
             </LinearLayout>
 
@@ -140,6 +141,7 @@
                     android:layout_marginLeft="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" 
+                    android:spinnerMode="dialog"
                     android:prompt="@string/assigned" />
             </LinearLayout>
 

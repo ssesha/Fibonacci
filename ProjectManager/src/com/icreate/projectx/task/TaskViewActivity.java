@@ -306,6 +306,7 @@ public class TaskViewActivity extends Activity {
 
 				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
 				NewTaskIntent.putExtra("project", projectString);
+				NewTaskIntent.putExtra("parent", task_id);
 				startActivity(NewTaskIntent);
 			}
 		});

@@ -5,6 +5,11 @@ public class ProjectMembers {
 	private String user_name;
 	private String user_id;
 
+	public ProjectMembers(int x) {
+		member_id = x;
+		user_id = "";
+	}
+
 	public int getMember_id() {
 		return member_id;
 	}
