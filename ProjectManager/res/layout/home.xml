@@ -3,82 +3,148 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/backgrounddown"
-    android:gravity="center"
+    android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal" >
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal|center_vertical"
+        android:orientation="vertical"
+        android:weightSum="3" >
 
-        <ImageButton
-            android:id="@+id/profileButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/profilebutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1" >
 
-        <ImageButton
-            android:id="@+id/myProjectButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/projectsbutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2" >
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/profileButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/profilebutton" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/myProjectButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/projectsbutton" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/myTaskButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/tasksbutton" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/calenderButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/calendarbutton" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:weightSum="2" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/findButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/findbutton" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal|center_vertical" >
+
+                    <ImageButton
+                        android:id="@+id/logoutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/logoutbutton" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <ImageButton
-            android:id="@+id/myTaskButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/tasksbutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
-
-        <ImageButton
-            android:id="@+id/calenderButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/calendarbutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:orientation="horizontal" >
-
-        <ImageButton
-            android:id="@+id/findButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/findbutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
-
-        <ImageButton
-            android:id="@+id/logoutButton"
-            android:layout_width="120dp"
-            android:layout_height="110dp"
-            android:background="@drawable/logoutbutton"
-            android:layout_margin="10dp"
-            android:textColor="#05261f"
-            android:textSize="30sp" />
-    </LinearLayout>
 </LinearLayout>

@@ -88,10 +88,7 @@ public class TaskViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		LayoutInflater inflater = LayoutInflater.from(this);
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
@@ -105,7 +102,7 @@ public class TaskViewActivity extends Activity {
 		currentActivity = this;
 
 		ViewGroup slidelayout = (ViewGroup) taskview.findViewById(R.id.slidelayout);
-		slide = (ImageView) slidelayout.findViewById(R.id.BtnSlide);
+		slide = (ImageView) slidelayout.findViewById(R.id.rightlogoImageButtontaskview);
 		slide.setOnClickListener(new ClickListenerForScrolling(scrollView, commentview));
 
 		globalState = (ProjectxGlobalState) getApplication();
