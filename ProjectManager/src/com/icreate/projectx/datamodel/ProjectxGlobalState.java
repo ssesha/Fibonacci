@@ -31,7 +31,9 @@ public class ProjectxGlobalState extends Application {
 	}
 
 	public String getUserid() {
-		return userid;
+		if (userid != null)
+			return userid;
+		return "";
 	}
 
 	public void setUserid(String userid) {

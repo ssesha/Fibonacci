@@ -126,6 +126,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 			this.sizeCallback = sizeCallback;
 		}
 
+		@Override
 		public void onGlobalLayout() {
 			// System.out.println("onGlobalLayout");
 
@@ -166,6 +167,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 			// immediately.
 			// If we try immediately, it will not scroll.
 			new Handler().post(new Runnable() {
+				@Override
 				public void run() {
 					me.scrollBy(scrollToViewPos, 0);
 				}

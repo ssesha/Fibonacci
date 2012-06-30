@@ -28,7 +28,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,13 +80,15 @@ public class TaskViewActivity extends Activity {
 	private Bundle extras;
 	private Button parentTaskButton;
 
-	boolean menuOut = false;
-	Handler handler = new Handler();
+	static boolean menuOut = false;
 	int btnWidth, task_id = 0;
+	boolean isFirst = false;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -121,7 +123,6 @@ public class TaskViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
-
 			}
 		});
 
@@ -218,6 +219,7 @@ public class TaskViewActivity extends Activity {
 		// Scroll to app (view[1]) when layout finished.
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
+		System.out.println("Menu ScrollViewIdx + " + scrollToViewIdx);
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -278,6 +280,7 @@ public class TaskViewActivity extends Activity {
 							parentTaskIntent.putExtra("projectJson", projectString);
 						}
 						startActivity(parentTaskIntent);
+						finish();
 					}
 				}
 			}
@@ -303,11 +306,23 @@ public class TaskViewActivity extends Activity {
 
 				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
 				NewTaskIntent.putExtra("project", projectString);
+				Log.d("project to new task", projectString);
 				startActivity(NewTaskIntent);
 			}
 		});
 
 	};
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
+	}
 
 	public class CreateCommentTask extends AsyncTask<String, Void, String> {
 		private final Context context;
@@ -382,10 +397,10 @@ public class TaskViewActivity extends Activity {
 	static class ClickListenerForScrolling implements OnClickListener {
 		HorizontalScrollView scrollView;
 		View menu;
+
 		/**
 		 * Menu must NOT be out/shown to start with.
 		 */
-		boolean menuOut = false;
 
 		public ClickListenerForScrolling(HorizontalScrollView scrollView, View menu) {
 			super();
@@ -401,6 +416,7 @@ public class TaskViewActivity extends Activity {
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
+			System.out.println("Guiiiii" + menu.getMeasuredWidth());
 
 			// Ensure menu is visible
 			// if (menu.getVisibility() == View.INVISIBLE)
@@ -526,5 +542,4 @@ public class TaskViewActivity extends Activity {
 			}
 		}
 	}
-
 }

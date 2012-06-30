@@ -57,8 +57,8 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newtask);
@@ -239,22 +239,16 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context, homeActivity.class)); // on
-																					// success
-																					// which
-																					// activity
-																					// to
-																					// call
-																					// ???
+					// TODO : Check which activity to call
+					context.startActivity(new Intent(context, homeActivity.class));
+					callingActivity.finish();
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
-				callingActivity.finish();
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
 	}
-
 }
