@@ -21,9 +21,6 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.R;
-import com.icreate.projectx.R.color;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
@@ -130,8 +127,8 @@ public class projectViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent editProjectIntent = new Intent(cont, editProjectActivity.class);
-				editProjectIntent.putExtra("project_Id", project.getProject_id());
+				Intent editProjectIntent = new Intent(cont, newProjectActivity.class);
+				editProjectIntent.putExtra("projectString", projectString);
 				startActivity(editProjectIntent);
 			}
 		});

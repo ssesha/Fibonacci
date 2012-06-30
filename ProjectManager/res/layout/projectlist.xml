@@ -5,13 +5,10 @@
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
-    <eu.erikw.PullToRefreshListView
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/ListView01"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_height="fill_parent"
+        android:layout_margin="20dp"        
         android:cacheColorHint="@android:color/transparent" />
-
 </LinearLayout>

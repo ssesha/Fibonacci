@@ -31,6 +31,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -156,6 +159,7 @@ public class TaskViewActivity extends Activity {
 					break;
 				}
 			}
+			System.out.println("Task details:" + task.getTask_id() + "" + task.getDescription() + "" + task.getDue_date());
 			if (task.getDescription() != null) {
 				TaskDesc.setText(task.getDescription());
 			} else
@@ -195,7 +199,7 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 
-			taskListView.setAdapter(new myTasksBaseAdapter(cont, subTasks));
+			taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
 
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -525,6 +529,29 @@ public class TaskViewActivity extends Activity {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.project_view_option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.editproject:
+			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
+			newTaskIntent.putExtra("project", projectString);
+			newTaskIntent.putExtra("task_id", task_id);
+			startActivity(newTaskIntent);
+			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 

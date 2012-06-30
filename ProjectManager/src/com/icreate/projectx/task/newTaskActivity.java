@@ -94,6 +94,9 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 			 * for (int i = 0; i < memberList.size(); i++) { Members.add(i + 1,
 			 * memberList.get(i).getUser_name()); }
 			 */
+			// for (int i = 0; i < memberList.size(); i++) {
+			// Members.add(i + 1, memberList.get(i).getUser_name());
+			// }
 		}
 
 		taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
@@ -150,6 +153,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		 */
 		// dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Assignto.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
+
 		Assignto.setOnItemSelectedListener(this);
 
 		taskDateTextBox.setOnClickListener(new View.OnClickListener() {
@@ -175,7 +179,8 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 				JSONObject json1 = new JSONObject();
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
-
+					json1.put("taskId", 0);
+					json1.put("user", glob_data.getUserid());
 					json1.put("projectId", project.getProject_id());
 					json1.put("name", taskNameTextBox.getText());
 					if (!(Parent.getSelectedItemPosition() == 0))
@@ -192,14 +197,13 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 					ProgressDialog dialog = new ProgressDialog(cont);
 					dialog.setMessage("Create Task...");
 					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
-					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask.php");
+					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 
 			}
 		});
-
 	}
 
 	@Override

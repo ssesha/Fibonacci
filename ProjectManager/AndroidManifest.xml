@@ -60,6 +60,7 @@
                 <category android:name="com.icreate.projectx" />
             </intent-filter>
         </receiver>
+        <activity android:name=".task.editTaskActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
     </application>
 
 </manifest>
