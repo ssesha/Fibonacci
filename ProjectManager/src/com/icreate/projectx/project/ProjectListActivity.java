@@ -24,6 +24,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -33,6 +35,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,10 +57,13 @@ public class ProjectListActivity extends Activity {
 	private ProjectxGlobalState globalState;
 	private PullToRefreshListView projectListViewWrapper;
 	private ListView projectListView;
+	private EditText projectSearch;
 	private ProjectListBaseAdapter projectListBaseAdapter;
 	private Context cont;
 	private Activity currentActivity;
 	private String passedUserId;
+	private ArrayList<Project> projects = new ArrayList<Project>();
+	private final ArrayList<Project> filteredProjects = new ArrayList<Project>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,10 +93,36 @@ public class ProjectListActivity extends Activity {
 			}
 		});
 
+		projectSearch = (EditText) findViewById(R.id.projectSearch);
 		projectListViewWrapper = (PullToRefreshListView) findViewById(R.id.ListView01);
 		projectListView = projectListViewWrapper.getRefreshableView();
 		projectListView.setTextFilterEnabled(true);
 		registerForContextMenu(projectListView);
+
+		projectSearch.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				int textLength2 = projectSearch.getText().length();
+				filteredProjects.clear();
+				for (int i = 0; i < projects.size(); i++) {
+					if (textLength2 <= projects.get(i).getProject_name().length()) {
+						if (projectSearch.getText().toString().equalsIgnoreCase((String) projects.get(i).getProject_name().subSequence(0, textLength2))) {
+							filteredProjects.add(projects.get(i));
+						}
+					}
+				}
+				projectListBaseAdapter = new ProjectListBaseAdapter(cont, filteredProjects);
+				projectListView.setAdapter(projectListBaseAdapter);
+			}
+		});
 
 		Bundle extras = getIntent().getExtras();
 		passedUserId = null;
@@ -226,7 +258,7 @@ public class ProjectListActivity extends Activity {
 					Gson gson = new Gson();
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					globalState.setProjectList(projectsContainer);
-					ArrayList<Project> projects = projectsContainer.getProjects();
+					projects = projectsContainer.getProjects();
 					projectListBaseAdapter = new ProjectListBaseAdapter(context, projects);
 					projectListView.setAdapter(projectListBaseAdapter);
 					if (dialog == null) {
@@ -261,7 +293,7 @@ public class ProjectListActivity extends Activity {
 		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id=" + selectedProject.getProject_id();
-			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, selectedProject);
+			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, projects);
 			deleteProjectTask.execute(url);
 			return true;
 		} else {

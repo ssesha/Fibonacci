@@ -3,6 +3,7 @@ package com.icreate.projectx.net;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -25,16 +26,14 @@ public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 	private final Activity callingActivity;
 	ProjectListBaseAdapter projectListBaseAdapter;
 	AdapterContextMenuInfo info;
-	Project project;
+	ArrayList<Project> projects;
 
-	public DeleteProjectTask(Context context, Activity callingActivity,
-			ProjectListBaseAdapter projectListBaseAdapter,
-			AdapterContextMenuInfo info, Project project) {
+	public DeleteProjectTask(Context context, Activity callingActivity, ProjectListBaseAdapter projectListBaseAdapter, AdapterContextMenuInfo info, ArrayList<Project> projects) {
 		this.context = context;
 		this.callingActivity = callingActivity;
 		this.projectListBaseAdapter = projectListBaseAdapter;
 		this.info = info;
-		this.project = project;
+		this.projects = projects;
 	}
 
 	@Override
@@ -47,8 +46,7 @@ public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 				HttpResponse execute = client.execute(httpGet);
 				InputStream content = execute.getEntity().getContent();
 
-				BufferedReader buffer = new BufferedReader(
-						new InputStreamReader(content));
+				BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
 					response += s;
@@ -64,18 +62,17 @@ public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 	@Override
 	protected void onPostExecute(String result) {
 		System.out.println(result);
+		Project project = (Project) projectListBaseAdapter.getItem(info.position - 1);
 		try {
 			JSONObject resultJson = new JSONObject(result);
 			System.out.println(resultJson.toString());
 			if (resultJson.getString("msg").equals("success")) {
-				projectListBaseAdapter.removeItem(info.position);
+				projectListBaseAdapter.removeItem(info.position - 1);
 				projectListBaseAdapter.notifyDataSetChanged();
-				Toast.makeText(context, project.getProject_name() + " removed",
-						Toast.LENGTH_SHORT).show();
+				projects.remove(project);
+				Toast.makeText(context, project.getProject_name() + " removed", Toast.LENGTH_SHORT).show();
 			} else {
-				Toast.makeText(context,
-						project.getProject_name() + " can't be removed",
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(context, project.getProject_name() + " can't be removed", Toast.LENGTH_SHORT).show();
 			}
 		} catch (JSONException e) {
 			Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
