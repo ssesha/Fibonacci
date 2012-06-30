@@ -1,10 +1,9 @@
 package com.icreate.projectx.datamodel;
 
-import java.util.Date;
 
 public class Notification {
 	private String message;
-	private Date sentTime;
+	private String sentTime;	
 	
 	public void setMessage(String message) {
 		this.message = message;
@@ -12,11 +11,10 @@ public class Notification {
 	public String getMessage() {
 		return message;
 	}
-	public void setSentTime(Date sentTime) {
+	public void setSentTime(String sentTime) {
 		this.sentTime = sentTime;
 	}
-	public Date getSentTime() {
+	public String getSentTime() {
 		return sentTime;
-	}
-	
+	}	
 }

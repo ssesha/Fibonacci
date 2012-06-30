@@ -46,6 +46,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
@@ -85,9 +86,11 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		//requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		// setContentView(R.layout.projectview);
-		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+		//getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		final Context cont = this;
 		final Activity currentActivity = this;
@@ -168,11 +171,11 @@ public class projectViewActivity extends Activity {
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Loading Activity Feed...");
 				GetActivityFeed task = new GetActivityFeed(cont, this, dialog,
-						activities);
+						activities, commentlist);
 				System.out.println(url);
 				task.execute(url);
-				url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
-
+				url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProjectComment.php";
+				url += "?" + paramString;
 				TabHost tabHost = (TabHost) commentView
 						.findViewById(R.id.tabhost);
 				tabHost.setup();
@@ -345,13 +348,15 @@ public class projectViewActivity extends Activity {
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
 		private final ListView activityListView;
+		private final ListView commentListView;
 
 		public GetActivityFeed(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView activityListView) {
+				ProgressDialog dialog, ListView activityListView, ListView commentListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
 			this.activityListView = activityListView;
+			this.commentListView = commentListView;
 		}
 
 		@Override
@@ -403,6 +408,7 @@ public class projectViewActivity extends Activity {
 					Log.d("activity feed", feed.toString());
 					activityListView.setAdapter(new ActivityFeedAdapter(
 							context, feed.getNotifications()));
+					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
 				} else {
 					Toast.makeText(context, "Comment Lists empty",
 							Toast.LENGTH_LONG).show();

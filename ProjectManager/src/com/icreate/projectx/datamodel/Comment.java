@@ -5,6 +5,7 @@ public class Comment {
 	private int created_by;
 	private String comment;
 	private String creator_name;
+	private String lastUpdateTime;
 
 	public int getCreated_by() {
 		return created_by;
@@ -28,6 +29,14 @@ public class Comment {
 
 	public void setCreator_name(String creator_name) {
 		this.creator_name = creator_name;
+	}
+
+	public void setLastUpdateTime(String lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public String getLastUpdateTime() {
+		return lastUpdateTime;
 	}
 
 }

@@ -38,23 +38,24 @@ public class CommentBaseAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.commentitem, null);
 			holder = new ViewHolder();
-			holder.creatorName = (TextView) convertView.findViewById(R.id.creatorName);
+			holder.creatorName = (TextView) convertView.findViewById(R.id.commentCreatorName);
 			holder.comment = (TextView) convertView.findViewById(R.id.commentTextView);
-
+			holder.lastUpdateTime = (TextView) convertView.findViewById(R.id.lastUpdateTime);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		System.out.println("in base adapter" + CommentList.get(position).getCreator_name() + " " + CommentList.get(position).getComment());
+		//System.out.println("in base adapter" + CommentList.get(position).getCreator_name() + " " + CommentList.get(position).getComment());
 		holder.creatorName.setText(CommentList.get(position).getCreator_name());
 		holder.comment.setText(CommentList.get(position).getComment());
-
+		holder.lastUpdateTime.setText(CommentList.get(position).getLastUpdateTime());
 		return convertView;
 	}
 
 	static class ViewHolder {
 		TextView creatorName;
 		TextView comment;
+		TextView lastUpdateTime;
 	}
 
 }

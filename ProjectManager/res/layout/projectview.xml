@@ -1,32 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/projectViewLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@drawable/background"
     android:orientation="horizontal"
     android:paddingTop="5dp" >
 
     <LinearLayout
         android:id="@+id/slidelayout_proj"
-        android:layout_width="wrap_content"
+        android:layout_width="58dp"
         android:layout_height="fill_parent"
-        android:layout_weight="0.5"
+        android:gravity="top|left"
         android:orientation="vertical" >
 
-        <ImageView
+        <!--
+             <ImageView
             android:id="@+id/BtnSlide_proj"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:src="@drawable/fb" />
+        -->
+
+        <ImageView
+            android:id="@+id/BtnSlide_proj"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="27dp"
+            android:layout_marginTop="25dp"
+            android:src="@drawable/commenticon" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_weight="4.5"
-        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_weight="1" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/logoText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="TextView"
+                android:textColor="#ffffff"
+                android:textSize="38sp" />
+
+            <ImageButton
+                android:id="@+id/logoImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginTop="15dp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center" >
+        android:layout_weight="4.5"
+        android:gravity="center"
+        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -105,4 +149,4 @@
         </LinearLayout>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

@@ -36,20 +36,16 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
-public class newTaskActivity extends Activity implements
-		AdapterView.OnItemSelectedListener {
+public class newTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
 	private EditText taskNameTextBox, taskAboutTextBox, taskDateTextBox;
 	private DatePicker taskDate;
 	private Button createTask;
-	private List<ProjectMembers> memberList ;
+	private List<ProjectMembers> memberList;
 	private final List<String> prioriList = new ArrayList<String>();
 	private final List<String> Members = new ArrayList<String>();
 	private Spinner Assignto, Priority;
@@ -61,10 +57,8 @@ public class newTaskActivity extends Activity implements
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-				.detectAll().penaltyLog().penaltyDeath().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-				.penaltyLog().penaltyDeath().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newtask);
@@ -78,17 +72,16 @@ public class newTaskActivity extends Activity implements
 		if (extras != null) {
 			projectString = extras.getString("project");
 			System.out.println(projectString);
-			//Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
+			// Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
 			// get members of project and store in memberlist
 			Members.add("Assign Task to");
 			Gson gson = new Gson();
 			project = gson.fromJson(projectString, Project.class);
-			 memberList=project.getMembers();
-			 System.out.println("size"+memberList.size());
-			for(int i=0;i<memberList.size();i++)
-			 {
-				 Members.add(i+1, memberList.get(i).getUser_name());
-			 }
+			memberList = project.getMembers();
+			System.out.println("size" + memberList.size());
+			for (int i = 0; i < memberList.size(); i++) {
+				Members.add(i + 1, memberList.get(i).getUser_name());
+			}
 		}
 
 		taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
@@ -101,20 +94,17 @@ public class newTaskActivity extends Activity implements
 
 		RelativeLayout tasklayout = (RelativeLayout) findViewById(R.id.newTaskLayout);
 		status = "Open";
-		
+
 		prioriList.add("Low");
 		prioriList.add("Medium");
 		prioriList.add("High");
 		prioriList.add("Critical");
 
-		prioriAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, prioriList);
-		prioriAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		prioriAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, prioriList);
+		prioriAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Priority.setAdapter(prioriAdapter);
 
-		dataAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, Members) {
+		dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, Members) {
 			@Override
 			public boolean isEnabled(int position) {
 				if (position == 0) {
@@ -130,12 +120,12 @@ public class newTaskActivity extends Activity implements
 			}
 		};
 		;
-		dataAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Assignto.setAdapter(dataAdapter);
 		Assignto.setOnItemSelectedListener(this);
 
 		taskDateTextBox.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				taskDate.setVisibility(View.VISIBLE);
 			}
@@ -143,16 +133,16 @@ public class newTaskActivity extends Activity implements
 		});
 
 		tasklayout.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 
-				taskDateTextBox.setText(taskDate.getYear() + "-"
-						+ (taskDate.getMonth() + 1) + "-"
-						+ taskDate.getDayOfMonth());
+				taskDateTextBox.setText(taskDate.getYear() + "-" + (taskDate.getMonth() + 1) + "-" + taskDate.getDayOfMonth());
 				taskDate.setVisibility(View.INVISIBLE);
 			}
 		});
 
 		createTask.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				JSONObject json1 = new JSONObject();
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
@@ -164,36 +154,34 @@ public class newTaskActivity extends Activity implements
 					json1.put("createdBy", glob_data.getUserid());
 					json1.put("duedate", taskDateTextBox.getText());
 					if (Assignto.getSelectedItem().equals("Assign Task to")) {
-						
+
 					} else
-						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition()-1).getMember_id());
+						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition() - 1).getMember_id());
 					json1.put("status", status);
 					json1.put("priority", Priority.getSelectedItem());
 
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
 					dialog.setMessage("Create Task...");
-					CreateTask createTask = new CreateTask(cont,
-							currentActivity, json1, dialog);
-					createTask
-							.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask.php");
+					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
+					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 
 			}
 		});
-
 	}
 
-	public void onItemSelected(AdapterView<?> parent, View v, int position,
-			long id) {
+	@Override
+	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 		String Assignee = (String) Assignto.getSelectedItem();
 		if (position != 0) {
 			status = "Assigned";
 		}
 	}
 
+	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
@@ -203,8 +191,7 @@ public class newTaskActivity extends Activity implements
 		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateTask(Context context, Activity callingActivity,
-				JSONObject requestData, ProgressDialog dialog) {
+		public CreateTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -230,8 +217,7 @@ public class newTaskActivity extends Activity implements
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
 					Log.d("inside", requestJson.toString());
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -253,17 +239,19 @@ public class newTaskActivity extends Activity implements
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context,
-							homeActivity.class)); // on success which activity
-													// to call ???
+					context.startActivity(new Intent(context, homeActivity.class)); // on
+																					// success
+																					// which
+																					// activity
+																					// to
+																					// call
+																					// ???
 				} else {
-					Toast.makeText(context, "error in creation",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
 				callingActivity.finish();
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
