@@ -47,10 +47,6 @@ import android.widget.Toast;
 
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
-import com.icreate.projectx.R.drawable;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
 import com.icreate.projectx.datepicker.DefaultDateSlider;
@@ -95,7 +91,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		 */
 
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newproject);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
@@ -168,6 +164,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 		logoButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
@@ -175,6 +172,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		});
 
 		addMemberButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				startActivityForResult(addMemberIntent, subActivityID);
 			}
@@ -194,6 +192,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		moduleTextBox.setOnItemSelectedListener(this);
 
 		deadlineTextBox.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				showDialog(DEFAULTDATESELECTOR_ID);
 			}
@@ -201,6 +200,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		});
 
 		createProjectButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				JSONObject json1 = new JSONObject();
 				JSONArray json_array = new JSONArray();
@@ -233,11 +233,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	}
 
 	private final DateSlider.OnDateSetListener mDateSetListener = new DateSlider.OnDateSetListener() {
+		@Override
 		public void onDateSet(DateSlider view, Calendar selectedDate) {
 			deadlineTextBox.setText(selectedDate.get(Calendar.DATE) + "-" + selectedDate.get(Calendar.MONTH) + "-" + selectedDate.get(Calendar.YEAR));
 		}
 	};
 
+	@Override
 	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 		String selectedFromList = (String) moduleTextBox.getSelectedItem();
 		int moduleIndex = moduleList.indexOf(selectedFromList);
@@ -245,6 +247,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		task2.execute(moduleIndex);
 	}
 
+	@Override
 	public void onNothingSelected(AdapterView<?> parent) {
 	}
 
@@ -478,18 +481,22 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			mInflater = LayoutInflater.from(context);
 		}
 
+		@Override
 		public int getCount() {
 			return members.size();
 		}
 
+		@Override
 		public Object getItem(int position) {
 			return members.get(position);
 		}
 
+		@Override
 		public long getItemId(int position) {
 			return position;
 		}
 
+		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			final ViewHolder holder;
 			Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -505,6 +512,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			holder.studentName.setText(members.get(position));
 			holder.studentName.setTypeface(font);
 			holder.removeButton.setOnClickListener(new View.OnClickListener() {
+				@Override
 				public void onClick(View v) {
 					members.remove(position);
 					SelectedMemberBaseAdapter.this.notifyDataSetChanged();
