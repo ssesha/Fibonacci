@@ -20,8 +20,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 	private final LayoutInflater mInflater;
 	private static ArrayList<Task> tasks;
 
-	public MemberProgressBaseAdapter(Context context,
-			List<ProjectMembers> memberList, ArrayList<Task> tasks) {
+	public MemberProgressBaseAdapter(Context context, List<ProjectMembers> memberList, ArrayList<Task> tasks) {
 		this.memberList = memberList;
 		this.tasks = tasks;
 		mInflater = LayoutInflater.from(context);
@@ -57,35 +56,37 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.memberprogressitem, null);
 			holder = new ViewHolder();
-			holder.MemberName = (TextView) convertView
-					.findViewById(R.id.memberName);
-			holder.TotalTask = (TextView) convertView
-					.findViewById(R.id.totalTask);
-			holder.CompletedTask = (TextView) convertView
-					.findViewById(R.id.completedTask);
-			holder.MemberProgress = (ProgressBar) convertView
-					.findViewById(R.id.memberProgress);
+			holder.MemberName = (TextView) convertView.findViewById(R.id.memberName);
+			holder.TotalTask = (TextView) convertView.findViewById(R.id.totalTask);
+			holder.CompletedTask = (TextView) convertView.findViewById(R.id.completedTask);
+			holder.MemberProgress = (ProgressBar) convertView.findViewById(R.id.memberProgress);
 
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		double totalTasks = GetTotalTasks(memberList.get(position)
-				.getMember_id());
-		double completedTasks = GetCompletedTasks(memberList.get(position)
-				.getMember_id());
-		double progress = 0;
-		if (totalTasks != 0) {
-			progress = (completedTasks / totalTasks) * 100.0;
+
+		if ((memberList.get(position).getMember_id() == 0)) {
+			holder.MemberName.setText("Assign To Member");
+			holder.TotalTask.setVisibility(View.GONE);
+			holder.CompletedTask.setVisibility(View.GONE);
+			holder.MemberProgress.setVisibility(View.GONE);
+		} else {
+			double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
+			double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
+			double progress = 0;
+			if (totalTasks != 0) {
+				progress = (completedTasks / totalTasks) * 100.0;
+			}
+			convertView.setTag(R.id.member_total_tasks, totalTasks);
+			convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
+			convertView.setTag(R.id.member_progress, progress);
+			holder.MemberName.setText(memberList.get(position).getUser_name());
+			holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
+			holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
+			holder.MemberProgress.setProgress((int) progress);
 		}
-		convertView.setTag(R.id.member_total_tasks, totalTasks);
-		convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
-		convertView.setTag(R.id.member_progress, progress);
-		holder.MemberName.setText(memberList.get(position).getUser_name());
-		holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
-		holder.CompletedTask
-				.setText("Completed Tasks: " + (int) completedTasks);
-		holder.MemberProgress.setProgress((int) progress);
+
 		return convertView;
 	}
 
@@ -93,8 +94,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 		int totalTasks = 0;
 
 		for (int i = 0; i < tasks.size(); i++) {
-			Log.d("Assignee",
-					new Integer(tasks.get(i).getAssignee()).toString());
+			Log.d("Assignee", new Integer(tasks.get(i).getAssignee()).toString());
 			if (tasks.get(i).getAssignee() == userId)
 				totalTasks++;
 		}
@@ -105,8 +105,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 		int completedTasks = 0;
 		for (int i = 0; i < tasks.size(); i++) {
 			Log.d("Status", tasks.get(i).getTask_status());
-			if (tasks.get(i).getAssignee() == userId
-					&& tasks.get(i).getTask_status().equals("COMPLETE"))
+			if (tasks.get(i).getAssignee() == userId && tasks.get(i).getTask_status().equals("COMPLETE"))
 				completedTasks++;
 		}
 		return completedTasks;

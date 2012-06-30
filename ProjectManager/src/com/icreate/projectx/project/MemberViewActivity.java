@@ -23,6 +23,7 @@ import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.task.TaskListBaseAdapter;
+import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
@@ -91,18 +92,17 @@ public class MemberViewActivity extends Activity {
 		// Handle item selection
 		switch (item.getItemId()) {
 		case R.id.member_assign_task:
-			Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
-			newTaskIntent.putExtra("projectJson", projectString);
-			newTaskIntent.putExtra("member_id", currentMember.getMember_id());
-			// start activity oink
+			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
+			newTaskIntent.putExtra("project", projectString);
+			newTaskIntent.putExtra("member", currentMember.getMember_id());
+			startActivity(newTaskIntent);
 			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
 			return true;
 		case R.id.member_create_task:
 			Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
-			newTaskIntent2.putExtra("projectJson", projectString);
-			newTaskIntent2.putExtra("member_id", currentMember.getMember_id());
-			// start activity oink
-			// start activity oink
+			newTaskIntent2.putExtra("project", projectString);
+			newTaskIntent2.putExtra("member", currentMember.getMember_id());
+			startActivity(newTaskIntent2);
 			Toast.makeText(cont, "Help", Toast.LENGTH_LONG).show();
 			return true;
 		default:

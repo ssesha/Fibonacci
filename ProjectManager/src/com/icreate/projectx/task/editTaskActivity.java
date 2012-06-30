@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -42,29 +43,33 @@ import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 
-public class newTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
-
+public class editTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
 	private EditText taskNameTextBox, taskAboutTextBox, taskDateTextBox, projectNameTextBox, parentTextBox;
 	private DatePicker taskDate;
 	private Button createTask;
 	private final List<ProjectMembers> memberList = new ArrayList<ProjectMembers>();
 	private final List<String> prioriList = new ArrayList<String>();
+	private final List<String> TaskName = new ArrayList<String>();
 	// private final List<String> Members = new ArrayList<String>();
 	private final ArrayList<Task> parenttasks = new ArrayList<Task>();
-	private Spinner Assignto, Priority, Parent;
-	private ArrayAdapter<String> prioriAdapter;
+	private ArrayList<Task> tasklist = new ArrayList<Task>();
+	private Task thisTask;
+	private Spinner Assignto, Priority, Parent, TaskNameSpinner;
+	private ArrayAdapter<String> prioriAdapter, TaskAdapter;
 	private TaskListBaseAdapter parentAdapter;
 	private String projectString;
 	int parentId;
 	int memberId;
+	int task_id;
+	int Assignee;
 	private Project project;
 	private String status;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().penaltyDeath().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.newtask);
@@ -78,11 +83,8 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		if (extras != null) {
 			projectString = extras.getString("project");
 			memberId = extras.getInt("member", 0);
-			parentId = extras.getInt("parent", 0);
-			System.out.println(projectString);
-			// Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
-			// get members of project and store in memberlist
-			// Members.add("Assign Task to");
+			task_id = extras.getInt("task_id", 0);
+			System.out.println("member id" + memberId);
 			Gson gson = new Gson();
 			project = gson.fromJson(projectString, Project.class);
 
@@ -107,6 +109,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		createTask = (Button) findViewById(R.id.TaskButton);
 		Priority = (Spinner) findViewById(R.id.taskPriorityBox);
 		Parent = (Spinner) findViewById(R.id.taskParentBox);
+		TaskNameSpinner = (Spinner) findViewById(R.id.tasknamespinner);
 		projectNameTextBox = (EditText) findViewById(R.id.project_TaskNameBox);
 		projectNameTextBox.setText(project.getProject_name());
 		Task dummyTask = new Task(0);
@@ -115,20 +118,6 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		parenttasks.addAll(1, project.getTasks());
 		parentAdapter = new TaskListBaseAdapter(cont, parenttasks);
 		Parent.setAdapter(parentAdapter);
-
-		if (parentId != 0) {
-			for (int i = 0; i < project.getTasks().size(); i++) {
-				if (parentId == project.getTasks().get(i).getTask_id())
-					Parent.setSelection(i + 1);
-			}
-		}
-
-		if (memberId != 0) {
-			for (int i = 0; i < project.getMembers().size(); i++) {
-				if (memberId == project.getMembers().get(i).getMember_id())
-					Assignto.setSelection(i + 1);
-			}
-		}
 
 		RelativeLayout tasklayout = (RelativeLayout) findViewById(R.id.newTaskLayout);
 		status = "OPEN";
@@ -156,6 +145,55 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 
 		Assignto.setOnItemSelectedListener(this);
 
+		if (memberId != 0) {
+			for (int i = 0; i < project.getMembers().size(); i++) {
+				if (memberId == project.getMembers().get(i).getMember_id())
+					Assignto.setSelection(i + 1);
+			}
+			taskNameTextBox.setVisibility(View.GONE);
+			TaskNameSpinner.setVisibility(View.VISIBLE);
+			tasklist = (ArrayList<Task>) project.getTasks();
+			TaskName.add("Choose Task Name");
+			for (int i = 0; i < tasklist.size(); i++) {
+				if (tasklist.get(i).getTask_status().equalsIgnoreCase("OPEN"))
+					TaskName.add(tasklist.get(i).getTask_name());
+			}
+			TaskAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, TaskName);
+			TaskAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			TaskNameSpinner.setAdapter(TaskAdapter);
+
+		} else if (task_id != 0) {
+			tasklist = (ArrayList<Task>) project.getTasks();
+			for (int i = 0; i < tasklist.size(); i++) {
+				if (tasklist.get(i).getTask_id() == task_id)
+					thisTask = tasklist.get(i);
+			}
+			taskNameTextBox.setText(thisTask.getTask_name());
+			taskAboutTextBox.setText(thisTask.getDescription());
+			taskDateTextBox.setText(thisTask.getDue_date());
+			for (int i = 0; i < memberList.size(); i++) {
+				if (memberList.get(i).getMember_id() == thisTask.getAssignee())
+					Assignto.setSelection(i);
+			}
+
+			for (int i = 0; i < prioriList.size(); i++) {
+				if (prioriList.get(i).equalsIgnoreCase(thisTask.getTask_priority()))
+					Priority.setSelection(i);
+			}
+			if (thisTask.getParentId() == 0)
+				Parent.setSelection(0);
+			else {
+				for (int i = 0; i < parenttasks.size(); i++) {
+					if (parenttasks.get(i).getTask_id() == thisTask.getParentId()) {
+						Parent.setSelection(i);
+						System.out.println("parent" + thisTask.getParentId());
+					}
+
+				}
+			}
+
+		}
+
 		taskDateTextBox.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -179,7 +217,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 				JSONObject json1 = new JSONObject();
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
-					json1.put("taskId", 0);
+					json1.put("taskId", thisTask.getTask_id());
 					json1.put("user", glob_data.getUserid());
 					json1.put("projectId", project.getProject_id());
 					json1.put("name", taskNameTextBox.getText());
@@ -188,8 +226,10 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 					json1.put("description", taskAboutTextBox.getText());
 					json1.put("createdBy", glob_data.getUserid());
 					json1.put("duedate", taskDateTextBox.getText());
+
 					if (!(status.equals("OPEN")))
-						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition()).getMember_id());
+						json1.put("assignee", Assignee);
+					System.out.println("assignee=" + Assignee);
 					json1.put("status", status);
 					json1.put("priority", Priority.getSelectedItem());
 
@@ -204,6 +244,46 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 
 			}
 		});
+
+		TaskNameSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				if (position == 0) {
+					taskAboutTextBox.setText("");
+					taskDateTextBox.setText("");
+					Priority.setSelection(0);
+					Parent.setSelection(0);
+				} else {
+					thisTask = tasklist.get(position - 1);
+					taskNameTextBox.setText(tasklist.get(position - 1).getTask_name());
+					taskAboutTextBox.setText(tasklist.get(position - 1).getDescription());
+					taskDateTextBox.setText(tasklist.get(position - 1).getDue_date());
+					for (int i = 0; i < prioriList.size(); i++) {
+						if (prioriList.get(i).equalsIgnoreCase(tasklist.get(position - 1).getTask_priority()))
+							Priority.setSelection(i);
+					}
+					if (tasklist.get(position - 1).getParentId() == 0)
+						Parent.setSelection(0);
+					else {
+						for (int i = 0; i < parenttasks.size(); i++) {
+							System.out.println("in for" + parenttasks.get(i).getTask_id() + "parent" + tasklist.get(position - 1).getParentId());
+							if (parenttasks.get(i).getTask_id() == tasklist.get(position - 1).getParentId()) {
+								Parent.setSelection(i);
+								System.out.println("parent" + tasklist.get(position - 1).getParentId());
+							}
+
+						}
+					}
+				}
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+
+			}
+		});
+
 	}
 
 	@Override
@@ -211,7 +291,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 
 		Object o = Assignto.getItemAtPosition(position);
 		ProjectMembers selectedMember = (ProjectMembers) o;
-		String Assignee = selectedMember.getUser_name();
+		Assignee = selectedMember.getMember_id();
 		if (position != 0)
 			status = "ASSIGNED";
 		else
@@ -276,16 +356,22 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					// TODO : Check which activity to call
-					context.startActivity(new Intent(context, homeActivity.class));
-					callingActivity.finish();
+					context.startActivity(new Intent(context, homeActivity.class)); // on
+																					// success
+																					// which
+																					// activity
+																					// to
+																					// call
+																					// ???
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
+				callingActivity.finish();
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
 	}
+
 }

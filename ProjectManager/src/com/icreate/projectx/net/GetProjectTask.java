@@ -20,18 +20,20 @@ import android.widget.Toast;
 
 import com.icreate.projectx.R;
 import com.icreate.projectx.project.projectViewActivity;
+import com.icreate.projectx.task.TaskViewActivity;
 
 public class GetProjectTask extends AsyncTask<String, Void, String> {
 
 	private final Context context;
 	private final Activity callingActivity;
 	private final ProgressDialog dialog;
+	private final int task_id;
 
-	public GetProjectTask(Context context, Activity callingActivity,
-			ProgressDialog dialog) {
+	public GetProjectTask(Context context, Activity callingActivity, ProgressDialog dialog, int task_id) {
 		this.context = context;
 		this.callingActivity = callingActivity;
 		this.dialog = dialog;
+		this.task_id = task_id;
 	}
 
 	@Override
@@ -52,8 +54,7 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 				HttpResponse execute = client.execute(httpGet);
 				InputStream content = execute.getEntity().getContent();
 
-				BufferedReader buffer = new BufferedReader(
-						new InputStreamReader(content));
+				BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 				String s = "";
 				while ((s = buffer.readLine()) != null) {
 					response += s;
@@ -75,21 +76,25 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 		try {
 			JSONObject resultJson = new JSONObject(result);
 			System.out.println(resultJson.toString());
+			System.out.println("task id is" + task_id);
 			if (resultJson.getString("msg").equals("success")) {
-				Intent projectViewIntent = new Intent(context,
-						projectViewActivity.class);
-				projectViewIntent.putExtra("projectJson",
-						resultJson.getString("project"));
-				Log.d("project json",
-						projectViewIntent.getStringExtra("projectJson"));
-				callingActivity.startActivity(projectViewIntent);
+				if (task_id == 0) {
+					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
+					projectViewIntent.putExtra("projectJson", resultJson.getString("project"));
+					Log.d("project json", projectViewIntent.getStringExtra("projectJson"));
+					callingActivity.startActivity(projectViewIntent);
+				} else {
+					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);
+					TaskViewIntent.putExtra("project", resultJson.getString("project"));
+					TaskViewIntent.putExtra("task_id", task_id);
+					Log.d("project in getProject", TaskViewIntent.getStringExtra("project"));
+					callingActivity.startActivity(TaskViewIntent);
+				}
 			} else {
-				Toast.makeText(context, "Unable to get Project",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Unable to get Project", Toast.LENGTH_LONG).show();
 			}
 		} catch (JSONException e) {
-			Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
 	}
