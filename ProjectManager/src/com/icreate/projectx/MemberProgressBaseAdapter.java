@@ -86,6 +86,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 			holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
 			holder.MemberProgress.setProgress((int) progress);
 		}
+
 		return convertView;
 	}
 

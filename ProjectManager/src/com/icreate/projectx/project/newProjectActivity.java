@@ -58,8 +58,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	protected static final String WIDGET_REQ_CODE = null;
 	private final int subActivityID = 23987;
 
-	private EditText nameTextBox, aboutTextBox, deadlineTextBox;
-	private TextView newProjectDeadlinetext, newProjectNametext, newProjectAbouttext, newProjectMemberstext, logoText;
+	private EditText nameTextBox, aboutTextBox, deadlineTextBox, leaderTextBox;
+	private TextView newProjectDeadlinetext, newProjectNametext, newProjectAbouttext, newProjectMemberstext, logoText, newProjectleaderText;
 	private Spinner moduleTextBox;
 	private Button createProjectButton, addMemberButton;
 	private ListView selectedMemberList;
@@ -119,7 +119,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		createProjectButton = (Button) findViewById(R.id.loginButton);
 		addMemberButton = (Button) findViewById(R.id.addMemberButton);
 		selectedMemberList = (ListView) findViewById(R.id.selectedMemberList);
-
+		leaderTextBox = (EditText) findViewById(R.id.leaderTextBox);
+		newProjectleaderText = (TextView) findViewById(R.id.newProjectleadertext);
 		newProjectDeadlinetext = (TextView) findViewById(R.id.newProjectDeadlinetext);
 		newProjectAbouttext = (TextView) findViewById(R.id.newProjectAbouttext);
 		newProjectNametext = (TextView) findViewById(R.id.newProjectNametext);
@@ -147,17 +148,24 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			project = gson.fromJson(projectString, Project.class);
 			nameTextBox.setText(project.getProject_name());
 			aboutTextBox.setText(project.getProject_desc());
+			leaderTextBox.setText(project.getLeader_name());
 			deadlineTextBox.setText(project.getDue_date());
 			project_id = project.getProject_id();
+			ProjectxGlobalState globalState = (ProjectxGlobalState) getApplication();
+			System.out.println(globalState.getUserid());
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				members.add(project.getMembers().get(i).getUser_name());
-				memberid.add(project.getMembers().get(i).getUser_id());
+				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(globalState.getUserid().equals(project.getMembers().get(i).getUser_id())))) {
+					members.add(project.getMembers().get(i).getUser_name());
+					memberid.add(project.getMembers().get(i).getUser_id());
+				}
 			}
 			selectedMemberList.setAdapter(new SelectedMemberBaseAdapter(newProjectActivity.this));
 
 		} else {
 			logoText.setText("New Project");
 			project_id = 0;
+			leaderTextBox.setVisibility(View.GONE);
+			newProjectleaderText.setVisibility(View.GONE);
 		}
 
 		String[] items = new String[2];
@@ -191,14 +199,14 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		moduleTextBox.setAdapter(adapter);
 
-		logoButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
-
-			}
-		});
+		/*
+		 * logoButton.setOnClickListener(new View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { startActivity(new
+		 * Intent(cont, homeActivity.class));
+		 * 
+		 * } });
+		 */
 
 		addMemberButton.setOnClickListener(new View.OnClickListener() {
 			@Override

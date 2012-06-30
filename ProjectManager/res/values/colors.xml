@@ -8,5 +8,5 @@
     <color name="transparent">#00ffffff</color>
     <color name="selectable_attendee_border">#64323232</color>
     <color name="selected_attendee_background">#64C8C8C8</color>
-
-</resources>
+    <color name="actionbar_background_dark">#cc000000</color>
+    <color name="drag_active_color">#80cccccc</color>	</resources>

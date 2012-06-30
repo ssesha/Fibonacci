@@ -10,5 +10,5 @@
     <declare-styleable name="MyHorizontalScrollView">
         <attr name="horSpacing" format="dimension" />
         <attr name="verSpacing" format="dimension" />
-    </declare-styleable>
+    </declare-styleable>    
 </resources>

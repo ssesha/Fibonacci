@@ -154,8 +154,10 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 			TaskNameSpinner.setVisibility(View.VISIBLE);
 			tasklist = (ArrayList<Task>) project.getTasks();
 			TaskName.add("Choose Task Name");
-			for (int i = 0; i < tasklist.size(); i++)
-				TaskName.add(tasklist.get(i).getTask_name());
+			for (int i = 0; i < tasklist.size(); i++) {
+				if (tasklist.get(i).getTask_status().equalsIgnoreCase("OPEN"))
+					TaskName.add(tasklist.get(i).getTask_name());
+			}
 			TaskAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, TaskName);
 			TaskAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			TaskNameSpinner.setAdapter(TaskAdapter);
@@ -252,6 +254,8 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 					Priority.setSelection(0);
 					Parent.setSelection(0);
 				} else {
+					thisTask = tasklist.get(position - 1);
+					taskNameTextBox.setText(tasklist.get(position - 1).getTask_name());
 					taskAboutTextBox.setText(tasklist.get(position - 1).getDescription());
 					taskDateTextBox.setText(tasklist.get(position - 1).getDue_date());
 					for (int i = 0; i < prioriList.size(); i++) {
