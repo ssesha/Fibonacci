@@ -351,7 +351,7 @@ public class TaskViewActivity extends Activity {
 	 * Helper for examples with a HSV that should be scrolled by a menu View's
 	 * width.
 	 */
-	static class ClickListenerForScrolling implements OnClickListener {
+	private static class ClickListenerForScrolling implements OnClickListener {
 		HorizontalScrollView scrollView;
 		View menu;
 		/**
@@ -396,7 +396,7 @@ public class TaskViewActivity extends Activity {
 	 * Helper that remembers the width of the 'slide' button, so that the
 	 * 'slide' button remains in view, even when the menu is showing.
 	 */
-	static class SizeCallbackForMenu implements SizeCallback {
+	private static class SizeCallbackForMenu implements SizeCallback {
 		int btnWidth;
 		View btnSlide;
 

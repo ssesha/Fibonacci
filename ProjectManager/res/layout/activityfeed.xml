@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rounded"
+    android:cacheColorHint="@android:color/transparent"
+    android:divider="#d1d1d1"
+    android:scrollbars="vertical" >
+
+</ListView>

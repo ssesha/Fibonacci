@@ -19,16 +19,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:src="@drawable/fb" />
+    </LinearLayout>
 
-    </LinearLayout> 
-
-   <LinearLayout
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_weight="4.5"
         android:gravity="center"
         android:orientation="vertical" >
-        
+
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -93,6 +92,7 @@
                 android:text="Back"
                 android:textColor="#05261f"
                 android:textSize="22sp" />
+
             <Button
                 android:id="@+id/createSubTaskButton"
                 android:layout_width="108dp"
@@ -102,5 +102,6 @@
                 android:textColor="#05261f"
                 android:textSize="22sp" />
         </LinearLayout>
-   	</LinearLayout>
+    </LinearLayout>
+
 </LinearLayout>
