@@ -45,7 +45,7 @@ public class C2DMRegistrationReceiver extends BroadcastReceiver {
 			String deviceId = Secure.getString(context.getContentResolver(),
 					Secure.ANDROID_ID);
 			Log.d("Device Id", deviceId);
-			createNotification(context, registrationId);
+			//createNotification(context, registrationId);
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createDeviceTokens.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
 			params.add(new BasicNameValuePair("deviceid", deviceId));

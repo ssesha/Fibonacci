@@ -13,6 +13,7 @@ public class ProjectxGlobalState extends Application {
 	private TaskList taskList = new TaskList();
 	private List<String> moduleId = new ArrayList<String>();
 	private CommentList commentList = new CommentList();
+	private ActivityFeed projectActivities = new ActivityFeed();
 
 	public String getAuthToken() {
 		return authToken;
@@ -74,6 +75,14 @@ public class ProjectxGlobalState extends Application {
 
 	public void setCommentList(CommentList commentList) {
 		this.commentList = commentList;
+	}
+
+	public void setProjectActivities(ActivityFeed projectActivities) {
+		this.projectActivities = projectActivities;
+	}
+
+	public ActivityFeed getProjectActivities() {
+		return projectActivities;
 	}
 
 }

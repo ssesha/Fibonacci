@@ -20,7 +20,8 @@ public class homeActivity extends Activity {
 
 	private ProjectxGlobalState globalData;
 	private TextView logoText;
-	private ImageButton logoButton, myProjectButton, myTaskButton, logoutButton, profileButton, calendarButton, findButton;
+	private ImageButton logoButton, myProjectButton, myTaskButton,
+			logoutButton, profileButton, calendarButton, findButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +65,8 @@ public class homeActivity extends Activity {
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
+				Intent projectListIntent = new Intent(cont,
+						ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);

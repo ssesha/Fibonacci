@@ -230,6 +230,7 @@ public class TaskViewActivity extends Activity {
 					json1.put("comment", commentTextBox.getText());
 					json1.put("taskId", task_id);
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
+					System.out.println("createdby: " + Gs.getUserid());
 					json1.put("createdBy", Gs.getUserid());
 
 					Log.d("JSON string", json1.toString());
@@ -394,7 +395,7 @@ public class TaskViewActivity extends Activity {
 	 * Helper for examples with a HSV that should be scrolled by a menu View's
 	 * width.
 	 */
-	static class ClickListenerForScrolling implements OnClickListener {
+	private static class ClickListenerForScrolling implements OnClickListener {
 		HorizontalScrollView scrollView;
 		View menu;
 
@@ -441,7 +442,7 @@ public class TaskViewActivity extends Activity {
 	 * Helper that remembers the width of the 'slide' button, so that the
 	 * 'slide' button remains in view, even when the menu is showing.
 	 */
-	static class SizeCallbackForMenu implements SizeCallback {
+	private static class SizeCallbackForMenu implements SizeCallback {
 		int btnWidth;
 		View btnSlide;
 
@@ -467,7 +468,7 @@ public class TaskViewActivity extends Activity {
 		}
 	}
 
-	public class ListComment extends AsyncTask<String, Void, String> {
+	private class ListComment extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
