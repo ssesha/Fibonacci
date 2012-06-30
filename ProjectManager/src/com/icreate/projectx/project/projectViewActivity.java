@@ -12,9 +12,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -81,6 +84,8 @@ public class projectViewActivity extends Activity {
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
 	private ImageView slide;
+	private ListView activities;
+	private ListView commentlist;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -137,9 +142,9 @@ public class projectViewActivity extends Activity {
 				.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		final ListView activities = (ListView) commentView
+		activities = (ListView) commentView
 				.findViewById(R.id.activity);
-		final ListView commentlist = (ListView) commentView
+		commentlist = (ListView) commentView
 				.findViewById(R.id.proj_comments);
 		final Button postComment = (Button) commentView
 				.findViewById(R.id.proj_sendCommentButton);
@@ -195,12 +200,14 @@ public class projectViewActivity extends Activity {
 
 				tabHost.addTab(activityspec); // Adding photos tab
 				tabHost.addTab(commentsspec);
+				typeComment.setText("");
 
 			} else {
 				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG)
 						.show();
 			}
 		}
+		
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx,
@@ -271,6 +278,110 @@ public class projectViewActivity extends Activity {
 				startActivity(editProjectIntent);
 			}
 		});
+		
+		postComment.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				JSONObject json1 = new JSONObject();
+				JSONArray json_array = new JSONArray();
+				try {
+					json1.put("comment", typeComment.getText());
+					json1.put("projectId", project.getProject_id());
+					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
+					System.out.println("createdby: " + Gs.getUserid());
+					json1.put("createdBy", Gs.getUserid());
+
+					Log.d("JSON string", json1.toString());
+					ProgressDialog dialog = new ProgressDialog(cont);
+					dialog.setMessage("Create Comments...");
+					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
+					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProjectComment.php");
+
+					typeComment.setText("");
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+	
+	private class CreateCommentTask extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+		private final ProgressDialog dialog;
+		private final JSONObject requestJson;
+
+		public CreateCommentTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.requestJson = requestData;
+			this.dialog = dialog;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			System.out.println(this.dialog.isShowing());
+			if (!(this.dialog.isShowing())) {
+				this.dialog.show();
+			}
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				HttpClient client = new DefaultHttpClient();
+				HttpPut httpPut = new HttpPut(url);
+				try {
+					httpPut.setEntity(new StringEntity(requestJson.toString()));
+					HttpResponse execute = client.execute(httpPut);
+					InputStream content = execute.getEntity().getContent();
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
+			System.out.println(result);
+			try {
+				JSONObject resultJson = new JSONObject(result);
+				Log.d("PostComment", resultJson.toString());
+				//System.out.println(resultJson.toString());
+				if (resultJson.getString("msg").equals("success")) {
+					// context.startActivity(new Intent(context,
+					// homeActivity.class));
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+					List<NameValuePair> params = new LinkedList<NameValuePair>();
+					params.add(new BasicNameValuePair("project_id", new Integer(
+							project.getProject_id()).toString()));
+					String paramString = URLEncodedUtils.format(params, "utf-8");
+					url += "?" + paramString;
+					dialog.setMessage("Loading Activity Feed...");
+					GetActivityFeed task = new GetActivityFeed(context, callingActivity, dialog,
+							activities, commentlist);
+					System.out.println(url);
+					task.execute(url);
+				} else {
+					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
+				}
+				// callingActivity.finish();
+			} catch (JSONException e) {
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private static class ClickListenerForScrolling implements OnClickListener {

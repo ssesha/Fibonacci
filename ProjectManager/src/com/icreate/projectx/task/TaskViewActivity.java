@@ -310,7 +310,7 @@ public class TaskViewActivity extends Activity {
 
 	};
 
-	public class CreateCommentTask extends AsyncTask<String, Void, String> {
+	private class CreateCommentTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
@@ -452,7 +452,7 @@ public class TaskViewActivity extends Activity {
 		}
 	}
 
-	public class ListComment extends AsyncTask<String, Void, String> {
+	private class ListComment extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
