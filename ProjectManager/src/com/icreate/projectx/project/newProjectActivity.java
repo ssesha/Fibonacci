@@ -72,7 +72,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	private final List<String> moduleId = new ArrayList<String>();
 
 	private ArrayAdapter<String> dataAdapter;
-	private String projectString = "";
+	private String projectString = "", leader_id = "";
 	private Project project;
 	private int project_id = 0;
 
@@ -157,7 +157,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(globalState.getUserid().equals(project.getMembers().get(i).getUser_id())))) {
 					members.add(project.getMembers().get(i).getUser_name());
 					memberid.add(project.getMembers().get(i).getUser_id());
-				}
+				} else if (project.getLeader_id() == project.getMembers().get(i).getMember_id())
+					leader_id = project.getMembers().get(i).getUser_id();
 			}
 			selectedMemberList.setAdapter(new SelectedMemberBaseAdapter(newProjectActivity.this));
 
@@ -246,7 +247,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					json1.put("name", nameTextBox.getText());
 					json1.put("description", aboutTextBox.getText());
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
-					json1.put("leader", Gs.getUserid());
+					if (leader_id.equals("")) {
+						json1.put("leader", Gs.getUserid());
+						System.out.println("i am leader");
+					} else {
+						json1.put("leader", leader_id);
+						System.out.println("leader is" + leader_id);
+					}
 					json1.put("user", Gs.getUserid());
 					json1.put("moduleCode", moduleTextBox.getSelectedItem());
 					json1.put("duedate", deadlineTextBox.getText());

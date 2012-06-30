@@ -266,6 +266,7 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 						Parent.setSelection(0);
 					else {
 						for (int i = 0; i < parenttasks.size(); i++) {
+							System.out.println("in for" + parenttasks.get(i).getTask_id() + "parent" + tasklist.get(position - 1).getParentId());
 							if (parenttasks.get(i).getTask_id() == tasklist.get(position - 1).getParentId()) {
 								Parent.setSelection(i);
 								System.out.println("parent" + tasklist.get(position - 1).getParentId());

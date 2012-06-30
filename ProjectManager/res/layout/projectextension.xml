@@ -52,8 +52,6 @@
                     android:cacheColorHint="@android:color/transparent"
                     android:divider="#ffffff"
                     android:dividerHeight="1dp"
-                    android:paddingLeft="25dp"
-                    android:paddingRight="25dp"
                     android:scrollbars="vertical" />
 
                 <LinearLayout

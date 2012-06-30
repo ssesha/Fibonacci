@@ -84,7 +84,6 @@ public class ProjectListActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
-
 			}
 		});
 
@@ -122,10 +121,14 @@ public class ProjectListActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = projectListView.getItemAtPosition(position);
 				Project selectedProject = (Project) o;
-				Toast.makeText(
-						cont,
-						"You have chosen: " + " " + selectedProject.getProject_name() + " " + selectedProject.getProject_id() + " " + position + " "
-								+ globalState.getProjectList().getProjects().get(position).getLeader_id(), Toast.LENGTH_LONG).show();
+				/*
+				 * Toast.makeText( cont, "You have chosen: " + " " +
+				 * selectedProject.getProject_name() + " " +
+				 * selectedProject.getProject_id() + " " + position + " " +
+				 * globalState
+				 * .getProjectList().getProjects().get(position).getLeader_id(),
+				 * Toast.LENGTH_LONG).show();
+				 */
 				Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
 				int projectId = selectedProject.getProject_id();
