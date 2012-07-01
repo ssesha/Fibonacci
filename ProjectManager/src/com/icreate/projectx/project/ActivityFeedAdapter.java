@@ -2,15 +2,16 @@ package com.icreate.projectx.project;
 
 import java.util.ArrayList;
 
-import com.icreate.projectx.R;
-import com.icreate.projectx.datamodel.Notification;
-
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import com.icreate.projectx.R;
+import com.icreate.projectx.datamodel.Notification;
 
 public class ActivityFeedAdapter extends BaseAdapter {
 	private static ArrayList<Notification> projActivities;
@@ -41,9 +42,9 @@ public class ActivityFeedAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
-		System.out.println("inside base adapter");
-		System.out.println(projActivities.toString());
-		System.out.println("position" + position);
+		Log.d("activity feed","inside base adapter");
+		Log.d("activity feed", projActivities.toString());
+		Log.d("activity feed", "position "+ position);
 
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.activityitem, null);

@@ -49,6 +49,8 @@
         <activity android:name=".meeting.CreateEventActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
         <activity android:name=".PreferencesActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
         <activity android:name=".meeting.MeetingSchedulerActivity"  android:configChanges="orientation|keyboardHidden"  android:label="@string/app_name" />
+        
+        <activity android:name=".c2dm.C2DMNotificationHandler" android:windowSoftInputMode="adjustPan" android:launchMode="singleTop"></activity>
         <receiver android:name=".c2dm.C2DMRegistrationReceiver"  android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" ></action>

@@ -46,18 +46,17 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 		Log.d("temp", temp[0]);
 		Log.d("temp", temp[1]);
 		Log.d("temp", temp[2]);
-		Intent intent;
-		/*if(temp[2].equals("task"))
-		{
-			intent = new Intent(context, TaskViewActivity.class);
-			int task_id = Integer.parseInt(temp[2]);
-			
-			
+		Log.d("temp", temp[3]);
+		Log.d("temp", temp[4]);
+		Log.d("temp", temp[5]);
+		Log.d("temp", temp[6]);
+		Log.d("temp", temp[7]);
+		Intent intent = new Intent(context, C2DMNotificationHandler.class);		
+		intent.putExtra("activity", temp[2]);
+		for(int i=4;i<temp.length;i++){
+			Log.d("in for loop", temp[i]+" "+temp[i+1]);
+			intent.putExtra(temp[i], Integer.parseInt(temp[++i]));			
 		}
-		else
-		{*/
-			intent = new Intent(context, homeActivity.class);
-		//}
 		int message_id = Integer.parseInt(temp[1]);
 		
 		Log.d("C2dm - message-id", temp[1]);
@@ -80,7 +79,7 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 		layout.setTextViewText(R.id.notification_subtitle, temp[0]);
 		layout.setTextViewText(R.id.notification_time, time2);
 		Bitmap largeIconTemp = BitmapFactory.decodeResource(res,
-                R.drawable.notification_default_largeicon);
+                R.drawable.trialicon);
         Bitmap largeIcon = Bitmap.createScaledBitmap(
                 largeIconTemp,
                 res.getDimensionPixelSize(android.R.dimen.notification_large_icon_width),
