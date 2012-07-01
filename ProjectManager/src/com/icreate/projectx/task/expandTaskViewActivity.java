@@ -1,6 +1,7 @@
 package com.icreate.projectx.task;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -74,14 +76,27 @@ public class expandTaskViewActivity extends Activity {
 			}
 		});
 
-		final CharSequence[] items = { "Due Date", "Assignee", "Priority" };
+		final CharSequence[] items = { "Latest Due", "Assignee", "Priority" };
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setTitle("Sort By");
 		builder.setItems(items, new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int item) {
-				Toast.makeText(getApplicationContext(), items[item], Toast.LENGTH_SHORT).show();
+				projectTaskSearch.setText("");
+				switch (item) {
+				case 0:
+					Collections.sort(project.getTasks(), project.new TaskDueDateComparable());
+					break;
+				case 1:
+					Collections.sort(project.getTasks(), project.new TaskAssigneeComparable());
+					break;
+				case 2:
+					Collections.sort(project.getTasks(), project.new TaskPriorityComparable());
+					break;
+				}
+				taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
+				task_projectListView.setAdapter(taskListBaseAdapter);
 			}
 		});
 		alert = builder.create();
@@ -125,7 +140,7 @@ public class expandTaskViewActivity extends Activity {
 						}
 					}
 				}
-				taskListBaseAdapter = new TaskListBaseAdapter(cont, filteredTasks);
+				taskListBaseAdapter = new TaskListBaseAdapter(cont, filteredTasks, (ArrayList<Task>) project.getTasks());
 				task_projectListView.setAdapter(taskListBaseAdapter);
 			}
 		});
@@ -134,7 +149,8 @@ public class expandTaskViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				alert.show();
+				if (project != null)
+					alert.show();
 			}
 		});
 
@@ -147,6 +163,8 @@ public class expandTaskViewActivity extends Activity {
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				TaskViewIntent.putExtra("project", projectString);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(), 0);
 				startActivity(TaskViewIntent);
 			}
 		});

@@ -72,6 +72,9 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 			holder.CompletedTask.setVisibility(View.GONE);
 			holder.MemberProgress.setVisibility(View.GONE);
 		} else {
+			holder.TotalTask.setVisibility(View.VISIBLE);
+			holder.CompletedTask.setVisibility(View.VISIBLE);
+			holder.MemberProgress.setVisibility(View.VISIBLE);
 			double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
 			double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
 			double progress = 0;
