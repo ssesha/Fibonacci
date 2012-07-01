@@ -143,6 +143,7 @@ public class TaskListActivity extends Activity {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Getting Tasks...");
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 

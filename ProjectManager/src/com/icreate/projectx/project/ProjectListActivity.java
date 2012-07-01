@@ -216,6 +216,7 @@ public class ProjectListActivity extends Activity {
 				if (!this.dialog.isShowing()) {
 					this.dialog.setMessage("Getting Projects...");
 					this.dialog.show();
+					this.dialog.setCanceledOnTouchOutside(false);
 				}
 			}
 		}

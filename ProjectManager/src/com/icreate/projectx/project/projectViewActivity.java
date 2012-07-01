@@ -304,6 +304,7 @@ public class projectViewActivity extends Activity {
 			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 
@@ -454,6 +455,7 @@ public class projectViewActivity extends Activity {
 		protected void onPreExecute() {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Loading...");
+				this.dialog.setCanceledOnTouchOutside(false);
 				this.dialog.show();
 			}
 		}
@@ -510,6 +512,7 @@ public class projectViewActivity extends Activity {
 					//commentListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list));
 					//activityListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, activityfeed));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
+					commentListView.setSelection(commentListView.getCount()-1);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
 					
 				} else {
