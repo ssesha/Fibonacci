@@ -40,10 +40,15 @@ import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datamodel.TaskList;
+import com.icreate.projectx.net.GetProjectTask;
 
 public class TaskListActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
+	private ListView TaskListView;
+	private myTasksBaseAdapter mytasksAdapter;
+	private Context cont;
+	private Activity currentActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +57,8 @@ public class TaskListActivity extends Activity {
 		setContentView(R.layout.tasklist);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
-		final Context cont = this;
-		final Activity currentActivity = this;
+		cont = this;
+		currentActivity = this;
 
 		globalState = (ProjectxGlobalState) getApplication();
 
@@ -74,8 +79,9 @@ public class TaskListActivity extends Activity {
 			}
 		});
 
-		final ListView TaskListView = (ListView) findViewById(R.id.taskListView);
+		TaskListView = (ListView) findViewById(R.id.taskListView);
 		TaskListView.setTextFilterEnabled(true);
+		registerForContextMenu(TaskListView);
 
 		Bundle extras = getIntent().getExtras();
 		String passedUserId = null;
@@ -107,12 +113,14 @@ public class TaskListActivity extends Activity {
 				Object o = TaskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
 				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position, Toast.LENGTH_LONG).show();
-				// Intent projectViewIntent = new Intent(cont,
-				// projectViewActivity.class);
-
-				// projectViewIntent.putExtra("position",position );
-
-				// startActivity(projectViewIntent);
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				int projectId = selectedTask.getProjectId();
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Getting Project Info...");
+				dialog.show();
+				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, selectedTask.getTask_id());
+				getProjectTask.execute(url);
 			}
 		});
 	}
@@ -175,7 +183,14 @@ public class TaskListActivity extends Activity {
 					TaskList tasksContainer = gson.fromJson(result, TaskList.class);
 					globalState.setTaskList(tasksContainer);
 					ArrayList<Task> tasks = tasksContainer.getTasks();
-					taskListView.setAdapter(new myTasksBaseAdapter(context, tasks));
+					mytasksAdapter = new myTasksBaseAdapter(context, tasks);
+					taskListView.setAdapter(mytasksAdapter);
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							mytasksAdapter.notifyDataSetChanged();
+						}
+					});
 					Log.d("testing", "" + tasks.size());
 					for (Task task : tasks) {
 						Log.d("testing", "test test");

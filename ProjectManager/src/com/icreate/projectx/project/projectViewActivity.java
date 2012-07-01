@@ -79,21 +79,23 @@ public class projectViewActivity extends Activity {
 	private ArrayList<Comment> comments;
 	private final ArrayList<String> activitites = new ArrayList<String>();
 	private ArrayList<Notification> activityFeed;
-	boolean menuOut = false;
+	static boolean menuOut = false;
 	Handler handler = new Handler();
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
 	private ImageView slide;
 	private ListView activities;
 	private ListView commentlist;
+	boolean isFirst = false;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		// requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		// setContentView(R.layout.projectview);
-		//getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
+		// getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+		// R.layout.logo1);
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -113,43 +115,35 @@ public class projectViewActivity extends Activity {
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 
-		ImageButton homeButton = (ImageButton) logoView
-				.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
+			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
 
 			}
 		});
 
-		ViewGroup slidelayout = (ViewGroup) projectView
-				.findViewById(R.id.slidelayout_proj);
+		ViewGroup slidelayout = (ViewGroup) projectView.findViewById(R.id.slidelayout_proj);
 		slide = (ImageView) slidelayout.findViewById(R.id.BtnSlide_proj);
-		slide.setOnClickListener(new ClickListenerForScrolling(scrollView,
-				commentView));
+		slide.setOnClickListener(new ClickListenerForScrolling(scrollView, commentView));
 
-		createTask = (Button) projectView
-				.findViewById(R.id.createNewTaskButton);
+		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
 		TextView projDesc = (TextView) projectView.findViewById(R.id.projDesc);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 
-		final ListView memberListView = (ListView) projectView
-				.findViewById(R.id.memberProgressList);
+		final ListView memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		activities = (ListView) commentView
-				.findViewById(R.id.activity);
-		commentlist = (ListView) commentView
-				.findViewById(R.id.proj_comments);
-		final Button postComment = (Button) commentView
-				.findViewById(R.id.proj_sendCommentButton);
-		final EditText typeComment = (EditText) commentView
-				.findViewById(R.id.proj_commentTextBox);
+		final ListView activities = (ListView) commentView.findViewById(R.id.activity);
+		final ListView commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
+		final Button postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
+		final EditText typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
 
 		Bundle extras = getIntent().getExtras();
 		globalState = (ProjectxGlobalState) getApplication();
@@ -160,33 +154,27 @@ public class projectViewActivity extends Activity {
 			if (!(projectString.isEmpty())) {
 				Gson gson = new Gson();
 				project = gson.fromJson(projectString, Project.class);
-				Toast.makeText(cont, project.getProject_name(),
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
 				logoText.setText(project.getProject_name());
 				projDesc.setText(project.getProject_desc());
 				memberList = project.getMembers();
-				memberListView.setAdapter(new MemberProgressBaseAdapter(cont,
-						memberList, (ArrayList<Task>) project.getTasks()));
+				memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
 				List<NameValuePair> params = new LinkedList<NameValuePair>();
-				params.add(new BasicNameValuePair("project_id", new Integer(
-						project.getProject_id()).toString()));
+				params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Loading Activity Feed...");
-				GetActivityFeed task = new GetActivityFeed(cont, this, dialog,
-						activities, commentlist);
+				GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
 				System.out.println(url);
 				task.execute(url);
 				url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProjectComment.php";
 				url += "?" + paramString;
-				TabHost tabHost = (TabHost) commentView
-						.findViewById(R.id.tabhost);
+				TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
 				tabHost.setup();
 				TabSpec activityspec = tabHost.newTabSpec("Activities");
-				activityspec.setIndicator("Activitites", getResources()
-						.getDrawable(R.drawable.bulb));
+				activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
 				// Intent activitiesIntent = new Intent(this,
 				// ProjectFeedActivity.class);
 				// activitiesIntent.putExtra("project_id", new
@@ -194,8 +182,7 @@ public class projectViewActivity extends Activity {
 				activityspec.setContent(R.id.activity);
 
 				TabSpec commentsspec = tabHost.newTabSpec("Comments");
-				commentsspec.setIndicator("Comments", getResources()
-						.getDrawable(R.drawable.dustbin));
+				commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
 				commentsspec.setContent(R.id.project_commentviewlayout);
 
 				tabHost.addTab(activityspec); // Adding photos tab
@@ -203,45 +190,29 @@ public class projectViewActivity extends Activity {
 				typeComment.setText("");
 
 			} else {
-				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
 			}
 		}
-		
+
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
-		scrollView.initViews(children, scrollToViewIdx,
-				new SizeCallbackForMenu(slide));
+		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
+		System.out.println("menuOut= " + menuOut);
 		memberListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = memberListView.getItemAtPosition(position);
 				ProjectMembers selectedMember = (ProjectMembers) o;
-				double totaltasks = (Double) view
-						.getTag(R.id.member_total_tasks);
-				double totalcompletedtasks = (Double) view
-						.getTag(R.id.member_total_tasks);
+				double totaltasks = (Double) view.getTag(R.id.member_total_tasks);
+				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_tasks);
 				double progress = (Double) view.getTag(R.id.member_progress);
-				Toast.makeText(
-						cont,
-						"You have chosen: " + " "
-								+ selectedMember.getUser_name() + " "
-								+ selectedMember.getMember_id(),
-						Toast.LENGTH_LONG).show();
-				System.out.println(project.getTasks(selectedMember
-						.getMember_id())
-						+ " "
-						+ totaltasks
-						+ " "
-						+ totalcompletedtasks);
-				Intent memberViewIntent = new Intent(cont,
-						MemberViewActivity.class);
+				Toast.makeText(cont, "You have chosen: " + " " + selectedMember.getUser_name() + " " + selectedMember.getMember_id(), Toast.LENGTH_LONG).show();
+				System.out.println(project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks);
+				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
 				memberViewIntent.putExtra("project", projectString);
 				memberViewIntent.putExtra("totaltasks", totaltasks);
-				memberViewIntent.putExtra("totalcompletedtasks",
-						totalcompletedtasks);
+				memberViewIntent.putExtra("totalcompletedtasks", totalcompletedtasks);
 				memberViewIntent.putExtra("memberProgress", progress);
 				startActivity(memberViewIntent);
 			}
@@ -259,8 +230,7 @@ public class projectViewActivity extends Activity {
 		TaskView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent TaskViewIntent = new Intent(cont,
-						expandTaskViewActivity.class);
+				Intent TaskViewIntent = new Intent(cont, expandTaskViewActivity.class);
 				System.out.println("project" + projectString);
 				TaskViewIntent.putExtra("project", projectString);
 				startActivity(TaskViewIntent);
@@ -271,14 +241,12 @@ public class projectViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Intent editProjectIntent = new Intent(cont,
-						editProjectActivity.class);
-				editProjectIntent.putExtra("project_Id",
-						project.getProject_id());
+				Intent editProjectIntent = new Intent(cont, newProjectActivity.class);
+				editProjectIntent.putExtra("projectString", projectString);
 				startActivity(editProjectIntent);
 			}
 		});
-		
+
 		postComment.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -305,7 +273,18 @@ public class projectViewActivity extends Activity {
 			}
 		});
 	}
-	
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
+	}
+
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -358,19 +337,17 @@ public class projectViewActivity extends Activity {
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("PostComment", resultJson.toString());
-				//System.out.println(resultJson.toString());
+				// System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					// context.startActivity(new Intent(context,
 					// homeActivity.class));
 					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
-					params.add(new BasicNameValuePair("project_id", new Integer(
-							project.getProject_id()).toString()));
+					params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
 					String paramString = URLEncodedUtils.format(params, "utf-8");
 					url += "?" + paramString;
 					dialog.setMessage("Loading Activity Feed...");
-					GetActivityFeed task = new GetActivityFeed(context, callingActivity, dialog,
-							activities, commentlist);
+					GetActivityFeed task = new GetActivityFeed(context, callingActivity, dialog, activities, commentlist);
 					System.out.println(url);
 					task.execute(url);
 				} else {
@@ -387,18 +364,18 @@ public class projectViewActivity extends Activity {
 	private static class ClickListenerForScrolling implements OnClickListener {
 		HorizontalScrollView scrollView;
 		View menu;
+
 		/**
 		 * Menu must NOT be out/shown to start with.
 		 */
-		boolean menuOut = false;
 
-		public ClickListenerForScrolling(HorizontalScrollView scrollView,
-				View menu) {
+		public ClickListenerForScrolling(HorizontalScrollView scrollView, View menu) {
 			super();
 			this.scrollView = scrollView;
 			this.menu = menu;
 		}
 
+		@Override
 		public void onClick(View v) {
 			Context context = menu.getContext();
 			String msg = "Slide " + new Date();
@@ -406,6 +383,7 @@ public class projectViewActivity extends Activity {
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
+			System.out.println("menu width " + menuWidth + "  menu=" + menuOut);
 
 			// Ensure menu is visible
 			// if (menu.getVisibility() == View.INVISIBLE)
@@ -439,11 +417,13 @@ public class projectViewActivity extends Activity {
 			this.btnSlide = btnSlide;
 		}
 
+		@Override
 		public void onGlobalLayout() {
 			btnWidth = btnSlide.getMeasuredWidth() + 50;
 			System.out.println("btnWidth=" + btnWidth);
 		}
 
+		@Override
 		public void getViewSize(int idx, int w, int h, int[] dims) {
 			dims[0] = w;
 			dims[1] = h;
@@ -461,8 +441,7 @@ public class projectViewActivity extends Activity {
 		private final ListView activityListView;
 		private final ListView commentListView;
 
-		public GetActivityFeed(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView activityListView, ListView commentListView) {
+		public GetActivityFeed(Context context, Activity callingActivity, ProgressDialog dialog, ListView activityListView, ListView commentListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
@@ -489,8 +468,7 @@ public class projectViewActivity extends Activity {
 					HttpResponse execute = client.execute(httpGet);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -514,19 +492,15 @@ public class projectViewActivity extends Activity {
 				Log.d("ActivityFeed", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					ActivityFeed feed = gson.fromJson(result,
-							ActivityFeed.class);
+					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
 					Log.d("activity feed", feed.toString());
-					activityListView.setAdapter(new ActivityFeedAdapter(
-							context, feed.getNotifications()));
+					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
 				} else {
-					Toast.makeText(context, "Comment Lists empty",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}

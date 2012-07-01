@@ -26,6 +26,10 @@ public class Task {
 	private List<Integer> subTasks = new ArrayList<Integer>();
 	private List<Integer> topSubTasks = new ArrayList<Integer>();
 
+	public Task(int x) {
+		task_id = x;
+	}
+
 	public int getTask_id() {
 		return task_id;
 	}

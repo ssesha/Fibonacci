@@ -4,7 +4,7 @@
     <string name="hello">Hello World, ProjectManagerActivity!</string>
     <string name="app_name">ProjectManager</string>
     <string name="module">Select Module</string>
-    <string name="assigned">Assigned To</string>
+    <string name="assigned">Assign To</string>
     <string name="priority">Priority</string>
 	<string name="dateSliderTitle">Selected date</string>
     <string name="select_attendees_caption">Select attendees for your meeting</string>

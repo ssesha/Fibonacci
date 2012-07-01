@@ -5,10 +5,29 @@
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:id="@+id/projectsearchwrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp" >
+
+        <EditText
+            android:id="@+id/projectSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Type to search projects"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+    </LinearLayout>
+
     <com.handmark.pulltorefresh.library.PullToRefreshListView
         android:id="@+id/ListView01"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="20dp"        
+        android:layout_margin="20dp"
         android:cacheColorHint="@android:color/transparent" />
+
 </LinearLayout>

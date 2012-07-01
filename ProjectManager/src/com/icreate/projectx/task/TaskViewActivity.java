@@ -28,9 +28,12 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -80,13 +83,15 @@ public class TaskViewActivity extends Activity {
 	private Bundle extras;
 	private Button parentTaskButton;
 
-	boolean menuOut = false;
-	Handler handler = new Handler();
+	static boolean menuOut = false;
 	int btnWidth, task_id = 0;
+	boolean isFirst = false;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -121,7 +126,6 @@ public class TaskViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
-
 			}
 		});
 
@@ -156,6 +160,7 @@ public class TaskViewActivity extends Activity {
 					break;
 				}
 			}
+			System.out.println("Task details:" + task.getTask_id() + "" + task.getDescription() + "" + task.getDue_date());
 			if (task.getDescription() != null) {
 				TaskDesc.setText(task.getDescription());
 			} else
@@ -195,7 +200,7 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 
-			taskListView.setAdapter(new myTasksBaseAdapter(cont, subTasks));
+			taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
 
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -218,6 +223,7 @@ public class TaskViewActivity extends Activity {
 		// Scroll to app (view[1]) when layout finished.
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
+		System.out.println("Menu ScrollViewIdx + " + scrollToViewIdx);
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -279,6 +285,7 @@ public class TaskViewActivity extends Activity {
 							parentTaskIntent.putExtra("projectJson", projectString);
 						}
 						startActivity(parentTaskIntent);
+						finish();
 					}
 				}
 			}
@@ -304,13 +311,25 @@ public class TaskViewActivity extends Activity {
 
 				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
 				NewTaskIntent.putExtra("project", projectString);
+				NewTaskIntent.putExtra("parent", task_id);
 				startActivity(NewTaskIntent);
 			}
 		});
 
 	};
 
-	private class CreateCommentTask extends AsyncTask<String, Void, String> {
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
+	}
+
+	public class CreateCommentTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
@@ -383,10 +402,10 @@ public class TaskViewActivity extends Activity {
 	private static class ClickListenerForScrolling implements OnClickListener {
 		HorizontalScrollView scrollView;
 		View menu;
+
 		/**
 		 * Menu must NOT be out/shown to start with.
 		 */
-		boolean menuOut = false;
 
 		public ClickListenerForScrolling(HorizontalScrollView scrollView, View menu) {
 			super();
@@ -402,6 +421,7 @@ public class TaskViewActivity extends Activity {
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
+			System.out.println("Guiiiii" + menu.getMeasuredWidth() + " menuOut= " + menuOut);
 
 			// Ensure menu is visible
 			// if (menu.getVisibility() == View.INVISIBLE)
@@ -525,6 +545,29 @@ public class TaskViewActivity extends Activity {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
+		}
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.project_view_option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.editproject:
+			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
+			newTaskIntent.putExtra("project", projectString);
+			newTaskIntent.putExtra("task_id", task_id);
+			startActivity(newTaskIntent);
+			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
 		}
 	}
 
