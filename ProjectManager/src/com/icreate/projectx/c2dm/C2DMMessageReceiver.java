@@ -1,5 +1,11 @@
 package com.icreate.projectx.c2dm;
 
+import java.lang.annotation.Annotation;
+import java.util.Calendar;
+
+import javax.annotation.RegEx;
+import javax.annotation.meta.When;
+
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,11 +15,14 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.text.format.DateFormat;
+import android.text.format.Time;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.task.TaskViewActivity;
 
 public class C2DMMessageReceiver extends BroadcastReceiver {
 
@@ -30,7 +39,31 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 	}
 
 	public void createNotification(Context context, String message) {
-		Intent intent = new Intent(context, homeActivity.class);
+		String[] temp;
+		String delimiter = "-";
+		temp = message.split(delimiter);
+		Log.d("C2dm received msg", message);
+		Log.d("temp", temp[0]);
+		Log.d("temp", temp[1]);
+		Log.d("temp", temp[2]);
+		Intent intent;
+		/*if(temp[2].equals("task"))
+		{
+			intent = new Intent(context, TaskViewActivity.class);
+			int task_id = Integer.parseInt(temp[2]);
+			
+			
+		}
+		else
+		{*/
+			intent = new Intent(context, homeActivity.class);
+		//}
+		int message_id = Integer.parseInt(temp[1]);
+		
+		Log.d("C2dm - message-id", temp[1]);
+		Log.d("c2dm- message", temp[0]);
+		Log.d("c2dm - activity", temp[2]);
+		Log.d("c2dm - extra", temp[3]);		
 		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0,
 				intent, 0);
 		NotificationManager notificationManager = (NotificationManager) context
@@ -38,10 +71,14 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 		Resources res = context.getResources();
 		long[] vibrate = { 0, 100, 200, 300 };
 		Notification.Builder builder = new Notification.Builder(context);
+		String delegate = "hh:mm aaa"; 
+		String time2 = (String) DateFormat.format(delegate,Calendar.getInstance().getTime());
+		Log.d("time2", time2);
 		RemoteViews layout = new RemoteViews(context.getPackageName(),
 				R.layout.notification);
 		layout.setTextViewText(R.id.notification_title, "Project-X");
-		layout.setTextViewText(R.id.notification_subtitle, message);
+		layout.setTextViewText(R.id.notification_subtitle, temp[0]);
+		layout.setTextViewText(R.id.notification_time, time2);
 		Bitmap largeIconTemp = BitmapFactory.decodeResource(res,
                 R.drawable.notification_default_largeicon);
         Bitmap largeIcon = Bitmap.createScaledBitmap(
@@ -56,10 +93,10 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 				.setSmallIcon(R.drawable.trialicon)
 				.setTicker("New Notification from Project-X")
 				.setWhen(System.currentTimeMillis()).setAutoCancel(true).setContent(layout)
-				.setVibrate(vibrate);
+				.setVibrate(vibrate).setContentInfo(time2);
 		Notification notification = builder.getNotification();
 		notification.defaults |= Notification.DEFAULT_ALL;
-		notificationManager.notify(0, notification);
+		notificationManager.notify(message_id, notification);
 	}
 
 }

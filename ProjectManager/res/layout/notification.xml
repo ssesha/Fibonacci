@@ -47,13 +47,23 @@
             android:layout_height="wrap_content" />
 
     </LinearLayout>
-
-    <ImageButton
+	<TextView android:id="@+id/notification_time"
+	    style="@android:style/TextAppearance.StatusBar.EventContent"
+	    android:singleLine="true"
+	    android:layout_gravity="right"
+	    android:gravity="right"
+	    android:background="@null"
+	    android:textStyle="bold"
+	    android:paddingTop="25dp"
+	    android:layout_weight="0"
+        android:layout_width="100dp"
+	    android:layout_height="match_parent" />
+   <!--  <ImageButton
         android:id="@+id/notification_button"
         android:src="@drawable/btn_notification_ic_example"
         android:background="@null"
         android:layout_weight="0"
         android:layout_width="48dp"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" /> -->
 
 </LinearLayout>
