@@ -3,6 +3,8 @@ package com.icreate.projectx.task;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,21 +67,32 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.arrow.setVisibility(View.GONE);
 			holder.priority.setVisibility(View.GONE);
 		} else {
+			holder.txtParentName.setVisibility(View.VISIBLE);
+			holder.txtdate.setVisibility(View.VISIBLE);
+			holder.TaskProgress.setVisibility(View.VISIBLE);
+			holder.arrow.setVisibility(View.VISIBLE);
+			holder.priority.setVisibility(View.VISIBLE);
 			holder.txtName.setText(taskList.get(position).getTask_name());
 
 			int parent_id = taskList.get(position).getParentId();
 			int flag = 0;
 			for (int i = 0; i < taskList.size(); i++) {
-				if (parent_id == taskList.get(i).getTask_id()) {
+				if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
+					System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
+					System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
 					holder.txtParentName.setText(taskList.get(i).getTask_name());
 					flag = 1;
 					break;
-				}
+				} else
+					flag = 0;
 
 			}
 			if (flag == 0) {
 				holder.arrow.setVisibility(View.GONE);
 				holder.txtParentName.setVisibility(View.GONE);
+			} else if (flag == 1) {
+				holder.arrow.setVisibility(View.VISIBLE);
+				holder.txtParentName.setVisibility(View.VISIBLE);
 			}
 			String priority = null;
 
@@ -94,8 +107,20 @@ public class TaskListBaseAdapter extends BaseAdapter {
 				holder.priority.setImageResource(R.drawable.icon_priority_critical);
 
 			holder.txtdate.setText(taskList.get(position).getDue_date());
+			double progress = taskList.get(position).getProgress() * 100.0;
+			holder.TaskProgress.setProgress((int) progress);
+			System.out.println("task name" + taskList.get(position).getTask_name() + "progress:" + (int) taskList.get(position).getProgress());
 
-			holder.TaskProgress.setProgress((int) taskList.get(position).getProgress());
+			if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
+				holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
+				holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));
+				holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			} else {
+				holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
+				holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
+				holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			}
+
 		}
 
 		return convertView;
