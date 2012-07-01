@@ -17,12 +17,20 @@ import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Task;
 
 public class TaskListBaseAdapter extends BaseAdapter {
-	private static ArrayList<Task> taskList;
+	private final ArrayList<Task> taskList;
+	private final ArrayList<Task> allTaskList;
 
 	private final LayoutInflater mInflater;
 
+	public TaskListBaseAdapter(Context context, ArrayList<Task> taskList, ArrayList<Task> allTaskList) {
+		this.taskList = taskList;
+		this.allTaskList = allTaskList;
+		mInflater = LayoutInflater.from(context);
+	}
+
 	public TaskListBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
+		this.allTaskList = taskList;
 		mInflater = LayoutInflater.from(context);
 	}
 

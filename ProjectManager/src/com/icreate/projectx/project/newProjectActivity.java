@@ -154,7 +154,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			ProjectxGlobalState globalState = (ProjectxGlobalState) getApplication();
 			System.out.println(globalState.getUserid());
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(globalState.getUserid().equals(project.getMembers().get(i).getUser_id())))) {
+				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(globalState.getUserid().equalsIgnoreCase(project.getMembers().get(i).getUser_id())))) {
+					System.out.println("current user" + globalState.getUserid() + "member" + project.getMembers().get(i).getUser_id());
 					members.add(project.getMembers().get(i).getUser_name());
 					memberid.add(project.getMembers().get(i).getUser_id());
 				} else if (project.getLeader_id() == project.getMembers().get(i).getMember_id())
@@ -281,7 +282,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	private final DateSlider.OnDateSetListener mDateSetListener = new DateSlider.OnDateSetListener() {
 		@Override
 		public void onDateSet(DateSlider view, Calendar selectedDate) {
-			deadlineTextBox.setText(selectedDate.get(Calendar.YEAR) + "-" + selectedDate.get(Calendar.MONTH) + "-" + selectedDate.get(Calendar.DATE));
+			deadlineTextBox.setText(selectedDate.get(Calendar.YEAR) + "-" + (selectedDate.get(Calendar.MONTH) + 1) + "-" + selectedDate.get(Calendar.DATE));
 		}
 	};
 

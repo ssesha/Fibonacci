@@ -1,6 +1,7 @@
 package com.icreate.projectx.datamodel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Project {
@@ -148,5 +149,43 @@ public class Project {
 
 	public String getLeader_name() {
 		return leader_name;
+	}
+
+	public class TaskDueDateComparable implements Comparator<Task> {
+
+		@Override
+		public int compare(Task o1, Task o2) {
+			return (o2.getDue_date().compareTo(o1.getDue_date()));
+		}
+	}
+
+	public class TaskPriorityComparable implements Comparator<Task> {
+
+		@Override
+		public int compare(Task o1, Task o2) {
+			int pos1 = PriorityEnum.valueOf(o1.getTask_priority()).ordinal();
+			int pos2 = PriorityEnum.valueOf(o2.getTask_priority()).ordinal();
+			if (pos1 == pos2)
+				return 0;
+			return (pos1 > pos2 ? -1 : 1);
+		}
+	}
+
+	public class TaskAssigneeComparable implements Comparator<Task> {
+		@Override
+		public int compare(Task o1, Task o2) {
+
+			return (getMemberName(o1.getAssignee()).compareTo(getMemberName(o2.getAssignee())));
+		}
+
+		private String getMemberName(int memberId) {
+			if (memberId != 0) {
+				for (int i = 0; i < members.size(); i++) {
+					if (memberId == members.get(i).getMember_id())
+						return members.get(i).getUser_name();
+				}
+			}
+			return "";
+		}
 	}
 }

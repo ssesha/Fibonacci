@@ -634,7 +634,7 @@ public class TaskViewActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.project_view_option_menu, menu);
+		inflater.inflate(R.menu.task_view_option_menu, menu);
 		return true;
 	}
 
@@ -642,7 +642,7 @@ public class TaskViewActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
 		switch (item.getItemId()) {
-		case R.id.editproject:
+		case R.id.edittask:
 			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
 			newTaskIntent.putExtra("project", projectString);
 			newTaskIntent.putExtra("task_id", task_id);
