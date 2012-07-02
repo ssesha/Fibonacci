@@ -66,5 +66,4 @@
         </receiver>
         <activity android:name=".task.editTaskActivity" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
     </application>
-
-</manifest>
+    </manifest>
