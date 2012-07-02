@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,17 +20,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -37,6 +44,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.datamodel.PriorityEnum;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datamodel.TaskList;
@@ -48,6 +56,9 @@ public class TaskListActivity extends Activity {
 	private ListView TaskListView;
 	private myTasksBaseAdapter mytasksAdapter;
 	private Context cont;
+	private AlertDialog alert;
+	private ArrayList<Task> tasks;
+	private final ArrayList<Task> filteredTasks = new ArrayList<Task>();
 	private Activity currentActivity;
 
 	@Override
@@ -67,6 +78,9 @@ public class TaskListActivity extends Activity {
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 
+		Button myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
+		final TextView myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
+
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
@@ -78,6 +92,28 @@ public class TaskListActivity extends Activity {
 
 			}
 		});
+
+		final CharSequence[] items = { "Latest Due", "Priority" };
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
+		builder.setTitle("Sort By");
+		builder.setItems(items, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int item) {
+				myTaskSearch.setText("");
+				switch (item) {
+				case 0:
+					Collections.sort(tasks, new MyTaskDueDateComparable());
+					break;
+				case 1:
+					Collections.sort(tasks, new MyTaskPriorityComparable());
+					break;
+				}
+				mytasksAdapter = new myTasksBaseAdapter(cont, tasks);
+				TaskListView.setAdapter(mytasksAdapter);
+			}
+		});
+		alert = builder.create();
 
 		TaskListView = (ListView) findViewById(R.id.taskListView);
 		TaskListView.setTextFilterEnabled(true);
@@ -106,6 +142,42 @@ public class TaskListActivity extends Activity {
 			System.out.println(url);
 			ListTasks.execute(url);
 		}
+
+		myTaskSearch.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				int textLength2 = myTaskSearch.getText().length();
+				System.out.println(myTaskSearch.getText());
+				filteredTasks.clear();
+				for (int i = 0; i < tasks.size(); i++) {
+					Log.d("YOLO", tasks.get(i).getTask_name());
+					if (textLength2 <= tasks.get(i).getTask_name().length()) {
+						if (myTaskSearch.getText().toString().equalsIgnoreCase((String) tasks.get(i).getTask_name().subSequence(0, textLength2))) {
+							filteredTasks.add(tasks.get(i));
+						}
+					}
+				}
+				mytasksAdapter = new myTasksBaseAdapter(cont, filteredTasks);
+				TaskListView.setAdapter(mytasksAdapter);
+			}
+		});
+
+		myTaskSearchButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (tasks != null)
+					alert.show();
+			}
+		});
 
 		TaskListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -183,7 +255,7 @@ public class TaskListActivity extends Activity {
 					Gson gson = new Gson();
 					TaskList tasksContainer = gson.fromJson(result, TaskList.class);
 					globalState.setTaskList(tasksContainer);
-					ArrayList<Task> tasks = tasksContainer.getTasks();
+					tasks = tasksContainer.getTasks();
 					mytasksAdapter = new myTasksBaseAdapter(context, tasks);
 					taskListView.setAdapter(mytasksAdapter);
 					runOnUiThread(new Runnable() {
@@ -209,4 +281,23 @@ public class TaskListActivity extends Activity {
 		}
 	}
 
+	public class MyTaskDueDateComparable implements Comparator<Task> {
+
+		@Override
+		public int compare(Task o1, Task o2) {
+			return (o2.getDue_date().compareTo(o1.getDue_date()));
+		}
+	}
+
+	public class MyTaskPriorityComparable implements Comparator<Task> {
+
+		@Override
+		public int compare(Task o1, Task o2) {
+			int pos1 = PriorityEnum.valueOf(o1.getTask_priority()).ordinal();
+			int pos2 = PriorityEnum.valueOf(o2.getTask_priority()).ordinal();
+			if (pos1 == pos2)
+				return 0;
+			return (pos1 > pos2 ? -1 : 1);
+		}
+	}
 }

@@ -12,6 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.task.TaskListBaseAdapter;
+import com.icreate.projectx.task.TaskViewActivity;
 import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
@@ -78,6 +81,19 @@ public class MemberViewActivity extends Activity {
 				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
 			}
 		}
+
+		taskListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = taskListView.getItemAtPosition(position);
+				Task selectedTask = (Task) o;
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				TaskViewIntent.putExtra("project", projectString);
+				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				startActivity(TaskViewIntent);
+			}
+		});
 	}
 
 	@Override
