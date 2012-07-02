@@ -2,17 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@drawable/backgrounddown" >
-    <TextView 
-        android:text="Name"
+    android:background="@drawable/backgrounddown"
+    android:orientation="vertical" >
+
+    <TextView
         android:id="@+id/profileName"
-        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:textStyle="bold"
-        android:paddingBottom="20dp" />
-    <TextView />  
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:text="Name"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/profile_projList"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="30dp"
+        android:paddingBottom="50dp"
+        android:background="@drawable/rounded"
+        android:cacheColorHint="@android:color/transparent"
+        android:divider="#d1d1d1"
+        android:dividerHeight="1dp"
+        android:padding="10dp" />
 
 </LinearLayout>
