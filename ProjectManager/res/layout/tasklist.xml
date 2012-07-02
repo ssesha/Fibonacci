@@ -5,7 +5,44 @@
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
-    <ListView
+    <LinearLayout
+        android:id="@+id/mytasksearchwrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:weightSum="1" >
+        
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.80">
+
+        <EditText
+            android:id="@+id/mytaskSearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Type to search projects"
+            android:singleLine="true"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+        </LinearLayout>
+        <LinearLayout 
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.20">
+        <Button
+                android:id="@+id/mytaskSearchButton"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="F"
+                android:layout_gravity="right"
+                android:textColor="#05261f"/>
+    </LinearLayout>
+    </LinearLayout>
+
+	<ListView
         android:id="@+id/taskListView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
