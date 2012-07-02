@@ -67,6 +67,7 @@ public class ProjectFeedActivity extends Activity {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Loading...");
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 

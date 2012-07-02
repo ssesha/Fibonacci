@@ -240,6 +240,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 

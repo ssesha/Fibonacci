@@ -37,6 +37,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -140,8 +141,8 @@ public class projectViewActivity extends Activity {
 		final ListView memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		final ListView activities = (ListView) commentView.findViewById(R.id.activity);
-		final ListView commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
+		activities = (ListView) commentView.findViewById(R.id.activity);
+		commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
 		final Button postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
 		final EditText typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
 
@@ -303,6 +304,7 @@ public class projectViewActivity extends Activity {
 			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 
@@ -453,6 +455,7 @@ public class projectViewActivity extends Activity {
 		protected void onPreExecute() {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Loading...");
+				this.dialog.setCanceledOnTouchOutside(false);
 				this.dialog.show();
 			}
 		}
@@ -493,9 +496,25 @@ public class projectViewActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
 					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
-					Log.d("activity feed", feed.toString());
-					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+					Log.d("activity feed", feed.getNotifications().toString());
+					Log.d("activity feed", feed.getComments().toString());
+					ArrayList<String> list = new ArrayList<String>();
+					ArrayList<String> activityfeed = new ArrayList<String>();
+					for(int i = 0; i <feed.getComments().size();i++){
+						list.add(feed.getComments().get(i).getComment());						
+					}
+					Log.d("comments size",""+feed.getComments().size());
+					Log.d("notifications size",""+feed.getNotifications().size());
+					for(int i=0;i<feed.getNotifications().size();i++)
+					{
+						activityfeed.add(feed.getNotifications().get(i).getMessage());
+					}
+					//commentListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list));
+					//activityListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, activityfeed));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
+					commentListView.setSelection(commentListView.getCount()-1);
+					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+					
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
 				}

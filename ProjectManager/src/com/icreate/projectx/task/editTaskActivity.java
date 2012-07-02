@@ -224,7 +224,11 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 					if (!(Parent.getSelectedItemPosition() == 0))
 						json1.put("parentId", parenttasks.get(Parent.getSelectedItemPosition()).getTask_id());
 					json1.put("description", taskAboutTextBox.getText());
-					json1.put("createdBy", glob_data.getUserid());
+					for (int i = 0; i < project.getMembers().size(); i++) {
+						if (thisTask.getCreatedBy() == project.getMembers().get(i).getMember_id())
+							json1.put("createdBy", project.getMembers().get(i).getUser_id());
+					}
+
 					json1.put("duedate", taskDateTextBox.getText());
 
 					if (!(status.equals("OPEN")))
