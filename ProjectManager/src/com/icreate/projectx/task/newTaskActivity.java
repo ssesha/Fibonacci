@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -15,6 +16,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +37,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -278,6 +282,42 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					// TODO : Check which activity to call
+					int task_id = resultJson.getInt("task_id");
+					Calendar cal = Calendar.getInstance(); // for using this you
+					// need to import
+					// java.util.Calendar;
+
+					// add minutes to the calendar object
+					/*
+					 * cal.set(Calendar.MONTH, 4); cal.set(Calendar.YEAR, 2011);
+					 * cal.set(Calendar.DAY_OF_MONTH, 5);
+					 * cal.set(Calendar.HOUR_OF_DAY, 21);
+					 * cal.set(Calendar.MINUTE, 43);
+					 */
+
+					// cal.set will set the alarm to trigger exactly at: 21:43,
+					// 5
+					// May 2011
+					// if you want to trigger the alarm after let's say 5
+					// minutes
+					// after is activated you need to put
+					cal.setTimeInMillis(System.currentTimeMillis());
+					cal.add(Calendar.SECOND, 3);
+					Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+					alarmintent.putExtra("title", "Title of our Notification");
+					alarmintent.putExtra("note", "Description of our  Notification");
+					alarmintent.putExtra("requestCode", task_id);
+					// PendingIntent sender =
+					// PendingIntent.getBroadcast(getApplicationContext(),
+					// HELLO_ID,
+					// alarmintent, PendingIntent.FLAG_UPDATE_CURRENT |
+					// Intent.FILL_IN_DATA);
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, 0);
+					Log.d("RequestCode is ", " " + task_id);
+
+					AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+
 					context.startActivity(new Intent(context, homeActivity.class));
 					callingActivity.finish();
 				} else {

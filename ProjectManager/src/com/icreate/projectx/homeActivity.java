@@ -11,17 +11,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.meeting.MeetingSchedulerActivity;
 import com.icreate.projectx.project.ProjectListActivity;
 import com.icreate.projectx.project.newProjectActivity;
 import com.icreate.projectx.task.TaskListActivity;
 
 public class homeActivity extends Activity {
-
 	private ProjectxGlobalState globalData;
 	private TextView logoText;
-	private ImageButton logoButton, myProjectButton, myTaskButton,
-			logoutButton, profileButton, calendarButton, findButton;
+	private ImageButton logoButton, myProjectButton, myTaskButton, logoutButton, profileButton, calendarButton, findButton;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -65,8 +62,7 @@ public class homeActivity extends Activity {
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent projectListIntent = new Intent(cont,
-						ProjectListActivity.class);
+				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);
@@ -90,7 +86,8 @@ public class homeActivity extends Activity {
 		calendarButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, MeetingSchedulerActivity.class));
+				// startActivity(new Intent(cont,
+				// MeetingSchedulerActivity.class));
 			}
 		});
 
