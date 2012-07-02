@@ -45,17 +45,17 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    android:id="@+id/logoText"
+                    android:id="@+id/projectlogoText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:text="TextView"
                     android:textColor="#ffffff"
-                    android:textSize="38sp" />
+                    android:textSize="25sp" />
 
                 <ImageButton
-                    android:id="@+id/logoImageButton"
+                    android:id="@+id/projectlogoImageButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -80,19 +80,24 @@
 
                 <LinearLayout
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent" >
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/projectDeadline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp" />
 
                     <TextView
                         android:id="@+id/projDesc"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:paddingLeft="25dp"
-                        android:paddingRight="25dp"
-                        android:text="Hello world. I am the first project in this awesome app!"
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:textSize="15sp" />
                 </LinearLayout>
             </ScrollView>
 

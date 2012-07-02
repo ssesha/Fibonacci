@@ -37,7 +37,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
@@ -112,11 +111,10 @@ public class projectViewActivity extends Activity {
 		commentView = inflater.inflate(R.layout.projectextension, null);
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) logoView.findViewById(R.id.logoText);
+		logoText = (TextView) projectView.findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 
-		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +133,9 @@ public class projectViewActivity extends Activity {
 		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
 		TextView projDesc = (TextView) projectView.findViewById(R.id.projDesc);
+		TextView projDeadline = (TextView) projectView.findViewById(R.id.projectDeadline);
+		projDesc.setTypeface(font);
+		projDeadline.setTypeface(font);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 
@@ -158,6 +159,7 @@ public class projectViewActivity extends Activity {
 				Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
 				logoText.setText(project.getProject_name());
 				projDesc.setText(project.getProject_desc());
+				projDeadline.setText(project.getDue_date());
 				memberList = project.getMembers();
 				memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
@@ -500,21 +502,24 @@ public class projectViewActivity extends Activity {
 					Log.d("activity feed", feed.getComments().toString());
 					ArrayList<String> list = new ArrayList<String>();
 					ArrayList<String> activityfeed = new ArrayList<String>();
-					for(int i = 0; i <feed.getComments().size();i++){
-						list.add(feed.getComments().get(i).getComment());						
+					for (int i = 0; i < feed.getComments().size(); i++) {
+						list.add(feed.getComments().get(i).getComment());
 					}
-					Log.d("comments size",""+feed.getComments().size());
-					Log.d("notifications size",""+feed.getNotifications().size());
-					for(int i=0;i<feed.getNotifications().size();i++)
-					{
+					Log.d("comments size", "" + feed.getComments().size());
+					Log.d("notifications size", "" + feed.getNotifications().size());
+					for (int i = 0; i < feed.getNotifications().size(); i++) {
 						activityfeed.add(feed.getNotifications().get(i).getMessage());
 					}
-					//commentListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, list));
-					//activityListView.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, activityfeed));
+					// commentListView.setAdapter(new
+					// ArrayAdapter<String>(context,
+					// android.R.layout.simple_list_item_1, list));
+					// activityListView.setAdapter(new
+					// ArrayAdapter<String>(context,
+					// android.R.layout.simple_list_item_1, activityfeed));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
-					commentListView.setSelection(commentListView.getCount()-1);
+					commentListView.setSelection(commentListView.getCount() - 1);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
-					
+
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
 				}
