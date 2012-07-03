@@ -67,9 +67,10 @@ import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
 	private TextView logoText;
-	private TextView ProjectName;
+	private TextView ProjectName, projDesc;
+	private EditText typeComment;
 	private Button createTask, TaskView;
-	private Button editProject;
+	private Button editProject, postComment;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private List<ProjectMembers> memberList;
@@ -84,9 +85,11 @@ public class projectViewActivity extends Activity {
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
 	private ImageView slide;
-	private ListView activities;
+	private ListView activities, memberListView;
 	private ListView commentlist;
 	boolean isFirst = false;
+	Context cont;
+	Activity currentActivity;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -99,8 +102,8 @@ public class projectViewActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		final Context cont = this;
-		final Activity currentActivity = this;
+		cont = this;
+		currentActivity = this;
 
 		LayoutInflater inflater = LayoutInflater.from(this);
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
@@ -133,66 +136,35 @@ public class projectViewActivity extends Activity {
 
 		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
-		TextView projDesc = (TextView) projectView.findViewById(R.id.projDesc);
+		projDesc = (TextView) projectView.findViewById(R.id.projDesc);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 
-		final ListView memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
+		memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		final ListView activities = (ListView) commentView.findViewById(R.id.activity);
-		final ListView commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
-		final Button postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
-		final EditText typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
+		activities = (ListView) commentView.findViewById(R.id.activity);
+		commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
+		postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
+		typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
 
-		Bundle extras = getIntent().getExtras();
-		globalState = (ProjectxGlobalState) getApplication();
-		if (extras != null) {
-			projectString = extras.getString("projectJson", "");
-			Log.d("sdcsd", projectString);
-			System.out.println(projectString.isEmpty());
-			if (!(projectString.isEmpty())) {
-				Gson gson = new Gson();
-				project = gson.fromJson(projectString, Project.class);
-				Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
-				logoText.setText(project.getProject_name());
-				projDesc.setText(project.getProject_desc());
-				memberList = project.getMembers();
-				memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
-				List<NameValuePair> params = new LinkedList<NameValuePair>();
-				params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
-				String paramString = URLEncodedUtils.format(params, "utf-8");
-				url += "?" + paramString;
-				ProgressDialog dialog = new ProgressDialog(cont);
-				dialog.setMessage("Loading Activity Feed...");
-				GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
-				System.out.println(url);
-				task.execute(url);
-				url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProjectComment.php";
-				url += "?" + paramString;
-				TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
-				tabHost.setup();
-				TabSpec activityspec = tabHost.newTabSpec("Activities");
-				activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
-				// Intent activitiesIntent = new Intent(this,
-				// ProjectFeedActivity.class);
-				// activitiesIntent.putExtra("project_id", new
-				// Integer(project.getProject_id()).toString());
-				activityspec.setContent(R.id.activity);
+		TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
+		tabHost.setup();
+		TabSpec activityspec = tabHost.newTabSpec("Activities");
+		activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
+		// Intent activitiesIntent = new Intent(this,
+		// ProjectFeedActivity.class);
+		// activitiesIntent.putExtra("project_id", new
+		// Integer(project.getProject_id()).toString());
+		activityspec.setContent(R.id.activity);
 
-				TabSpec commentsspec = tabHost.newTabSpec("Comments");
-				commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
-				commentsspec.setContent(R.id.project_commentviewlayout);
+		TabSpec commentsspec = tabHost.newTabSpec("Comments");
+		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
+		commentsspec.setContent(R.id.project_commentviewlayout);
 
-				tabHost.addTab(activityspec); // Adding photos tab
-				tabHost.addTab(commentsspec);
-				typeComment.setText("");
-
-			} else {
-				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
-			}
-		}
+		tabHost.addTab(activityspec); // Adding photos tab
+		tabHost.addTab(commentsspec);
+		typeComment.setText("");
 
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
@@ -210,7 +182,6 @@ public class projectViewActivity extends Activity {
 				System.out.println(project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks);
 				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
-				memberViewIntent.putExtra("project", projectString);
 				memberViewIntent.putExtra("totaltasks", totaltasks);
 				memberViewIntent.putExtra("totalcompletedtasks", totalcompletedtasks);
 				memberViewIntent.putExtra("memberProgress", progress);
@@ -222,7 +193,6 @@ public class projectViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
-				newTaskIntent.putExtra("project", projectString);
 				startActivity(newTaskIntent);
 			}
 		});
@@ -231,8 +201,6 @@ public class projectViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent TaskViewIntent = new Intent(cont, expandTaskViewActivity.class);
-				System.out.println("project" + projectString);
-				TaskViewIntent.putExtra("project", projectString);
 				startActivity(TaskViewIntent);
 			}
 
@@ -242,8 +210,9 @@ public class projectViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent editProjectIntent = new Intent(cont, newProjectActivity.class);
-				editProjectIntent.putExtra("projectString", projectString);
+				editProjectIntent.putExtra("flag", 1);
 				startActivity(editProjectIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -277,6 +246,27 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		globalState = (ProjectxGlobalState) getApplication();
+
+		project = globalState.getProject();
+		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
+		logoText.setText(project.getProject_name());
+		projDesc.setText(project.getProject_desc());
+		memberList = project.getMembers();
+		for (int i = 0; i < memberList.size(); i++)
+			System.out.println("members new:" + memberList.get(i));
+		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
+		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		url += "?" + paramString;
+		ProgressDialog dialog = new ProgressDialog(cont);
+		dialog.setMessage("Loading Activity Feed...");
+		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
+		System.out.println(url);
+		task.execute(url);
+
 		if (isFirst) {
 			menuOut = true;
 			slide.performClick();

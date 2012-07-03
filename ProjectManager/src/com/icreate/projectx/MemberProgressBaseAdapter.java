@@ -68,7 +68,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 
 		if ((memberList.get(position).getMember_id() == 0)) {
 			holder.MemberName.setText("Assign To Member");
-			holder.TotalTask.setVisibility(View.GONE);
+			holder.TotalTask.setVisibility(View.INVISIBLE);
 			holder.CompletedTask.setVisibility(View.GONE);
 			holder.MemberProgress.setVisibility(View.GONE);
 		} else {

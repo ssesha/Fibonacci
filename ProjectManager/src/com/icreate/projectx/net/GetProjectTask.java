@@ -15,10 +15,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.icreate.projectx.R;
+import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.project.projectViewActivity;
 import com.icreate.projectx.task.TaskViewActivity;
 
@@ -28,12 +30,14 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 	private final Activity callingActivity;
 	private final ProgressDialog dialog;
 	private final int task_id;
+	private final boolean flag;
 
-	public GetProjectTask(Context context, Activity callingActivity, ProgressDialog dialog, int task_id) {
+	public GetProjectTask(Context context, Activity callingActivity, ProgressDialog dialog, int task_id, boolean flag) {
 		this.context = context;
 		this.callingActivity = callingActivity;
 		this.dialog = dialog;
 		this.task_id = task_id;
+		this.flag = flag;
 	}
 
 	@Override
@@ -69,8 +73,11 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		if (this.dialog.isShowing()) {
-			this.dialog.dismiss();
+		try {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
+		} catch (Exception e) {
 		}
 		System.out.println(result);
 		try {
@@ -78,18 +85,22 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 			System.out.println(resultJson.toString());
 			System.out.println("task id is" + task_id);
 			if (resultJson.getString("msg").equals("success")) {
+				Gson gson = new Gson();
+				Project project = gson.fromJson(resultJson.getString("project"), Project.class);
+				ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
+				globalState.setProject(project);
+
 				if (task_id == 0) {
 					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
-					projectViewIntent.putExtra("projectJson", resultJson.getString("project"));
-					Log.d("project json", projectViewIntent.getStringExtra("projectJson"));
 					callingActivity.startActivity(projectViewIntent);
 				} else {
 					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);
-					TaskViewIntent.putExtra("project", resultJson.getString("project"));
 					TaskViewIntent.putExtra("task_id", task_id);
-					Log.d("project in getProject", TaskViewIntent.getStringExtra("project"));
 					callingActivity.startActivity(TaskViewIntent);
 				}
+				if (flag == true)
+					callingActivity.finish();
+
 			} else {
 				Toast.makeText(context, "Unable to get Project", Toast.LENGTH_LONG).show();
 			}
