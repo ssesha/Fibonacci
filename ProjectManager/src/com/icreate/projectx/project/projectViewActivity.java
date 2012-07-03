@@ -113,6 +113,7 @@ public class projectViewActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) projectView.findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
+		logoText.setSelected(true);
 
 		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
@@ -273,6 +274,15 @@ public class projectViewActivity extends Activity {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+			}
+		});
+
+		logoText.setSelected(true);
+
+		logoText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				logoText.setSelected(true);
 			}
 		});
 	}

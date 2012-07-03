@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,12 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 	private static List<ProjectMembers> memberList;
 	private final LayoutInflater mInflater;
 	private static ArrayList<Task> tasks;
+	private final Context context;
 
 	public MemberProgressBaseAdapter(Context context, List<ProjectMembers> memberList, ArrayList<Task> tasks) {
 		this.memberList = memberList;
 		this.tasks = tasks;
+		this.context = context;
 		mInflater = LayoutInflater.from(context);
 	}
 
@@ -47,6 +50,7 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
 		System.out.println("inside base adapter");
 		System.out.println(memberList.toString());
 		System.out.println("position");
@@ -59,6 +63,9 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 			holder.MemberName = (TextView) convertView.findViewById(R.id.memberName);
 			holder.TotalTask = (TextView) convertView.findViewById(R.id.totalTask);
 			holder.CompletedTask = (TextView) convertView.findViewById(R.id.completedTask);
+			holder.MemberName.setTypeface(font);
+			holder.TotalTask.setTypeface(font);
+			holder.CompletedTask.setTypeface(font);
 			holder.MemberProgress = (ProgressBar) convertView.findViewById(R.id.memberProgress);
 
 			convertView.setTag(holder);

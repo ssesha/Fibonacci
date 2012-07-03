@@ -28,42 +28,88 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginBottom="15dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="15dp"
         android:orientation="vertical"
         android:weightSum="8" >
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" >
+            android:layout_weight="1"
+            android:gravity="right"
+            android:orientation="horizontal" >
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" >
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:weightSum="1" >
 
-                <TextView
-                    android:id="@+id/projectlogoText"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.19" >
+
+                    <ImageButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:text="TextView"
-                    android:textColor="#ffffff"
-                    android:textSize="25sp" />
+                    android:layout_weight="0.81" >
 
-                <ImageButton
-                    android:id="@+id/projectlogoImageButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginBottom="15dp"
-                    android:layout_marginRight="14dp"
-                    android:layout_marginTop="15dp" />
-            </RelativeLayout>
-        </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:weightSum="1" >
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.85" >
+
+                            <TextView
+                                android:id="@+id/projectlogoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:ellipsize="marquee"
+                                android:fadingEdge="horizontal"
+                                android:lines="1"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:text="TextView"
+                                android:textColor="#ffffff"
+                                android:textSize="25sp" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="0.15" >
+
+                            <ImageButton
+                                android:id="@+id/projectlogoImageButton"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="10dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -83,13 +129,19 @@
                     android:layout_height="fill_parent"
                     android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/projectDeadline"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp" />
+                    <LinearLayout 
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/projectDeadline"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#f5ad24"
+                            android:textSize="17sp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/projDesc"
@@ -97,7 +149,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp" />
+                        android:textSize="17sp" />
                 </LinearLayout>
             </ScrollView>
 
@@ -116,17 +168,21 @@
             android:paddingBottom="10dp"
             android:paddingTop="5dp" >
 
-            <ListView
-                android:id="@+id/memberProgressList"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="210dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/rounded"
-                android:cacheColorHint="@android:color/transparent"
-                android:divider="#d1d1d1"
-                android:dividerHeight="1dp"
-                android:padding="10dp" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/rounded" >
+
+                <ListView
+                    android:id="@+id/memberProgressList"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:divider="#ffffff"
+                    android:dividerHeight="1dp"
+                    android:padding="3dp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

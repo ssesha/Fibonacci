@@ -119,12 +119,12 @@ public class TaskViewActivity extends Activity {
 		globalState = (ProjectxGlobalState) getApplication();
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) logoView.findViewById(R.id.logoText);
+		logoText = (TextView) taskview.findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 		logoText.setText("Task View");
+		logoText.setSelected(true);
 
-		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) taskview.findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +153,7 @@ public class TaskViewActivity extends Activity {
 		extras = getIntent().getExtras();
 
 		if (extras != null) {
-			projectString = extras.getString("project","");
+			projectString = extras.getString("project", "");
 			task_id = extras.getInt("task_id");
 			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
 			Gson gson = new Gson();
@@ -284,16 +284,21 @@ public class TaskViewActivity extends Activity {
 					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
 					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createComment.php");
 
-					/*String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
-					List<NameValuePair> params = new LinkedList<NameValuePair>();
-					params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
-					String paramString = URLEncodedUtils.format(params, "utf-8");
-					url += "?" + paramString;
-					ProgressDialog dialog1 = new ProgressDialog(cont);
-					dialog1.setMessage("Getting Comments");
-					ListComment ListComments = new ListComment(cont, currentActivity, dialog1, commentListView);
-					System.out.println(url);
-					ListComments.execute(url);*/
+					/*
+					 * String url =
+					 * "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php"
+					 * ; List<NameValuePair> params = new
+					 * LinkedList<NameValuePair>(); params.add(new
+					 * BasicNameValuePair("task_id", new
+					 * Integer(task_id).toString())); String paramString =
+					 * URLEncodedUtils.format(params, "utf-8"); url += "?" +
+					 * paramString; ProgressDialog dialog1 = new
+					 * ProgressDialog(cont);
+					 * dialog1.setMessage("Getting Comments"); ListComment
+					 * ListComments = new ListComment(cont, currentActivity,
+					 * dialog1, commentListView); System.out.println(url);
+					 * ListComments.execute(url);
+					 */
 
 					commentTextBox.setText("");
 
@@ -396,6 +401,15 @@ public class TaskViewActivity extends Activity {
 				NewTaskIntent.putExtra("project", projectString);
 				NewTaskIntent.putExtra("parent", task_id);
 				startActivity(NewTaskIntent);
+			}
+		});
+
+		logoText.setSelected(true);
+
+		logoText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				logoText.setSelected(true);
 			}
 		});
 
@@ -624,7 +638,7 @@ public class TaskViewActivity extends Activity {
 					globalState.setCommentList(commentsContainer);
 					comments = commentsContainer.getComments();
 					commentListView.setAdapter(new CommentBaseAdapter(context, comments));
-					commentListView.setSelection(commentListView.getCount()-1);
+					commentListView.setSelection(commentListView.getCount() - 1);
 					Log.d("testing", "" + comments.size());
 					for (Comment comment : comments) {
 						Log.d("testing", "test test");
