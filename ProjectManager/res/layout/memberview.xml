@@ -50,7 +50,6 @@
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:progress="50"
                 android:progressDrawable="@drawable/search_progress_drawable" />
         </LinearLayout>
     </LinearLayout>

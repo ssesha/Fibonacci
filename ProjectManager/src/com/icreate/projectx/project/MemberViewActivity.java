@@ -15,10 +15,10 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
@@ -31,11 +31,13 @@ import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
 	private TextView logoText;
+	private ProgressBar mem_progress;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private String projectString;
 	private ProjectMembers currentMember;
 	private Context cont;
+	private Activity currentActivity;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -46,7 +48,7 @@ public class MemberViewActivity extends Activity {
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
 		cont = this;
-		final Activity currentActivity = this;
+		currentActivity = this;
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
@@ -66,20 +68,19 @@ public class MemberViewActivity extends Activity {
 			double totaltasks = extras.getDouble("totaltasks", -1);
 			double totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
 			currentMember = null;
-			projectString = extras.getString("project", "");
-			if (!(projectString.isEmpty())) {
-				Gson gson = new Gson();
-				project = gson.fromJson(projectString, Project.class);
-				Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
-				currentMember = project.getMembers().get(memberPosition);
-				if (currentMember != null) {
-					logoText.setText(currentMember.getUser_name());
-				}
-				taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
-				System.out.println(project.getTasks().size());
-			} else {
-				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
+
+			project = globalState.getProject();
+			Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
+			currentMember = project.getMembers().get(memberPosition);
+			if (currentMember != null) {
+				logoText.setText(currentMember.getUser_name());
 			}
+			mem_progress = (ProgressBar) findViewById(R.id.taskProgress);
+			double progress = memberProgress * 100.0;
+			mem_progress.setProgress((int) progress);
+			taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
+			System.out.println(project.getTasks().size());
+
 		}
 
 		taskListView.setOnItemClickListener(new OnItemClickListener() {
@@ -109,17 +110,16 @@ public class MemberViewActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.member_assign_task:
 			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
-			newTaskIntent.putExtra("project", projectString);
 			newTaskIntent.putExtra("member", currentMember.getMember_id());
 			startActivity(newTaskIntent);
-			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
+			currentActivity.finish();
 			return true;
 		case R.id.member_create_task:
 			Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
-			newTaskIntent2.putExtra("project", projectString);
 			newTaskIntent2.putExtra("member", currentMember.getMember_id());
+			System.out.println("member id to new task " + currentMember.getMember_id());
 			startActivity(newTaskIntent2);
-			Toast.makeText(cont, "Help", Toast.LENGTH_LONG).show();
+			currentActivity.finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -17,7 +17,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -34,14 +33,13 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.R;
-import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.net.GetProjectTask;
 
 public class editTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
 	private EditText taskNameTextBox, taskAboutTextBox, taskDateTextBox, projectNameTextBox, parentTextBox;
@@ -81,12 +79,12 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 		ProjectxGlobalState global = (ProjectxGlobalState) getApplication();
 
 		if (extras != null) {
-			projectString = extras.getString("project");
+
 			memberId = extras.getInt("member", 0);
 			task_id = extras.getInt("task_id", 0);
 			System.out.println("member id" + memberId);
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
+
+			project = global.getProject();
 
 			ProjectMembers dummyMember = new ProjectMembers(0);
 			memberList.add(dummyMember);
@@ -115,7 +113,10 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 		Task dummyTask = new Task(0);
 
 		parenttasks.add(dummyTask);
-		parenttasks.addAll(1, project.getTasks());
+		for (int i = 0; i < project.getTasks().size(); i++) {
+
+			parenttasks.add(project.getTasks().get(i));
+		}
 		parentAdapter = new TaskListBaseAdapter(cont, parenttasks);
 		Parent.setAdapter(parentAdapter);
 
@@ -155,10 +156,26 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 			tasklist = (ArrayList<Task>) project.getTasks();
 			TaskName.add("Choose Task Name");
 			for (int i = 0; i < tasklist.size(); i++) {
-				if (tasklist.get(i).getTask_status().equalsIgnoreCase("OPEN"))
+				if (tasklist.get(i).getTask_status().equalsIgnoreCase("OPEN")) {
+
 					TaskName.add(tasklist.get(i).getTask_name());
+				}
 			}
-			TaskAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, TaskName);
+			TaskAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, TaskName) {
+				@Override
+				public boolean isEnabled(int position) {
+					if (position == 0) {
+						return false;
+					} else {
+						return true;
+					}
+				}
+
+				@Override
+				public boolean areAllItemsEnabled() {
+					return false;
+				}
+			};
 			TaskAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			TaskNameSpinner.setAdapter(TaskAdapter);
 
@@ -238,9 +255,7 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 					json1.put("priority", Priority.getSelectedItem());
 
 					Log.d("JSON string", json1.toString());
-					ProgressDialog dialog = new ProgressDialog(cont);
-					dialog.setMessage("Create Task...");
-					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
+					CreateTask createTask = new CreateTask(cont, currentActivity, json1);
 					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -309,22 +324,16 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 	public class CreateTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
-		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+		public CreateTask(Context context, Activity callingActivity, JSONObject requestData) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
-			this.dialog = dialog;
 		}
 
 		@Override
 		protected void onPreExecute() {
-			System.out.println(this.dialog.isShowing());
-			if (!(this.dialog.isShowing())) {
-				this.dialog.show();
-			}
 		}
 
 		@Override
@@ -352,25 +361,22 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
-			}
 			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context, homeActivity.class)); // on
-																					// success
-																					// which
-																					// activity
-																					// to
-																					// call
-																					// ???
+					int projectId = project.getProject_id();
+					int taskId = resultJson.getInt("task_id");
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					ProgressDialog dialog = new ProgressDialog(context);
+					dialog.setMessage("Editing Task...");
+					dialog.show();
+					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
+					getProjectTask.execute(url);
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
-				callingActivity.finish();
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
