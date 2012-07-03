@@ -4,8 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/background"
-    android:orientation="horizontal"
-    android:paddingTop="5dp" >
+    android:orientation="horizontal" >
 
     <LinearLayout
         android:id="@+id/slidelayout_proj"
@@ -13,15 +12,6 @@
         android:layout_height="fill_parent"
         android:gravity="top|left"
         android:orientation="vertical" >
-
-        <!--
-             <ImageView
-            android:id="@+id/BtnSlide_proj"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:src="@drawable/fb" />
-        -->
 
         <ImageView
             android:id="@+id/BtnSlide_proj"
@@ -35,117 +25,216 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_weight="1" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical"
+        android:weightSum="8" >
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
             android:orientation="horizontal" >
 
-            <TextView
-                android:id="@+id/logoText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="TextView"
-                android:textColor="#ffffff"
-                android:textSize="38sp" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal"
+                android:weightSum="1" >
 
-            <ImageButton
-                android:id="@+id/logoImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginBottom="5dp"
-                android:layout_marginRight="14dp"
-                android:layout_marginTop="15dp" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.19" >
+
+                    <ImageButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.81" >
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:weightSum="1" >
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.85" >
+
+                            <TextView
+                                android:id="@+id/projectlogoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:ellipsize="marquee"
+                                android:fadingEdge="horizontal"
+                                android:lines="1"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:text="TextView"
+                                android:textColor="#ffffff"
+                                android:textSize="25sp" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="0.15" >
+
+                            <ImageButton
+                                android:id="@+id/projectlogoImageButton"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="10dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
         </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="4.5"
-        android:gravity="center"
-        android:orientation="vertical" >
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingRight="25dp" >
+            android:orientation="horizontal"
+            android:weightSum="5" >
 
-            <TextView
-                android:id="@+id/projDesc"
-                android:layout_width="match_parent"
+            <ScrollView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="25dp"
-                android:paddingRight="25dp"
-                android:text="Hello world. I am the first project in this awesome app!"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_weight="3" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" >
+
+                    <LinearLayout 
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/projectDeadline"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#f5ad24"
+                            android:textSize="17sp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/projDesc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp" />
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2" >
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="4"
             android:orientation="vertical"
-            android:paddingTop="20dp" >
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp" >
 
-            <ListView
-                android:id="@+id/memberProgressList"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="210dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="30dp"
-                android:background="@drawable/rounded"
-                android:cacheColorHint="@android:color/transparent"
-                android:divider="#d1d1d1"
-                android:dividerHeight="1dp"
-                android:padding="10dp" />
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/rounded" >
+
+                <ListView
+                    android:id="@+id/memberProgressList"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:divider="#ffffff"
+                    android:dividerHeight="1dp"
+                    android:padding="3dp" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearlayout4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:paddingRight="15dp"
-            android:paddingTop="15dp" >
+            android:layout_height="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
 
-            <Button
-                android:id="@+id/createNewTaskButton"
-                android:layout_width="100dp"
-                android:layout_height="54dp"
-                android:background="@drawable/scribble1"
-                android:text="Create Task"
-                android:textColor="#05261f"
-                android:textSize="22sp" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/taskListButton"
-                android:layout_width="100dp"
-                android:layout_height="54dp"
-                android:background="@drawable/scribble1"
-                android:text="Task List"
-                android:textColor="#05261f"
-                android:textSize="23sp" />
+                <Button
+                    android:id="@+id/createNewTaskButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/newtaskbutton" />
+            </RelativeLayout>
 
-            <Button
-                android:id="@+id/editProjectButton"
-                android:layout_width="100dp"
-                android:layout_height="54dp"
-                android:background="@drawable/scribble1"
-                android:text="Edit Project"
-                android:textColor="#05261f"
-                android:textSize="23sp" />
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/taskListButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/tasklistbutton" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/editProjectButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/editbutton" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

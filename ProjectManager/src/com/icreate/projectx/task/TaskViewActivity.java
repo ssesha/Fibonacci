@@ -106,7 +106,6 @@ public class TaskViewActivity extends Activity {
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
 
 		scrollView = (MyHorizontalScrollView) findViewById(R.id.myScrollView);
-		logoView = inflater.inflate(R.layout.logo1, null);
 		taskview = inflater.inflate(R.layout.taskview, null);
 
 		commentview = inflater.inflate(R.layout.task_commentview, null);
@@ -120,12 +119,12 @@ public class TaskViewActivity extends Activity {
 		globalState = (ProjectxGlobalState) getApplication();
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) logoView.findViewById(R.id.logoText);
+		logoText = (TextView) taskview.findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 		logoText.setText("Task View");
+		logoText.setSelected(true);
 
-		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) taskview.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -283,16 +282,21 @@ public class TaskViewActivity extends Activity {
 					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
 					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createComment.php");
 
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
-					List<NameValuePair> params = new LinkedList<NameValuePair>();
-					params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
-					String paramString = URLEncodedUtils.format(params, "utf-8");
-					url += "?" + paramString;
-					ProgressDialog dialog1 = new ProgressDialog(cont);
-					dialog1.setMessage("Getting Comments");
-					ListComment ListComments = new ListComment(cont, currentActivity, dialog1, commentListView);
-					System.out.println(url);
-					ListComments.execute(url);
+					/*
+					 * String url =
+					 * "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php"
+					 * ; List<NameValuePair> params = new
+					 * LinkedList<NameValuePair>(); params.add(new
+					 * BasicNameValuePair("task_id", new
+					 * Integer(task_id).toString())); String paramString =
+					 * URLEncodedUtils.format(params, "utf-8"); url += "?" +
+					 * paramString; ProgressDialog dialog1 = new
+					 * ProgressDialog(cont);
+					 * dialog1.setMessage("Getting Comments"); ListComment
+					 * ListComments = new ListComment(cont, currentActivity,
+					 * dialog1, commentListView); System.out.println(url);
+					 * ListComments.execute(url);
+					 */
 
 					commentTextBox.setText("");
 
@@ -397,6 +401,15 @@ public class TaskViewActivity extends Activity {
 			}
 		});
 
+		logoText.setSelected(true);
+
+		logoText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				logoText.setSelected(true);
+			}
+		});
+
 	};
 
 	@Override
@@ -465,6 +478,16 @@ public class TaskViewActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					// context.startActivity(new Intent(context,
 					// homeActivity.class));
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
+					List<NameValuePair> params = new LinkedList<NameValuePair>();
+					params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
+					String paramString = URLEncodedUtils.format(params, "utf-8");
+					url += "?" + paramString;
+					ProgressDialog dialog1 = new ProgressDialog(cont);
+					dialog1.setMessage("Getting Comments");
+					ListComment ListComments = new ListComment(context, callingActivity, dialog, commentListView);
+					System.out.println(url);
+					ListComments.execute(url);
 				} else {
 					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
@@ -612,6 +635,7 @@ public class TaskViewActivity extends Activity {
 					globalState.setCommentList(commentsContainer);
 					comments = commentsContainer.getComments();
 					commentListView.setAdapter(new CommentBaseAdapter(context, comments));
+					commentListView.setSelection(commentListView.getCount() - 1);
 					Log.d("testing", "" + comments.size());
 					for (Comment comment : comments) {
 						Log.d("testing", "test test");
@@ -669,6 +693,7 @@ public class TaskViewActivity extends Activity {
 			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 

@@ -67,7 +67,7 @@ import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
 	private TextView logoText;
-	private TextView ProjectName, projDesc;
+	private TextView ProjectName, projDesc,projDeadline;
 	private EditText typeComment;
 	private Button createTask, TaskView;
 	private Button editProject, postComment;
@@ -114,11 +114,11 @@ public class projectViewActivity extends Activity {
 		commentView = inflater.inflate(R.layout.projectextension, null);
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) logoView.findViewById(R.id.logoText);
+		logoText = (TextView) projectView.findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
+		logoText.setSelected(true);
 
-		ImageButton homeButton = (ImageButton) logoView.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +137,10 @@ public class projectViewActivity extends Activity {
 		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
 		projDesc = (TextView) projectView.findViewById(R.id.projDesc);
+		
+		projDeadline = (TextView) projectView.findViewById(R.id.projectDeadline);
+		projDesc.setTypeface(font);
+		projDeadline.setTypeface(font);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 
@@ -157,6 +161,7 @@ public class projectViewActivity extends Activity {
 		// activitiesIntent.putExtra("project_id", new
 		// Integer(project.getProject_id()).toString());
 		activityspec.setContent(R.id.activity);
+		
 
 		TabSpec commentsspec = tabHost.newTabSpec("Comments");
 		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
@@ -241,6 +246,15 @@ public class projectViewActivity extends Activity {
 				}
 			}
 		});
+
+		logoText.setSelected(true);
+
+		logoText.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				logoText.setSelected(true);
+			}
+		});
 	}
 
 	@Override
@@ -252,6 +266,7 @@ public class projectViewActivity extends Activity {
 		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
 		logoText.setText(project.getProject_name());
 		projDesc.setText(project.getProject_desc());
+		projDeadline.setText(project.getDue_date());
 		memberList = project.getMembers();
 		for (int i = 0; i < memberList.size(); i++)
 			System.out.println("members new:" + memberList.get(i));
@@ -293,6 +308,7 @@ public class projectViewActivity extends Activity {
 			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
 			}
 		}
 
@@ -443,6 +459,7 @@ public class projectViewActivity extends Activity {
 		protected void onPreExecute() {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Loading...");
+				this.dialog.setCanceledOnTouchOutside(false);
 				this.dialog.show();
 			}
 		}
@@ -483,9 +500,28 @@ public class projectViewActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
 					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
-					Log.d("activity feed", feed.toString());
-					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+					Log.d("activity feed", feed.getNotifications().toString());
+					Log.d("activity feed", feed.getComments().toString());
+					ArrayList<String> list = new ArrayList<String>();
+					ArrayList<String> activityfeed = new ArrayList<String>();
+					for (int i = 0; i < feed.getComments().size(); i++) {
+						list.add(feed.getComments().get(i).getComment());
+					}
+					Log.d("comments size", "" + feed.getComments().size());
+					Log.d("notifications size", "" + feed.getNotifications().size());
+					for (int i = 0; i < feed.getNotifications().size(); i++) {
+						activityfeed.add(feed.getNotifications().get(i).getMessage());
+					}
+					// commentListView.setAdapter(new
+					// ArrayAdapter<String>(context,
+					// android.R.layout.simple_list_item_1, list));
+					// activityListView.setAdapter(new
+					// ArrayAdapter<String>(context,
+					// android.R.layout.simple_list_item_1, activityfeed));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
+					commentListView.setSelection(commentListView.getCount() - 1);
+					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
 				}
