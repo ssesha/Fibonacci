@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.achartengine.GraphicalView;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -13,12 +14,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.icreate.projectx.datamodel.ProjectList;
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -30,10 +26,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
+import com.icreate.projectx.datamodel.ProjectList;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class ProfileActivity extends Activity {
 	@SuppressWarnings("unused")
@@ -42,63 +45,79 @@ public class ProfileActivity extends Activity {
 	private ListView projectList;
 	private Context cont;
 	private ProjectxGlobalState global;
-
+	private WebView webView;
+	private GraphicalView mChartView;
+	private LinearLayout chartLayout;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cont = this;
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.profileview);
+		setContentView(R.layout.profileview);		
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		//webView = (WebView)findViewById(R.id.graphwebview);
+		//webView.setBackgroundColor(Color.TRANSPARENT);
+		/*webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
+		webView.getSettings().setLoadWithOverviewMode(true);
+		webView.getSettings().setBuiltInZoomControls(true);
+		webView.getSettings().setSupportZoom(true);
+		webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+		webView.setScrollbarFadingEnabled(true);
+		webView.getSettings().setUseWideViewPort(true);*/
+		//webView.loadUrl(ChartDataProvider.getBarChartUrl());
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 		logoText.setText("My Profile");
-		NameText = (TextView) findViewById(R.id.profileName);
+		//NameText = (TextView) findViewById(R.id.profileName);
 		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
-		projectList = (ListView) findViewById(R.id.profile_projList);
+		//projectList = (ListView) findViewById(R.id.profile_projList);
 		logoButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
+				
+				//startActivity(intent);
 			}
 		});
+		chartLayout = (LinearLayout) findViewById(R.id.chart);
+		
 		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProfile.php";
 		global = (ProjectxGlobalState) getApplication();
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("user_id", global.getUserid()));
+		/*String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php";
+		global = (ProjectxGlobalState) getApplication();
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("project_id", "59"));*/
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		url += "?" + paramString;
-		Log.d("activity feed", url);
+		//String url = "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=FF6900,D8CC33&chds=0,160,0,160&chd=t:10,50,60,80,40,60,30|50,60,100,40,30,40,30&chtt=Horizontal+bar+chart&chts=FFFFFF,11.5";
+		Log.d("profile", url);
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Profile...");
-		ProjectListTask task = new ProjectListTask(cont, this, projectList);
+		ProjectListTask task = new ProjectListTask(cont, this, dialog, chartLayout);
 		task.execute(url);
+		//webView.loadUrl(url);
 	}
 	
 	private class ProjectListTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
-		private final ListView projectListView;
+		private final LinearLayout chartLayout;
 
-		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, ListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, LinearLayout chartLayout) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
-			this.projectListView = projectListView;
+			this.chartLayout = chartLayout;
 		}
-
-		public ProjectListTask(Context context, Activity callingActivity, ListView projectListView) {
-			this.context = context;
-			this.callingActivity = callingActivity;
-			this.dialog = null;
-			this.projectListView = projectListView;
-		}
-
+		
 		@Override
 		protected void onPreExecute() {
 			if (dialog != null) {
@@ -125,7 +144,6 @@ public class ProfileActivity extends Activity {
 					while ((s = buffer.readLine()) != null) {
 						response += s;
 					}
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -146,18 +164,22 @@ public class ProfileActivity extends Activity {
 				Log.d("ProjectList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
+					//Project temp = gson.fromJson(result, Project.class);
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					global.setProjectList(projectsContainer);
-					projectListView.setAdapter(new ProfileProjListBaseAdapter(context, projectsContainer.getProjects()));
-					
+					IDemoChart mCharts = new ProfileProgressChart();
+					mChartView = mCharts.execute(cont, projectsContainer.getProjects());
+					chartLayout.addView(mChartView, new LayoutParams
+							(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+					//webView.loadUrl(ChartDataProvider.getBarChartUrl(projectsContainer.getProjects()));
+					//projectListView.setAdapter(new ProfileProjListBaseAdapter(context, projectsContainer.getProjects()));					
 				} else {
 					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
-				}
-			} catch (JSONException e) {
+				}	
+			} catch (Exception e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
-	}
-	
+	}	
 }
