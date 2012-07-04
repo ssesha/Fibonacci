@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.icreate.projectx.datamodel.Task;
 public class TaskListBaseAdapter extends BaseAdapter {
 	private final ArrayList<Task> taskList;
 	private final ArrayList<Task> allTaskList;
+	private final Context context;
 
 	private final LayoutInflater mInflater;
 
@@ -26,11 +28,13 @@ public class TaskListBaseAdapter extends BaseAdapter {
 		this.taskList = taskList;
 		this.allTaskList = allTaskList;
 		mInflater = LayoutInflater.from(context);
+		this.context = context;
 	}
 
 	public TaskListBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
 		this.allTaskList = taskList;
+		this.context = context;
 		mInflater = LayoutInflater.from(context);
 	}
 
@@ -52,6 +56,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.tasklistitem, null);
 			holder = new ViewHolder();
@@ -62,15 +67,18 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.arrow = (ImageView) convertView.findViewById(R.id.imageViewarrow);
 			holder.priority = (ImageView) convertView.findViewById(R.id.imageViewPriority);
 			holder.txtassignee = (TextView) convertView.findViewById(R.id.tasklistassignee);
+			holder.txtName.setTypeface(font);
+			holder.txtParentName.setTypeface(font);
+			holder.txtassignee.setTypeface(font);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
 		if (taskList.get(position).getTask_id() == 0) {
-			holder.txtName.setText("Choose a Parent");
+			holder.txtName.setText("Choose Parent Task");
 			holder.txtParentName.setVisibility(View.GONE);
-			holder.txtdate.setVisibility(View.INVISIBLE);
+			holder.txtdate.setVisibility(View.GONE);
 			holder.TaskProgress.setVisibility(View.GONE);
 			holder.arrow.setVisibility(View.GONE);
 			holder.priority.setVisibility(View.GONE);

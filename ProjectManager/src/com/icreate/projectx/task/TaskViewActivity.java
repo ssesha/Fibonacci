@@ -467,6 +467,7 @@ public class TaskViewActivity extends Activity {
 							parentTaskIntent
 									.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(parentTaskIntent);
+							currentActivity.finish();
 						}
 
 					}
