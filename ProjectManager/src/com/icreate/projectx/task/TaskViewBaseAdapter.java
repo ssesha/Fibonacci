@@ -3,6 +3,7 @@ package com.icreate.projectx.task;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +20,11 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
-
+	private final Context context;
+	
 	public TaskViewBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
+		this.context = context;
 		mInflater = LayoutInflater.from(context);
 	}
 
@@ -43,12 +46,16 @@ public class TaskViewBaseAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.tasklistitem, null);
 			holder = new ViewHolder();
 			holder.txtName = (TextView) convertView.findViewById(R.id.tasklistname);
+			holder.txtName.setTypeface(font);
 			holder.txtParentName = (TextView) convertView.findViewById(R.id.taskParentName);
+			holder.txtParentName.setTypeface(font);
 			holder.txtdate = (TextView) convertView.findViewById(R.id.tasklistduedate);
+			holder.txtdate.setTypeface(font);
 			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.taskProgress);
 			holder.arrow = (ImageView) convertView.findViewById(R.id.imageViewarrow);
 			holder.priority = (ImageView) convertView.findViewById(R.id.imageViewPriority);

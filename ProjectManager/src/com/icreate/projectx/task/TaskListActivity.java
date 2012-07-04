@@ -60,6 +60,8 @@ public class TaskListActivity extends Activity {
 	private ArrayList<Task> tasks;
 	private final ArrayList<Task> filteredTasks = new ArrayList<Task>();
 	private Activity currentActivity;
+	private Button myTaskSearchButton;
+	private TextView myTaskSearch;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +80,8 @@ public class TaskListActivity extends Activity {
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 
-		Button myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
-		final TextView myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
+		myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
+		myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
 
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
@@ -138,6 +140,8 @@ public class TaskListActivity extends Activity {
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Tasks");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
 			ListTask ListTasks = new ListTask(cont, currentActivity, dialog, TaskListView);
 			System.out.println(url);
 			ListTasks.execute(url);
@@ -190,11 +194,19 @@ public class TaskListActivity extends Activity {
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
 				dialog.show();
 				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, selectedTask.getTask_id(), false);
 				getProjectTask.execute(url);
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		myTaskSearch.setText("");
 	}
 
 	public class ListTask extends AsyncTask<String, Void, String> {
@@ -216,6 +228,7 @@ public class TaskListActivity extends Activity {
 				this.dialog.setMessage("Getting Tasks...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 

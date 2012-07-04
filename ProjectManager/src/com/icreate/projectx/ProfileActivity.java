@@ -86,6 +86,8 @@ public class ProfileActivity extends Activity {
 		Log.d("profile", url);
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Profile...");
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		ProjectListTask task = new ProjectListTask(cont, this, dialog, chartLayout);
 		task.execute(url);
 	}
@@ -110,6 +112,7 @@ public class ProfileActivity extends Activity {
 					this.dialog.setMessage("Loading...");
 					this.dialog.show();
 					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.setCancelable(false);
 				}
 			}
 		}
