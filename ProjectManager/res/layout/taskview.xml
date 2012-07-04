@@ -234,7 +234,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:orientation="horizontal"
-                android:weightSum="2" >
+                android:weightSum="3" >
 
                 <Button
                     android:id="@+id/goToParent"
@@ -244,7 +244,7 @@
                     android:background="@drawable/scribble1"
                     android:text="Back"
                     android:textColor="#05261f"
-                    android:textSize="22sp" />
+                    android:textSize="14sp" />
 
                 <Button
                     android:id="@+id/createSubTaskButton"
@@ -254,7 +254,17 @@
                     android:background="@drawable/scribble1"
                     android:text="Create Task"
                     android:textColor="#05261f"
-                    android:textSize="22sp" />
+                    android:textSize="14sp" />
+                
+                <Button
+                    android:id="@+id/setAlarmButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/scribble1"
+                    android:text="Alarm"
+                    android:textColor="#05261f"
+                    android:textSize="14sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

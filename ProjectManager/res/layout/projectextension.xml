@@ -20,7 +20,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" >
 
-            <ListView
+            <com.handmark.pulltorefresh.library.PullToRefreshListView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/activity"
                 android:layout_width="match_parent"
@@ -31,8 +31,7 @@
                 android:paddingBottom="25dp"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:scrollbars="vertical" >
-            </ListView>
+                android:scrollbars="vertical" />
 
             <!-- android:background="@drawable/rounded" -->
 
@@ -45,7 +44,7 @@
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp" >
 
-                <ListView
+                <com.handmark.pulltorefresh.library.PullToRefreshListView
                     android:id="@+id/proj_comments"
                     android:layout_width="fill_parent"
                     android:layout_height="350dp"
@@ -79,7 +78,7 @@
                         android:textColor="#05261f"
                         android:textSize="20sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </LinearLayout>            
         </FrameLayout>
     </LinearLayout>
 

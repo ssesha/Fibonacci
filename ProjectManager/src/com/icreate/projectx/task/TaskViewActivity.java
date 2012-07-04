@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +56,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
@@ -73,9 +79,10 @@ public class TaskViewActivity extends Activity {
 	private ImageView slide;
 	private Spinner statusSpinner;
 	private EditText commentTextBox;
-	private Button sendComment, createTask;
+	private Button sendComment, createTask, setAlarm;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
+	private PullToRefreshListView commentListViewWrapper;
 	private ListView taskListView, commentListView;
 	private Context cont;
 	private Activity currentActivity;
@@ -146,15 +153,57 @@ public class TaskViewActivity extends Activity {
 		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
 		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 
-		commentListView = (ListView) commentview.findViewById(R.id.commentList);
+		commentListViewWrapper = (PullToRefreshListView) commentview.findViewById(R.id.commentList);
+		commentListView = commentListViewWrapper.getRefreshableView();
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
+		setAlarm = (Button) taskview.findViewById(R.id.setAlarmButton);
+		setAlarm.setEnabled(false);
 		extras = getIntent().getExtras();
+		setAlarm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(cont, "fdsdfsdf", Toast.LENGTH_LONG).show();
+				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+					System.out.println("Alarm was set now it is removed");
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					try {
+						am.cancel(sender);
+						sender.cancel();
+						setAlarm.setText("Alarm not Set");
+					} catch (Exception e) {
+						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
+					}
+				} else {
+					System.out.println("Alarm not set now it is set");
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(System.currentTimeMillis());
+					cal.add(Calendar.SECOND, 10);
+					alarmintent.putExtra("task_name", task.getTask_name());
+					alarmintent.putExtra("description", task.getDescription());
+					alarmintent.putExtra("requestCode", task_id);
+					alarmintent.putExtra("project_id", project.getProject_id());
+					alarmintent.putExtra("project_name", project.getProject_name());
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+					setAlarm.setText("Alarm set");
+				}
+			}
+		});
 
 		if (extras != null) {
 			task_id = extras.getInt("task_id");
-
+			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+				System.out.println("Alarm set");
+				setAlarm.setText("Alarm Set");
+			} else {
+				setAlarm.setText("Alarm not set");
+			}
 			project = globalState.getProject();
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
 			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
@@ -165,6 +214,7 @@ public class TaskViewActivity extends Activity {
 					break;
 				}
 			}
+			setAlarm.setEnabled(true);
 			status.add("OPEN");
 			status.add("ASSIGNED");
 			status.add("IN PROGRESS");
@@ -410,15 +460,33 @@ public class TaskViewActivity extends Activity {
 			}
 		});
 
-	};
+		commentListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
+				List<NameValuePair> params = new LinkedList<NameValuePair>();
+				params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Getting Comments");
+				ListComment ListComments = new ListComment(cont, currentActivity, commentListView);
+				System.out.println(url);
+				ListComments.execute(url);
+			}
+		});
+	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		/*
-		 * if (isFirst) { menuOut = true; slide.performClick(); } else { isFirst
-		 * = true; }
-		 */
+
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
 
 		logoText.setFocusable(true);
 		logoText.requestFocus();
@@ -591,11 +659,20 @@ public class TaskViewActivity extends Activity {
 			this.commentListView = commentListView;
 		}
 
+		public ListComment(Context context, Activity callingActivity, ListView commentListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.commentListView = commentListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Getting Comments...");
-				this.dialog.show();
+			if (this.dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Getting Comments...");
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -624,8 +701,10 @@ public class TaskViewActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (this.dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -644,6 +723,9 @@ public class TaskViewActivity extends Activity {
 						System.out.println("creator id" + comment.getCreated_by());
 						System.out.println("creator name" + comment.getCreator_name());
 						System.out.println("comment name" + comment.getComment());
+					}
+					if (this.dialog == null) {
+						commentListViewWrapper.onRefreshComplete();
 					}
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
@@ -749,5 +831,4 @@ public class TaskViewActivity extends Activity {
 			}
 		}
 	}
-
 }
