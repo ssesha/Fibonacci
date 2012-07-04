@@ -105,6 +105,5 @@ public class homeActivity extends Activity {
 				startActivity(new Intent(cont, ProjectManagerActivity.class));
 			}
 		});
-
 	}
 }

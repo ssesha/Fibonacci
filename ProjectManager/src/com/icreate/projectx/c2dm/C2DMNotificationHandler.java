@@ -13,14 +13,14 @@ public class C2DMNotificationHandler extends Activity {
 		super.onCreate(savedInstanceState);
 		Bundle extras = getIntent().getExtras();
 		int task_id = extras.getInt("task_id");
-		int projectId = extras.getInt("project_id");		
+		int projectId = extras.getInt("project_id");
 		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
-		
+
 		ProgressDialog dialog = new ProgressDialog(this);
 		dialog.setMessage("Getting Project Info...");
 		dialog.show();
-		Log.d("C2DMHandler", "starting activity taskid ="+task_id+" projectid="+projectId);
-		GetProjectTask getProjectTask = new GetProjectTask(this, this, dialog, task_id);
+		Log.d("C2DMHandler", "starting activity taskid =" + task_id + " projectid=" + projectId);
+		GetProjectTask getProjectTask = new GetProjectTask(this, this, dialog, task_id, false);
 		getProjectTask.execute(url);
 	}
 }

@@ -20,7 +20,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -36,15 +35,14 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.R;
-import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.net.GetProjectTask;
 
 public class newTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -80,27 +78,27 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		ProjectxGlobalState global = (ProjectxGlobalState) getApplication();
 
 		if (extras != null) {
-			projectString = extras.getString("project");
+
 			memberId = extras.getInt("member", 0);
 			parentId = extras.getInt("parent", 0);
-			System.out.println(projectString);
-			// Toast.makeText(cont, "" + projectId, Toast.LENGTH_LONG).show();
-			// get members of project and store in memberlist
-			// Members.add("Assign Task to");
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
+		}
+		System.out.println("member id in new task " + memberId);
+		project = global.getProject();
 
-			ProjectMembers dummyMember = new ProjectMembers(0);
-			memberList.add(dummyMember);
-			memberList.addAll(1, project.getMembers());
-			System.out.println("size" + memberList.size());
-			/*
-			 * for (int i = 0; i < memberList.size(); i++) { Members.add(i + 1,
-			 * memberList.get(i).getUser_name()); }
-			 */
-			// for (int i = 0; i < memberList.size(); i++) {
-			// Members.add(i + 1, memberList.get(i).getUser_name());
-			// }
+		ProjectMembers dummyMember = new ProjectMembers(0);
+		memberList.add(dummyMember);
+		memberList.addAll(1, project.getMembers());
+		System.out.println("size" + memberList.size());
+		/*
+		 * for (int i = 0; i < memberList.size(); i++) { Members.add(i + 1,
+		 * memberList.get(i).getUser_name()); }
+		 */
+		// for (int i = 0; i < memberList.size(); i++) {
+		// Members.add(i + 1, memberList.get(i).getUser_name());
+		// }
+
+		if (project != null) {
+			System.out.println("project name" + project.getProject_id() + " " + project.getProject_name());
 		}
 
 		taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
@@ -116,21 +114,30 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		Task dummyTask = new Task(0);
 
 		parenttasks.add(dummyTask);
-		parenttasks.addAll(1, project.getTasks());
+		for (int i = 0; i < project.getTasks().size(); i++) {
+
+			parenttasks.add(project.getTasks().get(i));
+
+		}
 		parentAdapter = new TaskListBaseAdapter(cont, parenttasks);
 		Parent.setAdapter(parentAdapter);
 
+		Assignto.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
+
 		if (parentId != 0) {
-			for (int i = 0; i < project.getTasks().size(); i++) {
-				if (parentId == project.getTasks().get(i).getTask_id())
-					Parent.setSelection(i + 1);
+			for (int i = 0; i < parenttasks.size(); i++) {
+				if (parentId == parenttasks.get(i).getTask_id())
+					Parent.setSelection(i);
 			}
 		}
 
 		if (memberId != 0) {
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				if (memberId == project.getMembers().get(i).getMember_id())
+				System.out.println("i am in member loop");
+				if (memberId == project.getMembers().get(i).getMember_id()) {
+					System.out.println("i am in member if loop");
 					Assignto.setSelection(i + 1);
+				}
 			}
 		}
 
@@ -145,18 +152,6 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		prioriAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, prioriList);
 		prioriAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Priority.setAdapter(prioriAdapter);
-
-		/*
-		 * dataAdapter = new ArrayAdapter<String>(this,
-		 * android.R.layout.simple_spinner_item, Members) {
-		 * 
-		 * @Override public boolean isEnabled(int position) { if (position == 0)
-		 * { return false; } else { return true; } }
-		 * 
-		 * @Override public boolean areAllItemsEnabled() { return false; } }; ;
-		 */
-		// dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		Assignto.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
 
 		Assignto.setOnItemSelectedListener(this);
 
@@ -198,9 +193,7 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 					json1.put("priority", Priority.getSelectedItem());
 
 					Log.d("JSON string", json1.toString());
-					ProgressDialog dialog = new ProgressDialog(cont);
-					dialog.setMessage("Create Task...");
-					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
+					CreateTask createTask = new CreateTask(cont, currentActivity, json1);
 					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -229,23 +222,16 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 	public class CreateTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
-		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+		public CreateTask(Context context, Activity callingActivity, JSONObject requestData) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
-			this.dialog = dialog;
 		}
 
 		@Override
 		protected void onPreExecute() {
-			System.out.println(this.dialog.isShowing());
-			if (!(this.dialog.isShowing())) {
-				this.dialog.show();
-				this.dialog.setCanceledOnTouchOutside(false);
-			}
 		}
 
 		@Override
@@ -273,53 +259,20 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
-			}
 			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					// TODO : Check which activity to call
-					int task_id = resultJson.getInt("task_id");
-					Calendar cal = Calendar.getInstance(); // for using this you
-					// need to import
-					// java.util.Calendar;
-
-					// add minutes to the calendar object
-					/*
-					 * cal.set(Calendar.MONTH, 4); cal.set(Calendar.YEAR, 2011);
-					 * cal.set(Calendar.DAY_OF_MONTH, 5);
-					 * cal.set(Calendar.HOUR_OF_DAY, 21);
-					 * cal.set(Calendar.MINUTE, 43);
-					 */
-
-					// cal.set will set the alarm to trigger exactly at: 21:43,
-					// 5
-					// May 2011
-					// if you want to trigger the alarm after let's say 5
-					// minutes
-					// after is activated you need to put
-					cal.setTimeInMillis(System.currentTimeMillis());
-					cal.add(Calendar.SECOND, 3);
-					Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
-					alarmintent.putExtra("title", "Title of our Notification");
-					alarmintent.putExtra("note", "Description of our  Notification");
-					alarmintent.putExtra("requestCode", task_id);
-					// PendingIntent sender =
-					// PendingIntent.getBroadcast(getApplicationContext(),
-					// HELLO_ID,
-					// alarmintent, PendingIntent.FLAG_UPDATE_CURRENT |
-					// Intent.FILL_IN_DATA);
-					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, 0);
-					Log.d("RequestCode is ", " " + task_id);
-
-					AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
-
-					context.startActivity(new Intent(context, homeActivity.class));
-					callingActivity.finish();
+					int projectId = project.getProject_id();
+					int taskId = resultJson.getInt("task_id");
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					ProgressDialog dialog = new ProgressDialog(context);
+					dialog.setMessage("Creating Task...");
+					dialog.show();
+					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
+					getProjectTask.execute(url);
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}

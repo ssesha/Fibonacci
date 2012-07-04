@@ -15,6 +15,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -26,7 +29,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -105,18 +107,7 @@ public class expandTaskViewActivity extends Activity {
 		task_projectListView.setTextFilterEnabled(true);
 		registerForContextMenu(task_projectListView);
 
-		Bundle extras = getIntent().getExtras();
 		int project_id = 0;
-		if (extras != null) {
-			projectString = extras.getString("project");
-			logoText.setText("Tasks");
-			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
-			taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
-			task_projectListView.setAdapter(taskListBaseAdapter);
-
-		}
 
 		projectTaskSearch.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -161,13 +152,49 @@ public class expandTaskViewActivity extends Activity {
 				Task selectedTask = (Task) o;
 				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
-				TaskViewIntent.putExtra("project", projectString);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(), 0);
 				startActivity(TaskViewIntent);
 			}
 		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		globalState = (ProjectxGlobalState) getApplication();
+		project = globalState.getProject();
+		for (int i = 0; i < project.getTasks().size(); i++) {
+			if (project.getTasks().get(i).getAssignee() != 0) {
+				for (int j = 0; j < project.getMembers().size(); j++) {
+					if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
+						project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
+				}
+			}
+		}
+		taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
+		task_projectListView.setAdapter(taskListBaseAdapter);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.task_list_option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.createtask:
+			Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
+			startActivity(newTaskIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override

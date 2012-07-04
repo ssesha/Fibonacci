@@ -14,6 +14,7 @@ public class ProjectxGlobalState extends Application {
 	private List<String> moduleId = new ArrayList<String>();
 	private CommentList commentList = new CommentList();
 	private ActivityFeed projectActivities = new ActivityFeed();
+	private Project project = new Project();
 
 	public String getAuthToken() {
 		return authToken;
@@ -83,6 +84,14 @@ public class ProjectxGlobalState extends Application {
 
 	public ActivityFeed getProjectActivities() {
 		return projectActivities;
+	}
+
+	public Project getProject() {
+		return project;
+	}
+
+	public void setProject(Project project) {
+		this.project = project;
 	}
 
 }

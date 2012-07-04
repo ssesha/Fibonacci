@@ -61,7 +61,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.taskProgress);
 			holder.arrow = (ImageView) convertView.findViewById(R.id.imageViewarrow);
 			holder.priority = (ImageView) convertView.findViewById(R.id.imageViewPriority);
-
+			holder.txtassignee = (TextView) convertView.findViewById(R.id.tasklistassignee);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -70,17 +70,29 @@ public class TaskListBaseAdapter extends BaseAdapter {
 		if (taskList.get(position).getTask_id() == 0) {
 			holder.txtName.setText("Choose a Parent");
 			holder.txtParentName.setVisibility(View.GONE);
-			holder.txtdate.setVisibility(View.GONE);
+			holder.txtdate.setVisibility(View.INVISIBLE);
 			holder.TaskProgress.setVisibility(View.GONE);
 			holder.arrow.setVisibility(View.GONE);
 			holder.priority.setVisibility(View.GONE);
+			holder.txtassignee.setVisibility(View.GONE);
+			holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
+			holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
+			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
 			holder.txtParentName.setVisibility(View.VISIBLE);
 			holder.txtdate.setVisibility(View.VISIBLE);
 			holder.TaskProgress.setVisibility(View.VISIBLE);
 			holder.arrow.setVisibility(View.VISIBLE);
 			holder.priority.setVisibility(View.VISIBLE);
+			holder.txtassignee.setVisibility(View.VISIBLE);
+
 			holder.txtName.setText(taskList.get(position).getTask_name());
+			System.out.println("assignee" + taskList.get(position).getAssignee_name());
+
+			if (taskList.get(position).getAssignee_name() == null)
+				holder.txtassignee.setVisibility(View.GONE);
+			else
+				holder.txtassignee.setText(taskList.get(position).getAssignee_name());
 
 			int parent_id = taskList.get(position).getParentId();
 			int flag = 0;
@@ -95,6 +107,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 					flag = 0;
 
 			}
+
 			if (flag == 0) {
 				holder.arrow.setVisibility(View.GONE);
 				holder.txtParentName.setVisibility(View.GONE);
@@ -139,6 +152,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 		TextView txtParentName;
 		ImageView arrow;
 		TextView txtdate;
+		TextView txtassignee;
 		ProgressBar TaskProgress;
 		ImageView priority;
 	}
