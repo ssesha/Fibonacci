@@ -168,7 +168,7 @@ public class ProjectListActivity extends Activity {
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.show();
-				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, 0);
+				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, 0, false);
 				getProjectTask.execute(url);
 			}
 		});
@@ -264,10 +264,6 @@ public class ProjectListActivity extends Activity {
 					projectListView.setAdapter(projectListBaseAdapter);
 					if (dialog == null) {
 						projectListViewWrapper.onRefreshComplete();
-					}
-					for (Project project : projects) {
-						System.out.println(project.getLeader_name());
-						System.out.println(project.getProject_name());
 					}
 				} else {
 					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();

@@ -44,13 +44,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.icreate.projectx.R;
-import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
 import com.icreate.projectx.datepicker.DefaultDateSlider;
+import com.icreate.projectx.net.GetProjectTask;
 
 public class newProjectActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -71,14 +70,15 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	private final List<String> moduleId = new ArrayList<String>();
 
 	private ArrayAdapter<String> dataAdapter;
-	private String projectString = "", leader_id = "";
+	private String leader_id = "";
 	private Project project;
-	private int project_id = 0;
+	private int project_id = 0, flag = 0;
 	private boolean firstLoad = true;
 	private ProjectViewMode viewMode;
 
 	private Activity currentActivity;
 	private Context cont;
+	private ProjectxGlobalState glob;
 
 	static final int DEFAULTDATESELECTOR_ID = 0;
 
@@ -103,9 +103,9 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
-			projectString = extras.getString("projectString");
-
+			flag = extras.getInt("flag");
 		}
+		
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
@@ -132,18 +132,18 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		leaderTextBox.setTypeface(font);
 		deadlineTextBox.setTypeface(font);
 		logoText.setTypeface(font);
-
 		logoButton.setBackgroundResource(R.drawable.home_button);
-
 		selectedMemberList.setAdapter(new SelectedMemberBaseAdapter(newProjectActivity.this));
 
-		if (!(projectString.equals(""))) {
+		if (flag == 1) {
 			viewMode = ProjectViewMode.EDIT;
 
 			logoText.setText("Edit Project");
+
+			glob = (ProjectxGlobalState) getApplication();
+			project = glob.getProject();
 			newProjectMemberstext.setText("Other Members");
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
+
 			nameTextBox.setText(project.getProject_name());
 			aboutTextBox.setText(project.getProject_desc());
 			leaderTextBox.setText(project.getLeader_name());
@@ -244,9 +244,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					json1.put("members", json_array);
 
 					Log.d("JSON string", json1.toString());
-					ProgressDialog dialog = new ProgressDialog(cont);
-					dialog.setMessage("Create Project...");
-					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1, dialog);
+					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1);
 					createProjectTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject2.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -370,7 +368,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					Log.d("module - result", courseid);
 				}
 
-				if (!(projectString.equals(""))) {
+				if (flag == 1) {
 					for (int i = 0; i < moduleId.size(); i++) {
 						if (dataAdapter.getItem(i).equals(project.getModule_code())) {
 							moduleTextBox.setSelection(i);
@@ -387,22 +385,16 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	public class CreateProjectTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
-		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
-			this.dialog = dialog;
 		}
 
 		@Override
 		protected void onPreExecute() {
-			System.out.println(this.dialog.isShowing());
-			if (!(this.dialog.isShowing())) {
-				this.dialog.show();
-			}
 		}
 
 		@Override
@@ -429,19 +421,23 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
-			}
 			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					context.startActivity(new Intent(context, homeActivity.class));
+					int projectId = resultJson.getInt("project_id");
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					ProgressDialog dialog = new ProgressDialog(context);
+					dialog.setMessage("Creating Project...");
+					dialog.show();
+					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, 0, true);
+					getProjectTask.execute(url);
+
 				} else {
 					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
-				callingActivity.finish();
+
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();

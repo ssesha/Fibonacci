@@ -15,10 +15,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -26,17 +30,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.net.DeleteTask;
+import com.icreate.projectx.net.GetProjectRefresh;
 
 public class expandTaskViewActivity extends Activity {
 	private TextView logoText;
 	private ProjectxGlobalState globalState;
 	private ListView task_projectListView;
+	private PullToRefreshListView projectListViewWrapper;
 	private Context cont;
 	private AlertDialog alert;
 	private Activity currentActivity;
@@ -101,22 +109,12 @@ public class expandTaskViewActivity extends Activity {
 		});
 		alert = builder.create();
 
-		task_projectListView = (ListView) findViewById(R.id.taskListView01);
+		projectListViewWrapper = (PullToRefreshListView) findViewById(R.id.taskListView01);
+		task_projectListView = projectListViewWrapper.getRefreshableView();
 		task_projectListView.setTextFilterEnabled(true);
 		registerForContextMenu(task_projectListView);
 
-		Bundle extras = getIntent().getExtras();
 		int project_id = 0;
-		if (extras != null) {
-			projectString = extras.getString("project");
-			logoText.setText("Tasks");
-			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
-			taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
-			task_projectListView.setAdapter(taskListBaseAdapter);
-
-		}
 
 		projectTaskSearch.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -132,6 +130,8 @@ public class expandTaskViewActivity extends Activity {
 				int textLength2 = projectTaskSearch.getText().length();
 				System.out.println(projectTaskSearch.getText());
 				filteredTasks.clear();
+				globalState = (ProjectxGlobalState) getApplication();
+				project = globalState.getProject();
 				for (int i = 0; i < project.getTasks().size(); i++) {
 					Log.d("YOLO", project.getTasks().get(i).getTask_name());
 					if (textLength2 <= project.getTasks().get(i).getTask_name().length()) {
@@ -161,13 +161,64 @@ public class expandTaskViewActivity extends Activity {
 				Task selectedTask = (Task) o;
 				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
-				TaskViewIntent.putExtra("project", projectString);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(), 0);
 				startActivity(TaskViewIntent);
 			}
 		});
+
+		projectListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+
+				int projectId = project.getProject_id();
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+				globalState = (ProjectxGlobalState) getApplication();
+				project = globalState.getProject();
+				GetProjectRefresh getProjectTask = new GetProjectRefresh(cont, currentActivity, null, task_projectListView, projectListViewWrapper, project);
+				getProjectTask.execute(url);
+
+			}
+		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		globalState = (ProjectxGlobalState) getApplication();
+		project = globalState.getProject();
+		for (int i = 0; i < project.getTasks().size(); i++) {
+			if (project.getTasks().get(i).getAssignee() != 0) {
+				for (int j = 0; j < project.getMembers().size(); j++) {
+					if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
+						project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
+				}
+			}
+		}
+		taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
+		task_projectListView.setAdapter(taskListBaseAdapter);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.task_list_option_menu, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+		switch (item.getItemId()) {
+		case R.id.createtask:
+			Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
+			startActivity(newTaskIntent);
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
@@ -175,25 +226,51 @@ public class expandTaskViewActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.setHeaderTitle("Context Menu");
 		menu.add(0, v.getId(), 0, "Delete");
-		menu.add(0, v.getId(), 0, "Action 2");
 	}
 
-	// @Override
-	/*
-	 * public boolean onContextItemSelected(MenuItem item) {
-	 * AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-	 * .getMenuInfo(); Task selectedTask = (Task) task_projectListView
-	 * .getItemAtPosition(info.position);
-	 * System.out.println(selectedTask.getProject_name() + " " +
-	 * selectedTask.getTask_name()); if (item.getTitle() == "Delete") {
-	 * TaskListBaseAdapter taskListBaseAdapter = (TaskListBaseAdapter)
-	 * task_projectListView .getAdapter();
-	 * 
-	 * String url =
-	 * "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id="
-	 * + selectedTask.getTask_id(); DeleteProjectTask deleteProjectTask = new
-	 * DeleteProjectTask(cont, currentActivity, taskListBaseAdapter, info,
-	 * selectedTask); deleteProjectTask.execute(url); return true; } else {
-	 * System.out.println("blsldsdlflsfsdf"); } return false; }
-	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final Task selectedTask = (Task) task_projectListView.getItemAtPosition(info.position);
+		System.out.println(selectedTask.getTask_id() + " " + selectedTask.getTask_name());
+		globalState = (ProjectxGlobalState) getApplication();
+		project = globalState.getProject();
+		if (item.getTitle() == "Delete") {
+			if (selectedTask.getSubTasks().size() == 0) {
+				System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteTask.php?task_id=" + selectedTask.getTask_id();
+				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
+				deletetask.execute(url);
+			} else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
+				builder.setCancelable(true);
+				builder.setTitle("Delete Task");
+				builder.setMessage("Deleting the Task will delete all its subtasks.Are you sure you want to delete the task ?");
+				builder.setInverseBackgroundForced(true);
+				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+
+						System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
+						String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteTask.php?task_id=" + selectedTask.getTask_id();
+						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
+						deletetask.execute(url);
+					}
+				});
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+			return true;
+		} else {
+			System.out.println("blsldsdlflsfsdf");
+		}
+		return false;
+	}
+
 }

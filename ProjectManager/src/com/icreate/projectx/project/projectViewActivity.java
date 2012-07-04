@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.achartengine.GraphicalView;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -42,16 +43,22 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.CommentBaseAdapter;
+import com.icreate.projectx.IDemoChart;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
+import com.icreate.projectx.ProfileProgressChart;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -67,9 +74,10 @@ import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
 	private TextView logoText;
-	private TextView ProjectName;
+	private TextView ProjectName, projDesc, projDeadline;
+	private EditText typeComment;
 	private Button createTask, TaskView;
-	private Button editProject;
+	private Button editProject, postComment;
 	private ProjectxGlobalState globalState;
 	private Project project;
 	private List<ProjectMembers> memberList;
@@ -84,10 +92,17 @@ public class projectViewActivity extends Activity {
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
 	private ImageView slide;
-	private ListView activities;
+	private PullToRefreshListView activitiesWrapper, commentlistWrapper;
+	private ListView activities, memberListView;
 	private ListView commentlist;
 	boolean isFirst = false;
-
+	Context cont;
+	Activity currentActivity;
+	private LinearLayout chartLayout;
+	private GraphicalView mChartView;
+	private final int subActivityID = 53769;
+	private Intent chartIntent;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,9 +114,10 @@ public class projectViewActivity extends Activity {
 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		final Context cont = this;
-		final Activity currentActivity = this;
-
+		cont = this;
+		currentActivity = this;
+		chartIntent = new Intent(cont, ProjectChartActivity.class);
+		chartIntent.putExtra("activity", 1);
 		LayoutInflater inflater = LayoutInflater.from(this);
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
 
@@ -117,13 +133,12 @@ public class projectViewActivity extends Activity {
 
 		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
-
+		
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
-
 			}
 		});
 
@@ -133,100 +148,69 @@ public class projectViewActivity extends Activity {
 
 		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
-		TextView projDesc = (TextView) projectView.findViewById(R.id.projDesc);
-		TextView projDeadline = (TextView) projectView.findViewById(R.id.projectDeadline);
+		projDesc = (TextView) projectView.findViewById(R.id.projDesc);
+
+		projDeadline = (TextView) projectView.findViewById(R.id.projectDeadline);
 		projDesc.setTypeface(font);
 		projDeadline.setTypeface(font);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
 
-		final ListView memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
+		memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		activities = (ListView) commentView.findViewById(R.id.activity);
-		commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
-		final Button postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
-		final EditText typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
-
-		Bundle extras = getIntent().getExtras();
-		globalState = (ProjectxGlobalState) getApplication();
-		if (extras != null) {
-			projectString = extras.getString("projectJson", "");
-			Log.d("sdcsd", projectString);
-			System.out.println(projectString.isEmpty());
-			if (!(projectString.isEmpty())) {
-				Gson gson = new Gson();
-				project = gson.fromJson(projectString, Project.class);
-				Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
-				logoText.setText(project.getProject_name());
-				projDesc.setText(project.getProject_desc());
-				projDeadline.setText(project.getDue_date());
-				memberList = project.getMembers();
-				memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
-				List<NameValuePair> params = new LinkedList<NameValuePair>();
-				params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
-				String paramString = URLEncodedUtils.format(params, "utf-8");
-				url += "?" + paramString;
-				ProgressDialog dialog = new ProgressDialog(cont);
-				dialog.setMessage("Loading Activity Feed...");
-				GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
-				System.out.println(url);
-				task.execute(url);
-				url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProjectComment.php";
-				url += "?" + paramString;
-				TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
-				tabHost.setup();
-				TabSpec activityspec = tabHost.newTabSpec("Activities");
-				activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
-				// Intent activitiesIntent = new Intent(this,
-				// ProjectFeedActivity.class);
-				// activitiesIntent.putExtra("project_id", new
-				// Integer(project.getProject_id()).toString());
-				activityspec.setContent(R.id.activity);
-
-				TabSpec commentsspec = tabHost.newTabSpec("Comments");
-				commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
-				commentsspec.setContent(R.id.project_commentviewlayout);
-
-				tabHost.addTab(activityspec); // Adding photos tab
-				tabHost.addTab(commentsspec);
-				typeComment.setText("");
-
-			} else {
-				Toast.makeText(cont, "Cannot load Project", Toast.LENGTH_LONG).show();
-			}
-		}
+		activitiesWrapper = (PullToRefreshListView) commentView.findViewById(R.id.activity);
+		commentlistWrapper = (PullToRefreshListView) commentView.findViewById(R.id.proj_comments);
+		activities = activitiesWrapper.getRefreshableView();
+		commentlist = commentlistWrapper.getRefreshableView();
+		postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
+		typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
+		chartLayout = (LinearLayout) projectView.findViewById(R.id.project_chartlayout);
+		
+		TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
+		tabHost.setup();
+		TabSpec activityspec = tabHost.newTabSpec("Activities");
+		activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
+		activityspec.setContent(R.id.activity);
+		TabSpec commentsspec = tabHost.newTabSpec("Comments");
+		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
+		commentsspec.setContent(R.id.project_commentviewlayout);
+		
+		/*TabSpec chartsspec = tabHost.newTabSpec("Charts");
+		chartsspec.setIndicator("Charts", getResources().getDrawable(R.drawable.dustbin));
+		chartsspec.setContent(R.id.project_chartlayout);*/
+		
+		tabHost.addTab(activityspec); 
+		tabHost.addTab(commentsspec);
+		//tabHost.addTab(chartsspec);
+		typeComment.setText("");
 
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
-		System.out.println("menuOut= " + menuOut);
 		memberListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = memberListView.getItemAtPosition(position);
 				ProjectMembers selectedMember = (ProjectMembers) o;
 				double totaltasks = (Double) view.getTag(R.id.member_total_tasks);
-				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_tasks);
+				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_completed_tasks);
 				double progress = (Double) view.getTag(R.id.member_progress);
 				Toast.makeText(cont, "You have chosen: " + " " + selectedMember.getUser_name() + " " + selectedMember.getMember_id(), Toast.LENGTH_LONG).show();
-				System.out.println(project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks);
+				System.out.println("oi oi test" + project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks + " " + progress);
 				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
-				memberViewIntent.putExtra("project", projectString);
 				memberViewIntent.putExtra("totaltasks", totaltasks);
 				memberViewIntent.putExtra("totalcompletedtasks", totalcompletedtasks);
 				memberViewIntent.putExtra("memberProgress", progress);
 				startActivity(memberViewIntent);
 			}
 		});
-
+		
 		createTask.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Intent newTaskIntent = new Intent(cont, newTaskActivity.class);
-				newTaskIntent.putExtra("project", projectString);
 				startActivity(newTaskIntent);
 			}
 		});
@@ -235,8 +219,6 @@ public class projectViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent TaskViewIntent = new Intent(cont, expandTaskViewActivity.class);
-				System.out.println("project" + projectString);
-				TaskViewIntent.putExtra("project", projectString);
 				startActivity(TaskViewIntent);
 			}
 
@@ -246,8 +228,23 @@ public class projectViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent editProjectIntent = new Intent(cont, newProjectActivity.class);
-				editProjectIntent.putExtra("projectString", projectString);
+				editProjectIntent.putExtra("flag", 1);
 				startActivity(editProjectIntent);
+				currentActivity.finish();
+			}
+		});
+
+		commentlistWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				pullltoRefreshCommentsActivity();
+			}
+		});
+
+		activitiesWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				pullltoRefreshCommentsActivity();
 			}
 		});
 
@@ -290,12 +287,54 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		
 		if (isFirst) {
 			menuOut = true;
 			slide.performClick();
 		} else {
 			isFirst = true;
 		}
+		logoText.setFocusable(true);
+		logoText.requestFocus();
+		System.out.println("menu in resume" + menuOut);
+
+		globalState = (ProjectxGlobalState) getApplication();
+
+		project = globalState.getProject();
+		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
+		logoText.setText(project.getProject_name());
+		projDesc.setText(project.getProject_desc());
+		projDeadline.setText(project.getDue_date());
+		IDemoChart mCharts = new ProjectProgressChart();
+		List<Project> projects = new ArrayList<Project>();
+		projects.add(project);
+		mChartView = mCharts.execute(cont, projects, true);
+		chartLayout.addView(mChartView, new LayoutParams
+				(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		
+		mChartView.setClickable(true);
+		mChartView.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(chartIntent, subActivityID);				
+			}
+		});
+		memberList = project.getMembers();
+		for (int i = 0; i < memberList.size(); i++)
+			System.out.println("members new:" + memberList.get(i));
+		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
+		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		url += "?" + paramString;
+		ProgressDialog dialog = new ProgressDialog(cont);
+		dialog.setMessage("Loading Activity Feed...");
+		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
+		System.out.println(url);
+		task.execute(url);
+		
 	}
 
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {
@@ -448,6 +487,16 @@ public class projectViewActivity extends Activity {
 		}
 	}
 
+	private void pullltoRefreshCommentsActivity() {
+		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		url += "?" + paramString;
+		GetActivityFeed task = new GetActivityFeed(cont, this, activities, commentlist);
+		task.execute(url);
+	}
+
 	private class GetActivityFeed extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -463,12 +512,22 @@ public class projectViewActivity extends Activity {
 			this.commentListView = commentListView;
 		}
 
+		public GetActivityFeed(Context context, Activity callingActivity, ListView activityListView, ListView commentListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.activityListView = activityListView;
+			this.commentListView = commentListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Loading...");
-				this.dialog.setCanceledOnTouchOutside(false);
-				this.dialog.show();
+			if (this.dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Loading...");
+					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -498,8 +557,10 @@ public class projectViewActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -529,6 +590,10 @@ public class projectViewActivity extends Activity {
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
 					commentListView.setSelection(commentListView.getCount() - 1);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+					if (dialog == null) {
+						commentlistWrapper.onRefreshComplete();
+						activitiesWrapper.onRefreshComplete();
+					}
 
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();

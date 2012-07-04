@@ -45,6 +45,12 @@
             android:id="@+id/tasklistduedate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        
+          <TextView
+            android:id="@+id/tasklistassignee"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+             android:textSize="10sp" />
     </LinearLayout>
 
     <LinearLayout

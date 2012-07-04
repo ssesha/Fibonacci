@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +56,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
@@ -64,6 +70,7 @@ import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.net.GetProjectTask;
 import com.icreate.projectx.project.projectViewActivity;
 
 public class TaskViewActivity extends Activity {
@@ -72,9 +79,10 @@ public class TaskViewActivity extends Activity {
 	private ImageView slide;
 	private Spinner statusSpinner;
 	private EditText commentTextBox;
-	private Button sendComment, createTask;
+	private Button sendComment, createTask, setAlarm;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
+	private PullToRefreshListView commentListViewWrapper;
 	private ListView taskListView, commentListView;
 	private Context cont;
 	private Activity currentActivity;
@@ -105,7 +113,6 @@ public class TaskViewActivity extends Activity {
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
 
 		scrollView = (MyHorizontalScrollView) findViewById(R.id.myScrollView);
-		logoView = inflater.inflate(R.layout.logo1, null);
 		taskview = inflater.inflate(R.layout.taskview, null);
 
 		commentview = inflater.inflate(R.layout.task_commentview, null);
@@ -119,12 +126,12 @@ public class TaskViewActivity extends Activity {
 		globalState = (ProjectxGlobalState) getApplication();
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) taskview.findViewById(R.id.logoText);
+		logoText = (TextView) taskview.findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
 		logoText.setText("Task View");
 		logoText.setSelected(true);
 
-		ImageButton homeButton = (ImageButton) taskview.findViewById(R.id.logoImageButton);
+		ImageButton homeButton = (ImageButton) taskview.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -146,18 +153,58 @@ public class TaskViewActivity extends Activity {
 		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
 		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 
-		commentListView = (ListView) commentview.findViewById(R.id.commentList);
+		commentListViewWrapper = (PullToRefreshListView) commentview.findViewById(R.id.commentList);
+		commentListView = commentListViewWrapper.getRefreshableView();
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
+		setAlarm = (Button) taskview.findViewById(R.id.setAlarmButton);
+		setAlarm.setEnabled(false);
 		extras = getIntent().getExtras();
+		setAlarm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(cont, "fdsdfsdf", Toast.LENGTH_LONG).show();
+				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+					System.out.println("Alarm was set now it is removed");
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					try {
+						am.cancel(sender);
+						sender.cancel();
+						setAlarm.setText("Alarm not Set");
+					} catch (Exception e) {
+						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
+					}
+				} else {
+					System.out.println("Alarm not set now it is set");
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(System.currentTimeMillis());
+					cal.add(Calendar.SECOND, 10);
+					alarmintent.putExtra("task_name", task.getTask_name());
+					alarmintent.putExtra("description", task.getDescription());
+					alarmintent.putExtra("requestCode", task_id);
+					alarmintent.putExtra("project_id", project.getProject_id());
+					alarmintent.putExtra("project_name", project.getProject_name());
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+					setAlarm.setText("Alarm set");
+				}
+			}
+		});
 
 		if (extras != null) {
-			projectString = extras.getString("project", "");
 			task_id = extras.getInt("task_id");
-			System.out.println("project_idsdgfsdfrewsdfwfwesfrewf=" + projectString);
-			Gson gson = new Gson();
-			project = gson.fromJson(projectString, Project.class);
+			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+				System.out.println("Alarm set");
+				setAlarm.setText("Alarm Set");
+			} else {
+				setAlarm.setText("Alarm not set");
+			}
+			project = globalState.getProject();
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
 			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
 			subTasks = new ArrayList<Task>();
@@ -167,6 +214,7 @@ public class TaskViewActivity extends Activity {
 					break;
 				}
 			}
+			setAlarm.setEnabled(true);
 			status.add("OPEN");
 			status.add("ASSIGNED");
 			status.add("IN PROGRESS");
@@ -319,19 +367,18 @@ public class TaskViewActivity extends Activity {
 					if (taskItem.getTask_id() == extras.getInt("task_id")) {
 						if (taskItem.getParentId() != 0) {
 							parentTaskIntent = new Intent(cont, TaskViewActivity.class);
-							Log.d("taskview to parent", projectString);
 							Log.d("taskview to parent", "" + taskItem.getParentId());
-							parentTaskIntent.putExtra("project", projectString);
 							// parentTaskIntent.putExtra("task_id",
 							// ""+taskItem.getParentId());
 							parentTaskIntent.putExtra("task_id", taskItem.getParentId());
+							startActivity(parentTaskIntent);
+							currentActivity.finish();
 						} else {
 							parentTaskIntent = new Intent(cont, projectViewActivity.class);
-							Log.d("taskview to parent", projectString);
-							parentTaskIntent.putExtra("projectJson", projectString);
+							parentTaskIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(parentTaskIntent);
 						}
-						startActivity(parentTaskIntent);
-						finish();
+
 					}
 				}
 			}
@@ -345,9 +392,9 @@ public class TaskViewActivity extends Activity {
 				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position + " " + selectedTask.getAssignee_name(),
 						Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
-				TaskViewIntent.putExtra("project", projectString);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				startActivity(TaskViewIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -398,9 +445,9 @@ public class TaskViewActivity extends Activity {
 			public void onClick(View v) {
 
 				Intent NewTaskIntent = new Intent(cont, newTaskActivity.class);
-				NewTaskIntent.putExtra("project", projectString);
 				NewTaskIntent.putExtra("parent", task_id);
 				startActivity(NewTaskIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -413,17 +460,37 @@ public class TaskViewActivity extends Activity {
 			}
 		});
 
-	};
+		commentListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
+				List<NameValuePair> params = new LinkedList<NameValuePair>();
+				params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Getting Comments");
+				ListComment ListComments = new ListComment(cont, currentActivity, commentListView);
+				System.out.println(url);
+				ListComments.execute(url);
+			}
+		});
+	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
+
 		if (isFirst) {
 			menuOut = true;
 			slide.performClick();
 		} else {
 			isFirst = true;
 		}
+
+		logoText.setFocusable(true);
+		logoText.requestFocus();
+		logoText.setFocusableInTouchMode(true);
 	}
 
 	public class CreateCommentTask extends AsyncTask<String, Void, String> {
@@ -592,11 +659,20 @@ public class TaskViewActivity extends Activity {
 			this.commentListView = commentListView;
 		}
 
+		public ListComment(Context context, Activity callingActivity, ListView commentListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.commentListView = commentListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Getting Comments...");
-				this.dialog.show();
+			if (this.dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Getting Comments...");
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -625,8 +701,10 @@ public class TaskViewActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (this.dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -645,6 +723,9 @@ public class TaskViewActivity extends Activity {
 						System.out.println("creator id" + comment.getCreated_by());
 						System.out.println("creator name" + comment.getCreator_name());
 						System.out.println("comment name" + comment.getComment());
+					}
+					if (this.dialog == null) {
+						commentListViewWrapper.onRefreshComplete();
 					}
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
@@ -669,10 +750,9 @@ public class TaskViewActivity extends Activity {
 		switch (item.getItemId()) {
 		case R.id.edittask:
 			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
-			newTaskIntent.putExtra("project", projectString);
 			newTaskIntent.putExtra("task_id", task_id);
 			startActivity(newTaskIntent);
-			Toast.makeText(cont, "New Game", Toast.LENGTH_LONG).show();
+			currentActivity.finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -734,16 +814,21 @@ public class TaskViewActivity extends Activity {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					Toast.makeText(context, "Task status changes successfully", Toast.LENGTH_LONG).show();
+					int projectId = project.getProject_id();
+					int taskId = resultJson.getInt("task_id");
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					ProgressDialog dialog = new ProgressDialog(context);
+					dialog.setMessage("Updating Status...");
+					dialog.show();
+					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
+					getProjectTask.execute(url);
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
-				callingActivity.finish();
 			} catch (JSONException e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
 	}
-
 }
