@@ -190,6 +190,12 @@ public class ProjectListActivity extends Activity {
 		});
 	}
 
+	@Override
+	protected void onResume() {
+		super.onResume();
+		projectSearch.setText("");
+	}
+
 	public class ProjectListTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -281,7 +287,7 @@ public class ProjectListActivity extends Activity {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.setHeaderTitle("Context Menu");
 		menu.add(0, v.getId(), 0, "Delete");
-		menu.add(0, v.getId(), 0, "Action 2");
+		// menu.add(0, v.getId(), 0, "Action 2");
 	}
 
 	@Override

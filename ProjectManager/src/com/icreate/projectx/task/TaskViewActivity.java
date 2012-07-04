@@ -3,6 +3,9 @@ package com.icreate.projectx.task;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -191,17 +194,29 @@ public class TaskViewActivity extends Activity {
 					}
 				} else {
 					System.out.println("Alarm not set now it is set");
-					Calendar cal = Calendar.getInstance();
-					cal.setTimeInMillis(System.currentTimeMillis());
-					cal.add(Calendar.SECOND, 10);
-					alarmintent.putExtra("task_name", task.getTask_name());
-					alarmintent.putExtra("description", task.getDescription());
-					alarmintent.putExtra("requestCode", task_id);
-					alarmintent.putExtra("project_id", project.getProject_id());
-					alarmintent.putExtra("project_name", project.getProject_name());
-					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
-					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
-					setAlarm.setText("Alarm set");
+					DateFormat formatter;
+					Date date;
+					formatter = new SimpleDateFormat("yyyy-MM-dd");
+					try {
+						date = formatter.parse(task.getDue_date());
+						Calendar cal = Calendar.getInstance();
+						System.out.println("Due date = " + task.getDue_date());
+						System.out.println("Due date date = " + date);
+						cal.setTime(date);
+						// cal.setTimeInMillis(System.currentTimeMillis());
+						// cal.add(Calendar.SECOND, 10);
+						alarmintent.putExtra("task_name", task.getTask_name());
+						alarmintent.putExtra("description", task.getDescription());
+						alarmintent.putExtra("requestCode", task_id);
+						alarmintent.putExtra("project_id", project.getProject_id());
+						alarmintent.putExtra("project_name", project.getProject_name());
+						PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+						am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+						setAlarm.setText("Alarm set");
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 		});

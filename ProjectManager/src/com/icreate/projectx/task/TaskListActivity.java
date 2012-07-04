@@ -60,6 +60,8 @@ public class TaskListActivity extends Activity {
 	private ArrayList<Task> tasks;
 	private final ArrayList<Task> filteredTasks = new ArrayList<Task>();
 	private Activity currentActivity;
+	private Button myTaskSearchButton;
+	private TextView myTaskSearch;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,8 +80,8 @@ public class TaskListActivity extends Activity {
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 
-		Button myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
-		final TextView myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
+		myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
+		myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
 
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
@@ -195,6 +197,12 @@ public class TaskListActivity extends Activity {
 				getProjectTask.execute(url);
 			}
 		});
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		myTaskSearch.setText("");
 	}
 
 	public class ListTask extends AsyncTask<String, Void, String> {
