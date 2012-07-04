@@ -480,12 +480,17 @@ public class TaskViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
 		if (isFirst) {
 			menuOut = true;
 			slide.performClick();
 		} else {
 			isFirst = true;
 		}
+
+		logoText.setFocusable(true);
+		logoText.requestFocus();
+		logoText.setFocusableInTouchMode(true);
 	}
 
 	public class CreateCommentTask extends AsyncTask<String, Void, String> {

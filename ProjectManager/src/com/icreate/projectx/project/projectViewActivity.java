@@ -188,17 +188,16 @@ public class projectViewActivity extends Activity {
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
-		System.out.println("menuOut= " + menuOut);
 		memberListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = memberListView.getItemAtPosition(position);
 				ProjectMembers selectedMember = (ProjectMembers) o;
 				double totaltasks = (Double) view.getTag(R.id.member_total_tasks);
-				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_tasks);
+				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_completed_tasks);
 				double progress = (Double) view.getTag(R.id.member_progress);
 				Toast.makeText(cont, "You have chosen: " + " " + selectedMember.getUser_name() + " " + selectedMember.getMember_id(), Toast.LENGTH_LONG).show();
-				System.out.println(project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks);
+				System.out.println("oi oi test" + project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks + " " + progress);
 				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
 				memberViewIntent.putExtra("totaltasks", totaltasks);
@@ -288,6 +287,18 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
+		logoText.setFocusable(true);
+		logoText.requestFocus();
+		System.out.println("menu in resume" + menuOut);
+
 		globalState = (ProjectxGlobalState) getApplication();
 
 		project = globalState.getProject();
@@ -324,12 +335,6 @@ public class projectViewActivity extends Activity {
 		System.out.println(url);
 		task.execute(url);
 		
-		if (isFirst) {
-			menuOut = true;
-			slide.performClick();
-		} else {
-			isFirst = true;
-		}
 	}
 
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {

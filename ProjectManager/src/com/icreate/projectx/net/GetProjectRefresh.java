@@ -3,6 +3,7 @@ package com.icreate.projectx.net;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -13,31 +14,35 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.project.projectViewActivity;
-import com.icreate.projectx.task.TaskViewActivity;
+import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.task.TaskListBaseAdapter;
 
-public class GetProjectTask extends AsyncTask<String, Void, String> {
+public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 
 	private final Context context;
 	private final Activity callingActivity;
 	private final ProgressDialog dialog;
-	private final int task_id;
-	private final boolean flag;
+	private Project project;
+	private TaskListBaseAdapter taskListBaseAdapter;
+	private final ListView task_projectListView;
+	private final PullToRefreshListView projectListViewWrapper;
 
-	public GetProjectTask(Context context, Activity callingActivity, ProgressDialog dialog, int task_id, boolean flag) {
+	public GetProjectRefresh(Context context, Activity callingActivity, ProgressDialog dialog, ListView task_projectListView, PullToRefreshListView projectListViewWrapper, Project project) {
 		this.context = context;
 		this.callingActivity = callingActivity;
 		this.dialog = dialog;
-		this.task_id = task_id;
-		this.flag = flag;
+		this.task_projectListView = task_projectListView;
+		this.projectListViewWrapper = projectListViewWrapper;
+		this.project = project;
 	}
 
 	@Override
@@ -85,24 +90,28 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 		try {
 			JSONObject resultJson = new JSONObject(result);
 			System.out.println(resultJson.toString());
-			System.out.println("task id is" + task_id);
 			if (resultJson.getString("msg").equals("success")) {
 				Gson gson = new Gson();
-				Project project = gson.fromJson(resultJson.getString("project"), Project.class);
+				Project projectobj = gson.fromJson(resultJson.getString("project"), Project.class);
 				ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
-				globalState.setProject(project);
+				globalState.setProject(projectobj);
 
-				if (task_id == 0) {
-					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
-					callingActivity.startActivity(projectViewIntent);
-				} else {
-					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);
-					TaskViewIntent.putExtra("task_id", task_id);
-					callingActivity.startActivity(TaskViewIntent);
+				globalState = (ProjectxGlobalState) callingActivity.getApplication();
+				project = globalState.getProject();
+				for (int i = 0; i < project.getTasks().size(); i++) {
+					System.out.println("task" + i + project.getTasks().get(i).getTask_name());
+					if (project.getTasks().get(i).getAssignee() != 0) {
+						for (int j = 0; j < project.getMembers().size(); j++) {
+							if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
+								project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
+						}
+					}
 				}
-				if (flag == true)
-					callingActivity.finish();
-
+				taskListBaseAdapter = new TaskListBaseAdapter(context, (ArrayList<Task>) project.getTasks());
+				task_projectListView.setAdapter(taskListBaseAdapter);
+				if (dialog == null) {
+					projectListViewWrapper.onRefreshComplete();
+				}
 			} else {
 				Toast.makeText(context, "Unable to get Project", Toast.LENGTH_LONG).show();
 			}
