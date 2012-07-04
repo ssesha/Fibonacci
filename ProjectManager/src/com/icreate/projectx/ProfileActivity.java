@@ -37,17 +37,18 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.datamodel.ProjectList;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.project.ProjectChartActivity;
 
 public class ProfileActivity extends Activity {
 	@SuppressWarnings("unused")
 	private TextView logoText, NameText;
 	private ImageButton logoButton;
-	private ListView projectList;
 	private Context cont;
 	private ProjectxGlobalState global;
-	private WebView webView;
 	private GraphicalView mChartView;
 	private LinearLayout chartLayout;
+	private Intent chartIntent;
+	private final int subActivityID = 98765;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -57,52 +58,36 @@ public class ProfileActivity extends Activity {
 		setContentView(R.layout.profileview);		
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		//webView = (WebView)findViewById(R.id.graphwebview);
-		//webView.setBackgroundColor(Color.TRANSPARENT);
-		/*webView.getSettings().setLayoutAlgorithm(LayoutAlgorithm.SINGLE_COLUMN);
-		webView.getSettings().setLoadWithOverviewMode(true);
-		webView.getSettings().setBuiltInZoomControls(true);
-		webView.getSettings().setSupportZoom(true);
-		webView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
-		webView.setScrollbarFadingEnabled(true);
-		webView.getSettings().setUseWideViewPort(true);*/
-		//webView.loadUrl(ChartDataProvider.getBarChartUrl());
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 		logoText.setText("My Profile");
+		chartIntent = new Intent(cont, ProjectChartActivity.class);
+		chartIntent.putExtra("activity", 0);
 		//NameText = (TextView) findViewById(R.id.profileName);
 		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
-		//projectList = (ListView) findViewById(R.id.profile_projList);
 		logoButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
-				
-				//startActivity(intent);
+				startActivity(new Intent(cont, homeActivity.class));				
 			}
 		});
+		
 		chartLayout = (LinearLayout) findViewById(R.id.chart);
 		
 		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProfile.php";
 		global = (ProjectxGlobalState) getApplication();
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("user_id", global.getUserid()));
-		/*String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php";
-		global = (ProjectxGlobalState) getApplication();
-		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		params.add(new BasicNameValuePair("project_id", "59"));*/
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		url += "?" + paramString;
-		//String url = "http://chart.apis.google.com/chart?chxr=0,0,160&chxt=x&chbh=a&chs=440x220&cht=bhs&chco=FF6900,D8CC33&chds=0,160,0,160&chd=t:10,50,60,80,40,60,30|50,60,100,40,30,40,30&chtt=Horizontal+bar+chart&chts=FFFFFF,11.5";
 		Log.d("profile", url);
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Profile...");
 		ProjectListTask task = new ProjectListTask(cont, this, dialog, chartLayout);
 		task.execute(url);
-		//webView.loadUrl(url);
 	}
 	
 	private class ProjectListTask extends AsyncTask<String, Void, String> {
@@ -168,11 +153,16 @@ public class ProfileActivity extends Activity {
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					global.setProjectList(projectsContainer);
 					IDemoChart mCharts = new ProfileProgressChart();
-					mChartView = mCharts.execute(cont, projectsContainer.getProjects());
+					mChartView = mCharts.execute(cont, projectsContainer.getProjects(), true);
 					chartLayout.addView(mChartView, new LayoutParams
 							(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-					//webView.loadUrl(ChartDataProvider.getBarChartUrl(projectsContainer.getProjects()));
-					//projectListView.setAdapter(new ProfileProjListBaseAdapter(context, projectsContainer.getProjects()));					
+					mChartView.setClickable(true);
+					mChartView.setOnClickListener(new View.OnClickListener() {			
+						@Override
+						public void onClick(View v) {
+							startActivityForResult(chartIntent, subActivityID);				
+						}
+					});		
 				} else {
 					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
 				}	

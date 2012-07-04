@@ -19,6 +19,14 @@ public class Project {
 	private int tasksCompleted;
 	private int tasksInProgress;
 	private int tasksOpen;
+	private int taskLow;
+	private int taskMedium;
+	private int taskHigh;
+	private int taskCritical;
+	private int taskLowComplete;
+	private int taskMediumComplete;
+	private int taskHighComplete;
+	private int taskCriticalComplete;
 	private double progress;
 
 	public int getLeader_id() {
@@ -149,6 +157,70 @@ public class Project {
 
 	public String getLeader_name() {
 		return leader_name;
+	}
+
+	public void setTaskLow(int taskLow) {
+		this.taskLow = taskLow;
+	}
+
+	public int getTaskLow() {
+		return taskLow;
+	}
+
+	public void setTaskMedium(int taskMedium) {
+		this.taskMedium = taskMedium;
+	}
+
+	public int getTaskMedium() {
+		return taskMedium;
+	}
+
+	public void setTaskHigh(int taskHigh) {
+		this.taskHigh = taskHigh;
+	}
+
+	public int getTaskHigh() {
+		return taskHigh;
+	}
+
+	public void setTaskCritical(int taskCritical) {
+		this.taskCritical = taskCritical;
+	}
+
+	public int getTaskCritical() {
+		return taskCritical;
+	}
+
+	public void setTaskLowComplete(int taskLowComplete) {
+		this.taskLowComplete = taskLowComplete;
+	}
+
+	public int getTaskLowComplete() {
+		return taskLowComplete;
+	}
+
+	public void setTaskMediumComplete(int taskMediumComplete) {
+		this.taskMediumComplete = taskMediumComplete;
+	}
+
+	public int getTaskMediumComplete() {
+		return taskMediumComplete;
+	}
+
+	public void setTaskHighComplete(int taskHighComplete) {
+		this.taskHighComplete = taskHighComplete;
+	}
+
+	public int getTaskHighComplete() {
+		return taskHighComplete;
+	}
+
+	public void setTaskCriticalComplete(int taskCriticalComplete) {
+		this.taskCriticalComplete = taskCriticalComplete;
+	}
+
+	public int getTaskCriticalComplete() {
+		return taskCriticalComplete;
 	}
 
 	public class TaskDueDateComparable implements Comparator<Task> {

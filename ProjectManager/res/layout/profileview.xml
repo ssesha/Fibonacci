@@ -5,37 +5,24 @@
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
-    <!-- <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:paddingBottom="30dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingTop="30dp" >
-
-        <WebView
-            android:id="@+id/graphwebview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/rounded"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="30dp" />
-    </LinearLayout> -->
-
     <LinearLayout
-        android:id="@+id/chart"
-        android:layout_width="350dp"
-        android:layout_height="200dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
+        android:layout_width="150dp"
+        android:layout_height="100dp"
+        android:layout_weight="2"
         android:gravity="center_horizontal"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
-        android:paddingTop="25dp" />
+        android:orientation="horizontal"
+        android:padding="25dp" >
+
+        <LinearLayout
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rounded"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:padding="1dp" >
+        </LinearLayout>
+    </LinearLayout>
     <!--
     <TextView
         android:id="@+id/profileName"
@@ -59,7 +46,7 @@
         android:cacheColorHint="@android:color/transparent"
         android:divider="#d1d1d1"
         android:dividerHeight="1dp"
-        android:padding="10dp" />
+        android:padding="10dp" />
     -->
 
 </LinearLayout>
