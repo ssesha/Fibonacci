@@ -356,6 +356,7 @@ public class projectViewActivity extends Activity {
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 
@@ -526,6 +527,7 @@ public class projectViewActivity extends Activity {
 				if (!this.dialog.isShowing()) {
 					this.dialog.setMessage("Loading...");
 					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.setCancelable(false);
 					this.dialog.show();
 				}
 			}

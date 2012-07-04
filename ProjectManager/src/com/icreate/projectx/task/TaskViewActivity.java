@@ -75,7 +75,9 @@ import com.icreate.projectx.project.projectViewActivity;
 
 public class TaskViewActivity extends Activity {
 
-	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName, TaskAssigneeName, TaskCreatorName, TaskStatus, TaskPriority;
+	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName, TaskAssigneeName, TaskCreatorName, TaskStatus;
+	private TextView Assignee, Reporter;
+	private ImageView TaskPriority;
 	private ImageView slide;
 	private Spinner statusSpinner;
 	private EditText commentTextBox;
@@ -144,18 +146,27 @@ public class TaskViewActivity extends Activity {
 
 		taskListView = (ListView) taskview.findViewById(R.id.subTaskList);
 		TaskDesc = (TextView) taskview.findViewById(R.id.taskDesc);
+		TaskDesc.setTypeface(font);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
+		TaskDeadline.setTypeface(font);
 		TaskAssigneeName = (TextView) taskview.findViewById(R.id.taskAssignedToView);
+		TaskAssigneeName.setTypeface(font);
 		TaskCreatorName = (TextView) taskview.findViewById(R.id.taskCreatedByView);
+		TaskCreatorName.setTypeface(font);
 		TaskStatus = (TextView) taskview.findViewById(R.id.taskstatusView);
+		TaskStatus.setTypeface(font);
 		statusSpinner = (Spinner) taskview.findViewById(R.id.taskstatusSpinner);
-		TaskPriority = (TextView) taskview.findViewById(R.id.taskPriorityView);
-		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
+		TaskPriority = (ImageView) taskview.findViewById(R.id.taskPriorityView);
 		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
-
+		ProjectName.setTypeface(font);
+		Assignee = (TextView)taskview.findViewById(R.id.taskView_assignee);
+		Assignee.setTypeface(font);
+		Reporter = (TextView)taskview.findViewById(R.id.taskView_reporter);
+		Reporter.setTypeface(font);
 		commentListViewWrapper = (PullToRefreshListView) commentview.findViewById(R.id.commentList);
 		commentListView = commentListViewWrapper.getRefreshableView();
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
+		commentTextBox.setTypeface(font);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
 		setAlarm = (Button) taskview.findViewById(R.id.setAlarmButton);
@@ -244,7 +255,7 @@ public class TaskViewActivity extends Activity {
 			} else
 				TaskDesc.setVisibility(View.GONE);
 			TaskDeadline.setText(task.getDue_date());
-			TaskName.setText(task.getTask_name());
+			logoText.setText(task.getTask_name());
 			for (int i = 0; i < member.size(); i++) {
 				if (!(task.getTask_status().equals("OPEN"))) {
 					if (member.get(i).getMember_id() == task.getAssignee()) {
@@ -258,7 +269,24 @@ public class TaskViewActivity extends Activity {
 					TaskCreatorName.setText(member.get(i).getUser_name());
 				}
 			}
-			TaskPriority.setText(task.getTask_priority());
+			String priority = task.getTask_priority();
+			if(priority.equalsIgnoreCase("LOW"))
+			{
+				TaskPriority.setImageResource(R.drawable.icon_priority_low);
+			}
+			else if(priority.equalsIgnoreCase("MEDIUM"))
+			{
+				TaskPriority.setImageResource(R.drawable.icon_priority_medium);
+			}
+			else if(priority.equalsIgnoreCase("HIGH"))
+			{
+				TaskPriority.setImageResource(R.drawable.icon_priority_high);
+			}
+			else if(priority.equalsIgnoreCase("CRITICAL"))
+			{
+				TaskPriority.setImageResource(R.drawable.icon_priority_critical);
+			}
+			//TaskPriority.setText(task.getTask_priority());
 			TaskStatus.setText(task.getTask_status());
 			if (!(task.getTask_status().equals("OPEN"))) {
 				for (int i = 0; i < member.size(); i++) {
@@ -271,7 +299,8 @@ public class TaskViewActivity extends Activity {
 
 				}
 			}
-			ProjectName.setText(task.getProject_name());
+			ProjectName.setText(project.getProject_name());
+			Log.d("Project name ", project.getProject_name());
 			System.out.println(alltasks.size());
 			int sub_taskid;
 			for (int i = 0; i < task.getTopSubTasks().size(); i++) {
@@ -421,7 +450,7 @@ public class TaskViewActivity extends Activity {
 					if (!(status.get(position).equals("OPEN")))
 						json1.put("assignee", task.getAssignee());
 					json1.put("status", status.get(position));
-					json1.put("priority", TaskPriority.getText());
+					json1.put("priority", task.getTask_priority());
 
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
