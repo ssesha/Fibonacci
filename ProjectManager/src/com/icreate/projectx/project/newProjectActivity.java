@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
@@ -105,7 +106,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		if (extras != null) {
 			flag = extras.getInt("flag");
 		}
-		
+
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
@@ -173,19 +174,12 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		items[0] = "Something1";
 		items[1] = "Something2";
 
-		MyArrayAdapter mySpinnerArrayAdapter = new MyArrayAdapter(this, R.layout.my_spinner_style);
-
-		mySpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		moduleTextBox.setAdapter(mySpinnerArrayAdapter);
-
-		/*
-		 * logoButton.setOnClickListener(new View.OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { startActivity(new
-		 * Intent(cont, homeActivity.class));
-		 * 
-		 * } });
-		 */
+		logoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				startActivity(new Intent(cont, homeActivity.class));
+			}
+		});
 
 		addMemberButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -573,29 +567,6 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		class ViewHolder {
 			TextView studentName, studentNumber;
 			Button removeButton;
-		}
-
-	}
-
-	private class MyArrayAdapter extends ArrayAdapter {
-		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-
-		public MyArrayAdapter(Context context, int textViewResourceId) {
-			super(context, textViewResourceId);
-		}
-
-		@Override
-		public TextView getView(int position, View convertView, ViewGroup parent) {
-			TextView v = (TextView) super.getView(position, convertView, parent);
-			v.setTypeface(font);
-			return v;
-		}
-
-		@Override
-		public TextView getDropDownView(int position, View convertView, ViewGroup parent) {
-			TextView v = (TextView) super.getView(position, convertView, parent);
-			v.setTypeface(font);
-			return v;
 		}
 
 	}
