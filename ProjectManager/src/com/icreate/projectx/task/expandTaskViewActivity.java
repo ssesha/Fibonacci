@@ -52,6 +52,7 @@ public class expandTaskViewActivity extends Activity {
 	private Project project;
 	private final ArrayList<Task> filteredTasks = new ArrayList<Task>();
 	private TaskListBaseAdapter taskListBaseAdapter;
+	private TextView projectTaskSearch;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +72,7 @@ public class expandTaskViewActivity extends Activity {
 		logoText.setTextColor(R.color.white);
 
 		Button projectTaskSearchButton = (Button) findViewById(R.id.projecttaskSearchButton);
-		final TextView projectTaskSearch = (TextView) findViewById(R.id.projecttaskSearch);
+		projectTaskSearch = (TextView) findViewById(R.id.projecttaskSearch);
 
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
@@ -187,6 +188,7 @@ public class expandTaskViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+		projectTaskSearch.setText("");
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
 		for (int i = 0; i < project.getTasks().size(); i++) {
