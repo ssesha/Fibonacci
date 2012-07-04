@@ -78,7 +78,7 @@
                         android:textColor="#05261f"
                         android:textSize="20sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </LinearLayout>            
         </FrameLayout>
     </LinearLayout>
 

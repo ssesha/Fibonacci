@@ -73,7 +73,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 	private ArrayAdapter<String> dataAdapter;
 	private String leader_id = "";
 	private Project project;
-	private int project_id = 0,flag=0;
+	private int project_id = 0, flag = 0;
 	private boolean firstLoad = true;
 	private ProjectViewMode viewMode;
 
@@ -105,8 +105,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			flag = extras.getInt("flag");
-
 		}
+		
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
@@ -133,20 +133,18 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		leaderTextBox.setTypeface(font);
 		deadlineTextBox.setTypeface(font);
 		logoText.setTypeface(font);
-
 		logoButton.setBackgroundResource(R.drawable.home_button);
-
 		selectedMemberList.setAdapter(new SelectedMemberBaseAdapter(newProjectActivity.this));
 
-		if (flag==1) {
+		if (flag == 1) {
 			viewMode = ProjectViewMode.EDIT;
 
 			logoText.setText("Edit Project");
-			
+
 			glob = (ProjectxGlobalState) getApplication();
 			project = glob.getProject();
 			newProjectMemberstext.setText("Other Members");
-			
+
 			nameTextBox.setText(project.getProject_name());
 			aboutTextBox.setText(project.getProject_desc());
 			leaderTextBox.setText(project.getLeader_name());

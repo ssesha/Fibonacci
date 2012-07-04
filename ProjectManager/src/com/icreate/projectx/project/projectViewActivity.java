@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.achartengine.GraphicalView;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -42,8 +43,10 @@ import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,8 +55,10 @@ import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.CommentBaseAdapter;
+import com.icreate.projectx.IDemoChart;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
+import com.icreate.projectx.ProfileProgressChart;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -93,7 +98,11 @@ public class projectViewActivity extends Activity {
 	boolean isFirst = false;
 	Context cont;
 	Activity currentActivity;
-
+	private LinearLayout chartLayout;
+	private GraphicalView mChartView;
+	private final int subActivityID = 53769;
+	private Intent chartIntent;
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -107,7 +116,8 @@ public class projectViewActivity extends Activity {
 
 		cont = this;
 		currentActivity = this;
-
+		chartIntent = new Intent(cont, ProjectChartActivity.class);
+		chartIntent.putExtra("activity", 1);
 		LayoutInflater inflater = LayoutInflater.from(this);
 		setContentView(inflater.inflate(R.layout.scrollview_comment, null));
 
@@ -123,13 +133,12 @@ public class projectViewActivity extends Activity {
 
 		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
-
+		
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				startActivity(new Intent(cont, homeActivity.class));
-
 			}
 		});
 
@@ -156,39 +165,39 @@ public class projectViewActivity extends Activity {
 		commentlist = commentlistWrapper.getRefreshableView();
 		postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
 		typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
-
+		chartLayout = (LinearLayout) projectView.findViewById(R.id.project_chartlayout);
+		
 		TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
 		tabHost.setup();
 		TabSpec activityspec = tabHost.newTabSpec("Activities");
 		activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
-		// Intent activitiesIntent = new Intent(this,
-		// ProjectFeedActivity.class);
-		// activitiesIntent.putExtra("project_id", new
-		// Integer(project.getProject_id()).toString());
 		activityspec.setContent(R.id.activity);
-
 		TabSpec commentsspec = tabHost.newTabSpec("Comments");
 		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
 		commentsspec.setContent(R.id.project_commentviewlayout);
-
-		tabHost.addTab(activityspec); // Adding photos tab
+		
+		/*TabSpec chartsspec = tabHost.newTabSpec("Charts");
+		chartsspec.setIndicator("Charts", getResources().getDrawable(R.drawable.dustbin));
+		chartsspec.setContent(R.id.project_chartlayout);*/
+		
+		tabHost.addTab(activityspec); 
 		tabHost.addTab(commentsspec);
+		//tabHost.addTab(chartsspec);
 		typeComment.setText("");
 
 		final View[] children = new View[] { commentView, projectView };
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
-		System.out.println("menuOut= " + menuOut);
 		memberListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = memberListView.getItemAtPosition(position);
 				ProjectMembers selectedMember = (ProjectMembers) o;
 				double totaltasks = (Double) view.getTag(R.id.member_total_tasks);
-				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_tasks);
+				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_completed_tasks);
 				double progress = (Double) view.getTag(R.id.member_progress);
 				Toast.makeText(cont, "You have chosen: " + " " + selectedMember.getUser_name() + " " + selectedMember.getMember_id(), Toast.LENGTH_LONG).show();
-				System.out.println(project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks);
+				System.out.println("oi oi test" + project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks + " " + progress);
 				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
 				memberViewIntent.putExtra("totaltasks", totaltasks);
@@ -197,7 +206,7 @@ public class projectViewActivity extends Activity {
 				startActivity(memberViewIntent);
 			}
 		});
-
+		
 		createTask.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -278,6 +287,18 @@ public class projectViewActivity extends Activity {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		
+		if (isFirst) {
+			menuOut = true;
+			slide.performClick();
+		} else {
+			isFirst = true;
+		}
+		logoText.setFocusable(true);
+		logoText.requestFocus();
+		System.out.println("menu in resume" + menuOut);
+
 		globalState = (ProjectxGlobalState) getApplication();
 
 		project = globalState.getProject();
@@ -285,6 +306,20 @@ public class projectViewActivity extends Activity {
 		logoText.setText(project.getProject_name());
 		projDesc.setText(project.getProject_desc());
 		projDeadline.setText(project.getDue_date());
+		IDemoChart mCharts = new ProjectProgressChart();
+		List<Project> projects = new ArrayList<Project>();
+		projects.add(project);
+		mChartView = mCharts.execute(cont, projects, true);
+		chartLayout.addView(mChartView, new LayoutParams
+				(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		
+		mChartView.setClickable(true);
+		mChartView.setOnClickListener(new View.OnClickListener() {			
+			@Override
+			public void onClick(View v) {
+				startActivityForResult(chartIntent, subActivityID);				
+			}
+		});
 		memberList = project.getMembers();
 		for (int i = 0; i < memberList.size(); i++)
 			System.out.println("members new:" + memberList.get(i));
@@ -299,13 +334,7 @@ public class projectViewActivity extends Activity {
 		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
 		System.out.println(url);
 		task.execute(url);
-
-		if (isFirst) {
-			menuOut = true;
-			slide.performClick();
-		} else {
-			isFirst = true;
-		}
+		
 	}
 
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {

@@ -30,7 +30,7 @@ import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
-	private TextView logoText;
+	private TextView logoText, progressnumber;
 	private ProgressBar mem_progress;
 	private ProjectxGlobalState globalState;
 	private Project project;
@@ -55,6 +55,7 @@ public class MemberViewActivity extends Activity {
 		logoText.setTypeface(font);
 		logoText.setTextColor(R.color.white);
 
+		progressnumber = (TextView) findViewById(R.id.taskprogressnumber);
 		System.out.println("ok then");
 		final ListView taskListView = (ListView) findViewById(R.id.assigneetasklist);
 		taskListView.setTextFilterEnabled(true);
@@ -76,8 +77,9 @@ public class MemberViewActivity extends Activity {
 				logoText.setText(currentMember.getUser_name());
 			}
 			mem_progress = (ProgressBar) findViewById(R.id.taskProgress);
-			double progress = memberProgress * 100.0;
-			mem_progress.setProgress((int) progress);
+			progressnumber.setText((int) memberProgress + "%");
+
+			mem_progress.setProgress((int) memberProgress);
 			taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
 			System.out.println(project.getTasks().size());
 
