@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -53,6 +56,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
@@ -73,7 +77,7 @@ public class TaskViewActivity extends Activity {
 	private ImageView slide;
 	private Spinner statusSpinner;
 	private EditText commentTextBox;
-	private Button sendComment, createTask;
+	private Button sendComment, createTask, setAlarm;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
 	private ListView taskListView, commentListView;
@@ -150,11 +154,52 @@ public class TaskViewActivity extends Activity {
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
+		setAlarm = (Button) taskview.findViewById(R.id.setAlarmButton);
+		setAlarm.setEnabled(false);
 		extras = getIntent().getExtras();
+		setAlarm.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(cont, "fdsdfsdf", Toast.LENGTH_LONG).show();
+				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+					System.out.println("Alarm was set now it is removed");
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					try {
+						am.cancel(sender);
+						sender.cancel();
+						setAlarm.setText("Alarm not Set");
+					} catch (Exception e) {
+						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
+					}
+				} else {
+					System.out.println("Alarm not set now it is set");
+					Calendar cal = Calendar.getInstance();
+					cal.setTimeInMillis(System.currentTimeMillis());
+					cal.add(Calendar.SECOND, 10);
+					alarmintent.putExtra("task_name", task.getTask_name());
+					alarmintent.putExtra("description", task.getDescription());
+					alarmintent.putExtra("requestCode", task_id);
+					alarmintent.putExtra("project_id", project.getProject_id());
+					alarmintent.putExtra("project_name", project.getProject_name());
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+					am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+					setAlarm.setText("Alarm set");
+				}
+			}
+		});
 
 		if (extras != null) {
 			task_id = extras.getInt("task_id");
-
+			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+				System.out.println("Alarm set");
+				setAlarm.setText("Alarm Set");
+			} else {
+				setAlarm.setText("Alarm not set");
+			}
 			project = globalState.getProject();
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
 			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
@@ -165,6 +210,7 @@ public class TaskViewActivity extends Activity {
 					break;
 				}
 			}
+			setAlarm.setEnabled(true);
 			status.add("OPEN");
 			status.add("ASSIGNED");
 			status.add("IN PROGRESS");
