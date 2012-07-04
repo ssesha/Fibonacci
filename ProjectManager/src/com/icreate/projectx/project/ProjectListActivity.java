@@ -265,10 +265,6 @@ public class ProjectListActivity extends Activity {
 					if (dialog == null) {
 						projectListViewWrapper.onRefreshComplete();
 					}
-					for (Project project : projects) {
-						System.out.println(project.getLeader_name());
-						System.out.println(project.getProject_name());
-					}
 				} else {
 					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
 				}

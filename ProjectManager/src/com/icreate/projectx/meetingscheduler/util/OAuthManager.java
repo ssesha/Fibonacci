@@ -173,6 +173,7 @@ public class OAuthManager {
 	 * @param callback
 	 *            The callback to call when a token as been retrieved.
 	 */
+	@SuppressWarnings("deprecation")
 	private void authorize(final Account account, final boolean invalidate, final Activity context, final AuthHandler callback) {
 		final AccountManager accountManager = AccountManager.get(context);
 

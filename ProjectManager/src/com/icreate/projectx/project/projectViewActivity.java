@@ -52,6 +52,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.IDemoChart;
 import com.icreate.projectx.MemberProgressBaseAdapter;
@@ -72,7 +74,7 @@ import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
 	private TextView logoText;
-	private TextView ProjectName, projDesc,projDeadline;
+	private TextView ProjectName, projDesc, projDeadline;
 	private EditText typeComment;
 	private Button createTask, TaskView;
 	private Button editProject, postComment;
@@ -90,6 +92,7 @@ public class projectViewActivity extends Activity {
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
 	private ImageView slide;
+	private PullToRefreshListView activitiesWrapper, commentlistWrapper;
 	private ListView activities, memberListView;
 	private ListView commentlist;
 	boolean isFirst = false;
@@ -146,7 +149,7 @@ public class projectViewActivity extends Activity {
 		createTask = (Button) projectView.findViewById(R.id.createNewTaskButton);
 		TaskView = (Button) projectView.findViewById(R.id.taskListButton);
 		projDesc = (TextView) projectView.findViewById(R.id.projDesc);
-		
+
 		projDeadline = (TextView) projectView.findViewById(R.id.projectDeadline);
 		projDesc.setTypeface(font);
 		projDeadline.setTypeface(font);
@@ -156,8 +159,10 @@ public class projectViewActivity extends Activity {
 		memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
-		activities = (ListView) commentView.findViewById(R.id.activity);
-		commentlist = (ListView) commentView.findViewById(R.id.proj_comments);
+		activitiesWrapper = (PullToRefreshListView) commentView.findViewById(R.id.activity);
+		commentlistWrapper = (PullToRefreshListView) commentView.findViewById(R.id.proj_comments);
+		activities = activitiesWrapper.getRefreshableView();
+		commentlist = commentlistWrapper.getRefreshableView();
 		postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
 		typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
 		chartLayout = (LinearLayout) projectView.findViewById(R.id.project_chartlayout);
@@ -167,7 +172,6 @@ public class projectViewActivity extends Activity {
 		TabSpec activityspec = tabHost.newTabSpec("Activities");
 		activityspec.setIndicator("Activitites", getResources().getDrawable(R.drawable.bulb));
 		activityspec.setContent(R.id.activity);
-		
 		TabSpec commentsspec = tabHost.newTabSpec("Comments");
 		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
 		commentsspec.setContent(R.id.project_commentviewlayout);
@@ -228,6 +232,20 @@ public class projectViewActivity extends Activity {
 				editProjectIntent.putExtra("flag", 1);
 				startActivity(editProjectIntent);
 				currentActivity.finish();
+			}
+		});
+
+		commentlistWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				pullltoRefreshCommentsActivity();
+			}
+		});
+
+		activitiesWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				pullltoRefreshCommentsActivity();
 			}
 		});
 
@@ -464,6 +482,16 @@ public class projectViewActivity extends Activity {
 		}
 	}
 
+	private void pullltoRefreshCommentsActivity() {
+		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		List<NameValuePair> params = new LinkedList<NameValuePair>();
+		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
+		String paramString = URLEncodedUtils.format(params, "utf-8");
+		url += "?" + paramString;
+		GetActivityFeed task = new GetActivityFeed(cont, this, activities, commentlist);
+		task.execute(url);
+	}
+
 	private class GetActivityFeed extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -479,12 +507,22 @@ public class projectViewActivity extends Activity {
 			this.commentListView = commentListView;
 		}
 
+		public GetActivityFeed(Context context, Activity callingActivity, ListView activityListView, ListView commentListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.activityListView = activityListView;
+			this.commentListView = commentListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Loading...");
-				this.dialog.setCanceledOnTouchOutside(false);
-				this.dialog.show();
+			if (this.dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Loading...");
+					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -514,8 +552,10 @@ public class projectViewActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -545,6 +585,10 @@ public class projectViewActivity extends Activity {
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
 					commentListView.setSelection(commentListView.getCount() - 1);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
+					if (dialog == null) {
+						commentlistWrapper.onRefreshComplete();
+						activitiesWrapper.onRefreshComplete();
+					}
 
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
