@@ -57,8 +57,12 @@ public class C2DMMessageReceiver extends BroadcastReceiver {
 			Log.d("in for loop", temp[i]+" "+temp[i+1]);
 			intent.putExtra(temp[i], Integer.parseInt(temp[++i]));			
 		}
-		int message_id = Integer.parseInt(temp[1]);
-		
+		int message_id;// = Integer.parseInt(temp[1]);
+		if(temp[7]!="0")
+			message_id = Integer.parseInt(temp[7]);
+		else
+			message_id = Integer.parseInt(temp[5]);
+					
 		Log.d("C2dm - message-id", temp[1]);
 		Log.d("c2dm- message", temp[0]);
 		Log.d("c2dm - activity", temp[2]);
