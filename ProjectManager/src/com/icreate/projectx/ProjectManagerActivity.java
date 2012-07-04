@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -81,7 +82,8 @@ public class ProjectManagerActivity extends Activity {
 
 		dialog = new ProgressDialog(cont);
 		dialog.setMessage("Logging in...");
-
+		dialog.setCanceledOnTouchOutside(false);
+		dialog.setCancelable(false);
 		Button loginButton = (Button) findViewById(R.id.loginButton);
 
 		loginButton.setOnClickListener(new View.OnClickListener() {
@@ -183,6 +185,7 @@ public class ProjectManagerActivity extends Activity {
 				this.dialog.setMessage("Logging in...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);				
 			}
 		}
 
