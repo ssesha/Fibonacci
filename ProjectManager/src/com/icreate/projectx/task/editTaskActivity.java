@@ -371,6 +371,8 @@ public class editTaskActivity extends Activity implements AdapterView.OnItemSele
 					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Editing Task...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
 					dialog.show();
 					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
 					getProjectTask.execute(url);
