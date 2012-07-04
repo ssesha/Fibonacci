@@ -16,10 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -27,40 +28,48 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.icreate.projectx.AlarmReceiver;
-import com.icreate.projectx.MemberProgressBaseAdapter;
+import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
 import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.datepicker.DateSlider;
+import com.icreate.projectx.datepicker.DefaultDateSlider;
 import com.icreate.projectx.net.GetProjectTask;
 
-public class newTaskActivity extends Activity implements AdapterView.OnItemSelectedListener {
+public class newTaskActivity extends Activity {
 
 	private EditText taskNameTextBox, taskAboutTextBox, taskDateTextBox, projectNameTextBox, parentTextBox;
+	private TextView logoText, projNameView, taskNameView, taskDateView, taskAboutView, taskPriorityView;
 	private DatePicker taskDate;
 	private Button createTask;
+	private ImageButton logoButton;
 	private final List<ProjectMembers> memberList = new ArrayList<ProjectMembers>();
 	private final List<String> prioriList = new ArrayList<String>();
 	// private final List<String> Members = new ArrayList<String>();
 	private final ArrayList<Task> parenttasks = new ArrayList<Task>();
 	private Spinner Assignto, Priority, Parent;
 	private ArrayAdapter<String> prioriAdapter;
-	private TaskListBaseAdapter parentAdapter;
+	private ParentSpinnerBaseAdapter parentAdapter;
+	private AssigntoSpinnerBaseAdapter memberAdapter;
 	private String projectString;
 	int parentId;
 	int memberId;
 	private Project project;
 	private String status;
+	static final int DEFAULTDATESELECTOR_ID = 0;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -89,13 +98,8 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		memberList.add(dummyMember);
 		memberList.addAll(1, project.getMembers());
 		System.out.println("size" + memberList.size());
-		/*
-		 * for (int i = 0; i < memberList.size(); i++) { Members.add(i + 1,
-		 * memberList.get(i).getUser_name()); }
-		 */
-		// for (int i = 0; i < memberList.size(); i++) {
-		// Members.add(i + 1, memberList.get(i).getUser_name());
-		// }
+
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 
 		if (project != null) {
 			System.out.println("project name" + project.getProject_id() + " " + project.getProject_name());
@@ -105,12 +109,44 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		taskAboutTextBox = (EditText) findViewById(R.id.taskAboutBox);
 		taskDateTextBox = (EditText) findViewById(R.id.taskDeadlineBox);
 		Assignto = (Spinner) findViewById(R.id.taskAssignedBox);
-		taskDate = (DatePicker) findViewById(R.id.taskDate);
 		createTask = (Button) findViewById(R.id.TaskButton);
 		Priority = (Spinner) findViewById(R.id.taskPriorityBox);
 		Parent = (Spinner) findViewById(R.id.taskParentBox);
 		projectNameTextBox = (EditText) findViewById(R.id.project_TaskNameBox);
+		logoText = (TextView) findViewById(R.id.logoText);
+		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
+		projNameView = (TextView) findViewById(R.id.newTaskProjectNametext);
+		taskNameView = (TextView) findViewById(R.id.newTaskNametext);
+		taskAboutView = (TextView) findViewById(R.id.newTaskAbouttext);
+		taskDateView = (TextView) findViewById(R.id.newTaskDeadlinetext);
+		taskPriorityView = (TextView) findViewById(R.id.newTaskPrioritytext);
+
+		logoText.setTypeface(font);
+		logoButton.setBackgroundResource(R.drawable.home_button);
+		logoText.setText("Create Task");
+		projectNameTextBox.setTypeface(font);
 		projectNameTextBox.setText(project.getProject_name());
+		taskNameTextBox.setTypeface(font);
+		taskAboutTextBox.setTypeface(font);
+		taskDateTextBox.setTypeface(font);
+		taskNameView.setTypeface(font);
+		taskAboutView.setTypeface(font);
+		taskDateView.setTypeface(font);
+		projNameView.setTypeface(font);
+		taskPriorityView.setTypeface(font);
+		createTask.setTypeface(font);
+		logoButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
+
+			}
+		});
+
 		Task dummyTask = new Task(0);
 
 		parenttasks.add(dummyTask);
@@ -119,10 +155,11 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 			parenttasks.add(project.getTasks().get(i));
 
 		}
-		parentAdapter = new TaskListBaseAdapter(cont, parenttasks);
+		parentAdapter = new ParentSpinnerBaseAdapter(cont, parenttasks);
 		Parent.setAdapter(parentAdapter);
 
-		Assignto.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
+		memberAdapter = new AssigntoSpinnerBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks());
+		Assignto.setAdapter(memberAdapter);
 
 		if (parentId != 0) {
 			for (int i = 0; i < parenttasks.size(); i++) {
@@ -141,7 +178,6 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 			}
 		}
 
-		RelativeLayout tasklayout = (RelativeLayout) findViewById(R.id.newTaskLayout);
 		status = "OPEN";
 
 		prioriList.add("Low");
@@ -153,23 +189,12 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 		prioriAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		Priority.setAdapter(prioriAdapter);
 
-		Assignto.setOnItemSelectedListener(this);
-
 		taskDateTextBox.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				taskDate.setVisibility(View.VISIBLE);
+				showDialog(DEFAULTDATESELECTOR_ID);
 			}
 
-		});
-
-		tasklayout.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				taskDateTextBox.setText(taskDate.getYear() + "-" + (taskDate.getMonth() + 1) + "-" + taskDate.getDayOfMonth());
-				taskDate.setVisibility(View.INVISIBLE);
-			}
 		});
 
 		createTask.setOnClickListener(new View.OnClickListener() {
@@ -201,22 +226,55 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 
 			}
 		});
+
+		Parent.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				parentAdapter.setSelectedPosition(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+
+			}
+		});
+
+		Assignto.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+				Object o = Assignto.getItemAtPosition(position);
+				ProjectMembers selectedMember = (ProjectMembers) o;
+				String Assignee = selectedMember.getUser_name();
+				if (position != 0)
+					status = "ASSIGNED";
+				else
+					status = "OPEN";
+				memberAdapter.setSelectedPosition(position);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+
+			}
+		});
 	}
 
-	@Override
-	public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-
-		Object o = Assignto.getItemAtPosition(position);
-		ProjectMembers selectedMember = (ProjectMembers) o;
-		String Assignee = selectedMember.getUser_name();
-		if (position != 0)
-			status = "ASSIGNED";
-		else
-			status = "OPEN";
-	}
+	private final DateSlider.OnDateSetListener mDateSetListener = new DateSlider.OnDateSetListener() {
+		@Override
+		public void onDateSet(DateSlider view, Calendar selectedDate) {
+			taskDateTextBox.setText(selectedDate.get(Calendar.YEAR) + "-" + (selectedDate.get(Calendar.MONTH) + 1) + "-" + selectedDate.get(Calendar.DATE));
+		}
+	};
 
 	@Override
-	public void onNothingSelected(AdapterView<?> parent) {
+	protected Dialog onCreateDialog(int id) {
+
+		switch (id) {
+		case DEFAULTDATESELECTOR_ID:
+			final Calendar c = Calendar.getInstance();
+			return new DefaultDateSlider(this, mDateSetListener, c);
+		}
+		return null;
 	}
 
 	public class CreateTask extends AsyncTask<String, Void, String> {
@@ -282,4 +340,5 @@ public class newTaskActivity extends Activity implements AdapterView.OnItemSelec
 			}
 		}
 	}
+
 }

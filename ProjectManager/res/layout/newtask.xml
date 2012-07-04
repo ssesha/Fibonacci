@@ -1,196 +1,196 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/newTaskLayout"
+<LinearLayout xmlns:f="http://schemas.android.com/apk/res/com.icreate.projectx"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="@drawable/backgrounddown"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@drawable/backgrounddown"
-        android:orientation="vertical"
-        android:paddingRight="20dp" >
+        android:layout_weight="0.92"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
             android:orientation="vertical" >
-            
-             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/newTaskProjectNametext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:text="Project Name : "
-                    android:textColor="#ffff00"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/project_TaskNameBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff" />
-            </LinearLayout>
-            
-              <LinearLayout
-                  android:id="@+id/parentlayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-               <Spinner
-                    android:id="@+id/taskParentBox"
-                    android:layout_marginLeft="20dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:spinnerMode="dialog"
-                    android:prompt="@string/Parent" />
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/newTaskNametext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:text="Name : "
-                    android:textColor="#ffff00"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/taskNameBox"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff" />
-                
-                 <Spinner
-                    android:id="@+id/tasknamespinner"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:id="@+id/newTaskProjectNametext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Project: "
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <EditText
+                        android:id="@+id/project_TaskNameBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/parentlayout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:prompt="@string/priority" 
-                    android:visibility="invisible"/>
-                 
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    <Spinner
+                        android:id="@+id/taskParentBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp" 
+                        android:prompt="@string/Parent"
+                        android:spinnerMode="dialog" />
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/newTaskAbouttext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:text="About : "
-                    android:textColor="#f5ad24"
-                    android:textSize="25sp" />
-
-                <EditText
-                    android:id="@+id/taskAboutBox"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff"
-                    android:inputType="textMultiLine" />
-            </LinearLayout>
-            
-             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-               <Spinner
-                    android:id="@+id/taskPriorityBox"
-                    android:layout_marginLeft="20dp"
+                    <TextView
+                        android:id="@+id/newTaskNametext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Name:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
+
+                    <EditText
+                        android:id="@+id/taskNameBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+
+                    <Spinner
+                        android:id="@+id/tasknamespinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:prompt="@string/priority"
+                        android:visibility="invisible" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:prompt="@string/priority" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    <TextView
+                        android:id="@+id/newTaskAbouttext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="About:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
 
-                <TextView
-                    android:id="@+id/newTaskDeadlinetext"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginLeft="20dp"
-                    android:text="Deadline : "
-                    android:textColor="#f5ad24"
-                    android:textSize="25sp" />
+                    <EditText
+                        android:id="@+id/taskAboutBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp" />
+                </LinearLayout>
 
-                <EditText
-                    android:id="@+id/taskDeadlineBox"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="#00ffffff"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+                    
+                      <TextView
+                        android:id="@+id/newTaskPrioritytext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Priority: "
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    <Spinner
+                        android:id="@+id/taskPriorityBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:prompt="@string/priority" />
+                </LinearLayout>
 
-               <Spinner
-                    android:id="@+id/taskAssignedBox"
-                    android:layout_marginLeft="20dp"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" 
-                    android:spinnerMode="dialog"
-                    android:prompt="@string/assigned" />
-            </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                    <TextView
+                        android:id="@+id/newTaskDeadlinetext"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Deadline:"
+                        android:textColor="#f5ad24"
+                        android:textSize="25sp"/>
+
+                    <EditText
+                        android:id="@+id/taskDeadlineBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:textColor="#ffffff"
+                        android:textSize="20sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" >
+
+                    <Spinner
+                        android:id="@+id/taskAssignedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:prompt="@string/assigned"
+                        android:spinnerMode="dialog" />
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
+    </ScrollView>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/TaskButton"
-                android:layout_width="148dp"
-                android:layout_height="54dp"
-                android:background="@drawable/scribble1"
-                android:text="Create"
-                android:textColor="#05261f"
-                android:textSize="30sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        
-        <DatePicker
-            android:id="@+id/taskDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:visibility="invisible" />
-    </RelativeLayout>
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:gravity="center"
+        android:orientation="horizontal" >
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/TaskButton"
+            android:layout_width="148dp"
+            android:layout_height="54dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/button"
+            android:text="Create"
+            android:textColor="#05261f"
+            android:textSize="30sp" />
+    </LinearLayout>
+
+</LinearLayout>

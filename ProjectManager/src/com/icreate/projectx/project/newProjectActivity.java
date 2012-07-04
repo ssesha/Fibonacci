@@ -106,7 +106,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		if (extras != null) {
 			flag = extras.getInt("flag");
 		}
-		
+
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
