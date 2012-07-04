@@ -56,6 +56,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
@@ -80,6 +82,7 @@ public class TaskViewActivity extends Activity {
 	private Button sendComment, createTask, setAlarm;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
+	private PullToRefreshListView commentListViewWrapper;
 	private ListView taskListView, commentListView;
 	private Context cont;
 	private Activity currentActivity;
@@ -150,7 +153,8 @@ public class TaskViewActivity extends Activity {
 		TaskName = (TextView) taskview.findViewById(R.id.taskNameTaskView);
 		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 
-		commentListView = (ListView) commentview.findViewById(R.id.commentList);
+		commentListViewWrapper = (PullToRefreshListView) commentview.findViewById(R.id.commentList);
+		commentListView = commentListViewWrapper.getRefreshableView();
 		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
@@ -456,7 +460,22 @@ public class TaskViewActivity extends Activity {
 			}
 		});
 
-	};
+		commentListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh() {
+				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
+				List<NameValuePair> params = new LinkedList<NameValuePair>();
+				params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Getting Comments");
+				ListComment ListComments = new ListComment(cont, currentActivity, commentListView);
+				System.out.println(url);
+				ListComments.execute(url);
+			}
+		});
+	}
 
 	@Override
 	public void onResume() {
@@ -635,11 +654,20 @@ public class TaskViewActivity extends Activity {
 			this.commentListView = commentListView;
 		}
 
+		public ListComment(Context context, Activity callingActivity, ListView commentListView) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = null;
+			this.commentListView = commentListView;
+		}
+
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Getting Comments...");
-				this.dialog.show();
+			if (this.dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Getting Comments...");
+					this.dialog.show();
+				}
 			}
 		}
 
@@ -668,8 +696,10 @@ public class TaskViewActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (this.dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -688,6 +718,9 @@ public class TaskViewActivity extends Activity {
 						System.out.println("creator id" + comment.getCreated_by());
 						System.out.println("creator name" + comment.getCreator_name());
 						System.out.println("comment name" + comment.getComment());
+					}
+					if (this.dialog == null) {
+						commentListViewWrapper.onRefreshComplete();
 					}
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
@@ -793,5 +826,4 @@ public class TaskViewActivity extends Activity {
 			}
 		}
 	}
-
 }
