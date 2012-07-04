@@ -25,7 +25,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -173,33 +172,11 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		String[] items = new String[2];
 		items[0] = "Something1";
 		items[1] = "Something2";
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.newproject, items) {
 
-			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				View v = super.getView(position, convertView, parent);
+		MyArrayAdapter mySpinnerArrayAdapter = new MyArrayAdapter(this, R.layout.my_spinner_style);
 
-				Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-				((TextView) v).setTypeface(font);
-
-				return v;
-			}
-
-			@Override
-			public View getDropDownView(int position, View convertView, ViewGroup parent) {
-				View v = super.getDropDownView(position, convertView, parent);
-
-				Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-				((TextView) v).setTypeface(font);
-				v.setBackgroundColor(Color.GREEN);
-
-				return v;
-			}
-
-		};
-
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		moduleTextBox.setAdapter(adapter);
+		mySpinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		moduleTextBox.setAdapter(mySpinnerArrayAdapter);
 
 		/*
 		 * logoButton.setOnClickListener(new View.OnClickListener() {
@@ -600,6 +577,29 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		class ViewHolder {
 			TextView studentName, studentNumber;
 			Button removeButton;
+		}
+
+	}
+
+	private class MyArrayAdapter extends ArrayAdapter {
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+
+		public MyArrayAdapter(Context context, int textViewResourceId) {
+			super(context, textViewResourceId);
+		}
+
+		@Override
+		public TextView getView(int position, View convertView, ViewGroup parent) {
+			TextView v = (TextView) super.getView(position, convertView, parent);
+			v.setTypeface(font);
+			return v;
+		}
+
+		@Override
+		public TextView getDropDownView(int position, View convertView, ViewGroup parent) {
+			TextView v = (TextView) super.getView(position, convertView, parent);
+			v.setTypeface(font);
+			return v;
 		}
 
 	}
