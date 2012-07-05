@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.icreate.projectx.R;
@@ -46,20 +45,17 @@ public class myTasksBaseAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.mytaskitem, null);
+			convertView = mInflater.inflate(R.layout.taskitem, null);
 			holder = new ViewHolder();
-			holder.txtName = (TextView) convertView.findViewById(R.id.mytasklistname);
-			holder.txtProjectName = (TextView) convertView.findViewById(R.id.mytaskProjectName);
-			holder.txtdate = (TextView) convertView.findViewById(R.id.mytasklistduedate);
-			holder.txtstatus = (TextView) convertView.findViewById(R.id.mytaskliststatus);
-			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.mytaskProgress);
-			holder.priority = (ImageView) convertView.findViewById(R.id.myimageViewPriority);
-
+			holder.txtName = (TextView) convertView.findViewById(R.id.mytaskitemlistname);
+			holder.txtProjectName = (TextView) convertView.findViewById(R.id.mytaskitemProjectName);
+			holder.txtdate = (TextView) convertView.findViewById(R.id.mytaskitemlistduedate);
+			holder.txtstatus = (TextView) convertView.findViewById(R.id.mytaskitemliststatus);
+			holder.priority = (ImageView) convertView.findViewById(R.id.myitemimageViewPriority);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.TaskProgress.setVisibility(View.GONE);
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
 		holder.txtProjectName.setText(taskList.get(position).getProject_name());
@@ -98,7 +94,6 @@ public class myTasksBaseAdapter extends BaseAdapter {
 		TextView txtProjectName;
 		TextView txtdate;
 		TextView txtstatus;
-		ProgressBar TaskProgress;
 		ImageView priority;
 	}
 
