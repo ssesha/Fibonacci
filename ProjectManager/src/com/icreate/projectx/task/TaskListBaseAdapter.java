@@ -104,11 +104,11 @@ public class TaskListBaseAdapter extends BaseAdapter {
 
 			int parent_id = taskList.get(position).getParentId();
 			int flag = 0;
-			for (int i = 0; i < taskList.size(); i++) {
-				if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
-					System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
-					System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
-					holder.txtParentName.setText(taskList.get(i).getTask_name());
+			for (int i = 0; i < allTaskList.size(); i++) {
+				if (parent_id == allTaskList.get(i).getTask_id() && parent_id != 0) {
+					System.out.println("parent test" + parent_id + allTaskList.get(i).getTask_id());
+					System.out.println("i have a parent.my name is" + allTaskList.get(position).getTask_name() + "my parent is" + allTaskList.get(i).getTask_name());
+					holder.txtParentName.setText(allTaskList.get(i).getTask_name());
 					flag = 1;
 					break;
 				} else

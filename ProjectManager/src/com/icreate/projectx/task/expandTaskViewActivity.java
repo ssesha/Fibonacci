@@ -81,7 +81,10 @@ public class expandTaskViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -180,7 +183,7 @@ public class expandTaskViewActivity extends Activity {
 				project = globalState.getProject();
 				GetProjectRefresh getProjectTask = new GetProjectRefresh(cont, currentActivity, null, task_projectListView, projectListViewWrapper, project);
 				getProjectTask.execute(url);
-
+				projectTaskSearch.setText("");
 			}
 		});
 	}
@@ -240,8 +243,8 @@ public class expandTaskViewActivity extends Activity {
 		if (item.getTitle() == "Delete") {
 			if (selectedTask.getSubTasks().size() == 0) {
 				System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
-				String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id();
-				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
+				String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
+				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
 				deletetask.execute(url);
 			} else {
 				AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
@@ -254,8 +257,8 @@ public class expandTaskViewActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
-						String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id();
-						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
+						String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
+						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
 						deletetask.execute(url);
 					}
 				});

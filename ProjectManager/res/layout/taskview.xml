@@ -147,6 +147,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
+                            android:layout_gravity="center"
                             android:progressDrawable="@drawable/search_progress_drawable" />
                     </LinearLayout>
 
@@ -294,7 +295,7 @@
                 <ListView
                     android:id="@+id/subTaskList"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
+                    android:layout_height="wrap_content"
                     android:divider="#ffffff"
                     android:dividerHeight="1dp"
                     android:padding="3dp" />

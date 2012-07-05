@@ -38,6 +38,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -47,7 +48,6 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datepicker.DateSlider;
 import com.icreate.projectx.datepicker.DefaultDateSlider;
-import com.icreate.projectx.net.GetProjectTask;
 
 public class newTaskActivity extends Activity {
 
@@ -216,25 +216,17 @@ public class newTaskActivity extends Activity {
 						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition()).getMember_id());
 					json1.put("status", status);
 					json1.put("priority", Priority.getSelectedItem());
-
+					ProgressDialog dialog = new ProgressDialog(cont);
+					dialog.setMessage("Creating Task...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
 					Log.d("JSON string", json1.toString());
-					CreateTask createTask = new CreateTask(cont, currentActivity, json1);
+					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
 					createTask.execute(ProjectxGlobalState.urlPrefix + "createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-
-			}
-		});
-
-		Parent.setOnItemSelectedListener(new OnItemSelectedListener() {
-			@Override
-			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-				parentAdapter.setSelectedPosition(position);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> parentView) {
 
 			}
 		});
@@ -249,7 +241,7 @@ public class newTaskActivity extends Activity {
 					status = "ASSIGNED";
 				else
 					status = "OPEN";
-				memberAdapter.setSelectedPosition(position);
+
 			}
 
 			@Override
@@ -281,15 +273,23 @@ public class newTaskActivity extends Activity {
 		private final Context context;
 		private final Activity callingActivity;
 		private final JSONObject requestJson;
+		private final ProgressDialog dialog;
 
-		public CreateTask(Context context, Activity callingActivity, JSONObject requestData) {
+		public CreateTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
+			this.dialog = dialog;
 		}
 
 		@Override
 		protected void onPreExecute() {
+			if (!this.dialog.isShowing()) {
+				this.dialog.setMessage("Logging in...");
+				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
+			}
 		}
 
 		@Override
@@ -317,22 +317,25 @@ public class newTaskActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
 			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					// TODO : Check which activity to call
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
-					String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
-					ProgressDialog dialog = new ProgressDialog(context);
-					dialog.setMessage("Creating Task...");
-					dialog.setCancelable(false);
-					dialog.setCanceledOnTouchOutside(false);
-					dialog.show();
-					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
-					getProjectTask.execute(url);
+					Gson gson = new Gson();
+					Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
+					System.out.println(project.getProject_name());
+					ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
+					globalState.setProject(project);
+					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);
+					TaskViewIntent.putExtra("task_id", taskId);
+					callingActivity.startActivity(TaskViewIntent);
+					callingActivity.finish();
 				} else {
 					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
@@ -342,5 +345,4 @@ public class newTaskActivity extends Activity {
 			}
 		}
 	}
-
 }
