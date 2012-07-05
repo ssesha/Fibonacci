@@ -3,6 +3,7 @@ package com.icreate.projectx.net;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -11,15 +12,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.task.TaskListBaseAdapter;
 
 public class DeleteTask extends AsyncTask<String, Void, String> {
 
@@ -29,16 +35,19 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 	private final PullToRefreshListView projectListViewWrapper;
 	private final int project_id;
 	private final ListView task_projectList;
-	private final Project project;
+	private final ProgressDialog dialog;
+	private final TextView search;
 
-	public DeleteTask(Context context, Activity callingActivity, AdapterContextMenuInfo info, PullToRefreshListView projectListViewWrapper, int project_id, ListView task_projectList, Project project) {
+	public DeleteTask(Context context, Activity callingActivity, AdapterContextMenuInfo info, PullToRefreshListView projectListViewWrapper, int project_id, ListView task_projectList,
+			ProgressDialog dialog, TextView search) {
 		this.context = context;
 		this.callingActivity = callingActivity;
 		this.info = info;
 		this.projectListViewWrapper = projectListViewWrapper;
 		this.project_id = project_id;
 		this.task_projectList = task_projectList;
-		this.project = project;
+		this.dialog = dialog;
+		this.search = search;
 	}
 
 	@Override
@@ -73,9 +82,26 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 			if (resultJson.getString("msg").equals("success")) {
 				Toast.makeText(context, " Task removed", Toast.LENGTH_SHORT).show();
 				projectListViewWrapper.setRefreshing(false);
-				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + project_id;
-				GetProjectRefresh getProjectTask = new GetProjectRefresh(context, callingActivity, null, task_projectList, projectListViewWrapper, project);
-				getProjectTask.execute(url);
+				search.setText("");
+				Gson gson = new Gson();
+				Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
+				System.out.println(project.getProject_name());
+				ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
+				globalState.setProject(project);
+				for (int i = 0; i < project.getTasks().size(); i++) {
+					System.out.println("task" + i + project.getTasks().get(i).getTask_name());
+					if (project.getTasks().get(i).getAssignee() != 0) {
+						for (int j = 0; j < project.getMembers().size(); j++) {
+							if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
+								project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
+						}
+					}
+				}
+				TaskListBaseAdapter taskListBaseAdapter = new TaskListBaseAdapter(context, (ArrayList<Task>) project.getTasks());
+				task_projectList.setAdapter(taskListBaseAdapter);
+				if (dialog == null) {
+					projectListViewWrapper.onRefreshComplete();
+				}
 			} else {
 				Toast.makeText(context, "Task can't be removed", Toast.LENGTH_SHORT).show();
 			}

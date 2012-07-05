@@ -21,7 +21,6 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 	private final ArrayList<Task> taskList;
 	private final ArrayList<Task> allTaskList;
 	private final Context context;
-	private int current = 0;
 
 	private final LayoutInflater mInflater;
 
@@ -52,15 +51,6 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 	@Override
 	public long getItemId(int position) {
 		return position;
-	}
-
-	public void setSelectedPosition(int selectedPosition) {
-		current = selectedPosition;
-		notifyDataSetChanged();
-	}
-
-	public int getSelectedPosition() {
-		return current;
 	}
 
 	@Override
@@ -99,80 +89,68 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
 
-			if (position == current) {
-				System.out.println("Current position is" + position);
-				holder.txtName.setVisibility(View.VISIBLE);
-				holder.txtParentName.setVisibility(View.GONE);
-				holder.txtdate.setVisibility(View.GONE);
-				holder.TaskProgress.setVisibility(View.GONE);
-				holder.arrow.setVisibility(View.GONE);
-				holder.priority.setVisibility(View.GONE);
+			holder.txtParentName.setVisibility(View.VISIBLE);
+			holder.txtdate.setVisibility(View.VISIBLE);
+			holder.TaskProgress.setVisibility(View.VISIBLE);
+			holder.arrow.setVisibility(View.VISIBLE);
+			holder.priority.setVisibility(View.VISIBLE);
+			holder.txtassignee.setVisibility(View.VISIBLE);
+
+			holder.txtName.setText(taskList.get(position).getTask_name());
+
+			System.out.println("assignee" + taskList.get(position).getAssignee_name());
+
+			if (taskList.get(position).getAssignee_name() == null)
 				holder.txtassignee.setVisibility(View.GONE);
-				holder.txtName.setText(taskList.get(position).getTask_name());
-			} else {
-				holder.txtParentName.setVisibility(View.VISIBLE);
-				holder.txtdate.setVisibility(View.VISIBLE);
-				holder.TaskProgress.setVisibility(View.VISIBLE);
+			else
+				holder.txtassignee.setText(taskList.get(position).getAssignee_name());
+
+			int parent_id = taskList.get(position).getParentId();
+			int flag = 0;
+			for (int i = 0; i < taskList.size(); i++) {
+				if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
+					System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
+					System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
+					holder.txtParentName.setText(taskList.get(i).getTask_name());
+					flag = 1;
+					break;
+				} else
+					flag = 0;
+
+			}
+
+			if (flag == 0) {
+				holder.arrow.setVisibility(View.GONE);
+				holder.txtParentName.setVisibility(View.GONE);
+			} else if (flag == 1) {
 				holder.arrow.setVisibility(View.VISIBLE);
-				holder.priority.setVisibility(View.VISIBLE);
-				holder.txtassignee.setVisibility(View.VISIBLE);
+				holder.txtParentName.setVisibility(View.VISIBLE);
+			}
+			String priority = null;
 
-				holder.txtName.setText(taskList.get(position).getTask_name());
+			priority = taskList.get(position).getTask_priority();
+			if (priority.equals("LOW"))
+				holder.priority.setImageResource(R.drawable.icon_priority_low);
+			else if (priority.equals("MEDIUM"))
+				holder.priority.setImageResource(R.drawable.icon_priority_medium);
+			else if (priority.equals("HIGH"))
+				holder.priority.setImageResource(R.drawable.icon_priority_high);
+			else if (priority.equals("CRITICAL"))
+				holder.priority.setImageResource(R.drawable.icon_priority_critical);
 
-				System.out.println("assignee" + taskList.get(position).getAssignee_name());
+			holder.txtdate.setText(taskList.get(position).getDue_date());
+			double progress = taskList.get(position).getProgress() * 100.0;
+			holder.TaskProgress.setProgress((int) progress);
+			System.out.println("task name" + taskList.get(position).getTask_name() + "progress:" + (int) taskList.get(position).getProgress());
 
-				if (taskList.get(position).getAssignee_name() == null)
-					holder.txtassignee.setVisibility(View.GONE);
-				else
-					holder.txtassignee.setText(taskList.get(position).getAssignee_name());
-
-				int parent_id = taskList.get(position).getParentId();
-				int flag = 0;
-				for (int i = 0; i < taskList.size(); i++) {
-					if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
-						System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
-						System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
-						holder.txtParentName.setText(taskList.get(i).getTask_name());
-						flag = 1;
-						break;
-					} else
-						flag = 0;
-
-				}
-
-				if (flag == 0) {
-					holder.arrow.setVisibility(View.GONE);
-					holder.txtParentName.setVisibility(View.GONE);
-				} else if (flag == 1) {
-					holder.arrow.setVisibility(View.VISIBLE);
-					holder.txtParentName.setVisibility(View.VISIBLE);
-				}
-				String priority = null;
-
-				priority = taskList.get(position).getTask_priority();
-				if (priority.equals("LOW"))
-					holder.priority.setImageResource(R.drawable.icon_priority_low);
-				else if (priority.equals("MEDIUM"))
-					holder.priority.setImageResource(R.drawable.icon_priority_medium);
-				else if (priority.equals("HIGH"))
-					holder.priority.setImageResource(R.drawable.icon_priority_high);
-				else if (priority.equals("CRITICAL"))
-					holder.priority.setImageResource(R.drawable.icon_priority_critical);
-
-				holder.txtdate.setText(taskList.get(position).getDue_date());
-				double progress = taskList.get(position).getProgress() * 100.0;
-				holder.TaskProgress.setProgress((int) progress);
-				System.out.println("task name" + taskList.get(position).getTask_name() + "progress:" + (int) taskList.get(position).getProgress());
-
-				if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
-					holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
-					holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));
-					holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-				} else {
-					holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
-					holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
-					holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-				}
+			if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
+				holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
+				holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));
+				holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			} else {
+				holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
+				holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
+				holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			}
 
 		}
