@@ -91,8 +91,10 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 		int diffinDays = (int) (duedateDate.getTime() - nowdateDate.getTime()) / (1000 * 60 * 60 * 24 * 7);
 		projectList.get(position).getDue_date();
 
-		if (diffinDays >= 0) {
+		if (diffinDays > 0) {
 			holder.txtDeadline.setText("Due in " + diffinDays + "weeks..");
+		} else if (diffinDays == 0) {
+			holder.txtDeadline.setText("Due this week..");
 		} else {
 			holder.txtDeadline.setText("Overdue..");
 		}
