@@ -72,13 +72,13 @@ import com.icreate.projectx.task.expandTaskViewActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class projectViewActivity extends Activity {
-	private TextView logoText;
+	private static TextView logoText;
 	private TextView ProjectName, projDesc, projDeadline;
 	private EditText typeComment;
 	private Button createTask, TaskView;
 	private Button editProject, postComment;
 	private ProjectxGlobalState globalState;
-	private Project project;
+	private static Project project;
 	private List<ProjectMembers> memberList;
 	private String projectString;
 	private MyHorizontalScrollView scrollView;
@@ -90,13 +90,15 @@ public class projectViewActivity extends Activity {
 	Handler handler = new Handler();
 	int btnWidth, task_id = 0;
 	private View projectView, commentView, logoView;
-	private ImageView slide;
-	private PullToRefreshListView activitiesWrapper, commentlistWrapper;
-	private ListView activities, memberListView;
-	private ListView commentlist;
-	boolean isFirst = false;
-	Context cont;
-	Activity currentActivity;
+	private static ImageView slide;
+	private static PullToRefreshListView activitiesWrapper;
+	private static PullToRefreshListView commentlistWrapper;
+	private static ListView activities;
+	private ListView memberListView;
+	private static ListView commentlist;
+	static boolean isFirst = false;
+	static Context cont;
+	static Activity currentActivity;
 	private LinearLayout chartLayout;
 	private GraphicalView mChartView;
 	private final int subActivityID = 53769;
@@ -295,16 +297,6 @@ public class projectViewActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		if (isFirst) {
-			menuOut = true;
-			slide.performClick();
-		} else {
-			isFirst = true;
-		}
-		logoText.setFocusable(true);
-		logoText.requestFocus();
-		System.out.println("menu in resume" + menuOut);
-
 		globalState = (ProjectxGlobalState) getApplication();
 
 		project = globalState.getProject();
@@ -329,19 +321,6 @@ public class projectViewActivity extends Activity {
 		for (int i = 0; i < memberList.size(); i++)
 			System.out.println("members new:" + memberList.get(i));
 		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
-		String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
-		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
-		String paramString = URLEncodedUtils.format(params, "utf-8");
-		url += "?" + paramString;
-		ProgressDialog dialog = new ProgressDialog(cont);
-		dialog.setMessage("Loading Activity Feed...");
-		dialog.setCancelable(false);
-		dialog.setCanceledOnTouchOutside(false);
-		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
-		System.out.println(url);
-		task.execute(url);
-
 	}
 
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {
@@ -456,6 +435,18 @@ public class projectViewActivity extends Activity {
 
 			if (!menuOut) {
 				// Scroll to 0 to reveal menu
+				String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
+				List<NameValuePair> params = new LinkedList<NameValuePair>();
+				params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				ProgressDialog dialog = new ProgressDialog(cont);
+				dialog.setMessage("Loading Activity Feed...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
+				GetActivityFeed task = new GetActivityFeed(cont, currentActivity, dialog, activities, commentlist);
+				System.out.println(url);
+				task.execute(url);
 				int left = 0;
 				scrollView.smoothScrollTo(left, 0);
 			} else {
@@ -507,7 +498,7 @@ public class projectViewActivity extends Activity {
 		task.execute(url);
 	}
 
-	private class GetActivityFeed extends AsyncTask<String, Void, String> {
+	private static class GetActivityFeed extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
@@ -576,7 +567,6 @@ public class projectViewActivity extends Activity {
 			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				Log.d("ActivityFeed", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
 					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
@@ -592,14 +582,9 @@ public class projectViewActivity extends Activity {
 					for (int i = 0; i < feed.getNotifications().size(); i++) {
 						activityfeed.add(feed.getNotifications().get(i).getMessage());
 					}
-					// commentListView.setAdapter(new
-					// ArrayAdapter<String>(context,
-					// android.R.layout.simple_list_item_1, list));
-					// activityListView.setAdapter(new
-					// ArrayAdapter<String>(context,
-					// android.R.layout.simple_list_item_1, activityfeed));
 					commentListView.setAdapter(new CommentBaseAdapter(context, feed.getComments()));
 					commentListView.setSelection(commentListView.getCount() - 1);
+
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
 					if (dialog == null) {
 						commentlistWrapper.onRefreshComplete();

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="10dp" >
+        android:layout_marginTop="5dp" >
 
         <EditText
             android:id="@+id/projectSearch"
@@ -27,7 +27,9 @@
         android:id="@+id/ListView01"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
         android:cacheColorHint="@android:color/transparent" />
 
 </LinearLayout>
