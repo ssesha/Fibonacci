@@ -175,7 +175,7 @@ public class expandTaskViewActivity extends Activity {
 			public void onRefresh() {
 
 				int projectId = project.getProject_id();
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 				globalState = (ProjectxGlobalState) getApplication();
 				project = globalState.getProject();
 				GetProjectRefresh getProjectTask = new GetProjectRefresh(cont, currentActivity, null, task_projectListView, projectListViewWrapper, project);
@@ -240,7 +240,7 @@ public class expandTaskViewActivity extends Activity {
 		if (item.getTitle() == "Delete") {
 			if (selectedTask.getSubTasks().size() == 0) {
 				System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteTask.php?task_id=" + selectedTask.getTask_id();
+				String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id();
 				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
 				deletetask.execute(url);
 			} else {
@@ -254,7 +254,7 @@ public class expandTaskViewActivity extends Activity {
 					public void onClick(DialogInterface dialog, int which) {
 
 						System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
-						String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteTask.php?task_id=" + selectedTask.getTask_id();
+						String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id();
 						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, project);
 						deletetask.execute(url);
 					}

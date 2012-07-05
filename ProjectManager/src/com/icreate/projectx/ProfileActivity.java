@@ -49,13 +49,13 @@ public class ProfileActivity extends Activity {
 	private Intent chartIntent;
 	private final int subActivityID = 98765;
 	private ProgressBar myProgressBar;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cont = this;
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
-		setContentView(R.layout.profileview);		
+		setContentView(R.layout.profileview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
@@ -76,13 +76,13 @@ public class ProfileActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));				
+				startActivity(new Intent(cont, homeActivity.class));
 			}
 		});
 		myProgressBar = (ProgressBar) findViewById(R.id.profileviewProgress);
 		chartLayout = (LinearLayout) findViewById(R.id.chart);
-		
-		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProfile.php";
+
+		String url = ProjectxGlobalState.urlPrefix + "getProfile.php";
 		global = (ProjectxGlobalState) getApplication();
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("user_id", global.getUserid()));
@@ -96,7 +96,7 @@ public class ProfileActivity extends Activity {
 		ProjectListTask task = new ProjectListTask(cont, this, dialog, chartLayout);
 		task.execute(url);
 	}
-	
+
 	private class ProjectListTask extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -109,7 +109,7 @@ public class ProfileActivity extends Activity {
 			this.dialog = dialog;
 			this.chartLayout = chartLayout;
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			if (dialog != null) {
@@ -157,35 +157,34 @@ public class ProfileActivity extends Activity {
 				Log.d("ProjectList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					//Project temp = gson.fromJson(result, Project.class);
+					// Project temp = gson.fromJson(result, Project.class);
 					NameText.setText(resultJson.getString("userName"));
 					Email.setText(resultJson.getString("email"));
 					Gmail.setText(resultJson.getString("gmail"));
 					double totaltask = resultJson.getInt("totalTasks");
 					double totalcompleted = resultJson.getInt("totalCompleted");
-					double progress = (totalcompleted/totaltask)*100.0;
-					Log.d("profile progress", ""+progress);
+					double progress = (totalcompleted / totaltask) * 100.0;
+					Log.d("profile progress", "" + progress);
 					myProgressBar.setProgress((int) progress);
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					global.setProjectList(projectsContainer);
 					IDemoChart mCharts = new ProfileProgressChart();
 					mChartView = mCharts.execute(cont, projectsContainer.getProjects(), true);
-					chartLayout.addView(mChartView, new LayoutParams
-							(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+					chartLayout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 					mChartView.setClickable(false);
-					mChartView.setOnClickListener(new View.OnClickListener() {			
+					mChartView.setOnClickListener(new View.OnClickListener() {
 						@Override
 						public void onClick(View v) {
-							startActivityForResult(chartIntent, subActivityID);				
+							startActivityForResult(chartIntent, subActivityID);
 						}
-					});		
+					});
 				} else {
 					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
-				}	
+				}
 			} catch (Exception e) {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
-	}	
+	}
 }

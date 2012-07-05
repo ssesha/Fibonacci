@@ -265,7 +265,7 @@ public class editTaskActivity extends Activity {
 
 							Log.d("JSON string", json1.toString());
 							CreateTask createTask = new CreateTask(cont, currentActivity, json1);
-							createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
+							createTask.execute(ProjectxGlobalState.urlPrefix + "createTask_not.php");
 						} else
 							Toast.makeText(cont, "Choose Task Name", Toast.LENGTH_LONG).show();
 					} catch (JSONException e) {
@@ -428,7 +428,7 @@ public class editTaskActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Editing Task...");
 					dialog.setCancelable(false);

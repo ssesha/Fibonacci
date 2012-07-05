@@ -133,7 +133,7 @@ public class TaskListActivity extends Activity {
 
 			Toast.makeText(cont, extras.getString("requiredId"), Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
-			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/TaskList.php";
+			String url = ProjectxGlobalState.urlPrefix + "TaskList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
 			params.add(new BasicNameValuePair("user_id", passedUserId));
 			String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -193,7 +193,7 @@ public class TaskListActivity extends Activity {
 				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position, Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				int projectId = selectedTask.getProjectId();
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.setCancelable(false);

@@ -136,7 +136,7 @@ public class ProjectListActivity extends Activity {
 
 			Toast.makeText(cont, extras.getString("requiredId"), Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
-			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/projectList.php";
+			String url = ProjectxGlobalState.urlPrefix + "projectList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
 			params.add(new BasicNameValuePair("user_id", passedUserId));
 			String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -166,7 +166,7 @@ public class ProjectListActivity extends Activity {
 				Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
 				int projectId = selectedProject.getProject_id();
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.setCancelable(false);
@@ -182,7 +182,7 @@ public class ProjectListActivity extends Activity {
 			@Override
 			public void onRefresh() {
 				if (passedUserId != null) {
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/projectList.php";
+					String url = ProjectxGlobalState.urlPrefix + "projectList.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
 					params.add(new BasicNameValuePair("user_id", passedUserId));
 					String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -300,7 +300,7 @@ public class ProjectListActivity extends Activity {
 		Project selectedProject = (Project) projectListView.getItemAtPosition(info.position);
 		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
-			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/deleteProject.php?project_id=" + selectedProject.getProject_id();
+			String url = ProjectxGlobalState.urlPrefix + "deleteProject.php?project_id=" + selectedProject.getProject_id();
 			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, projects);
 			deleteProjectTask.execute(url);
 			return true;

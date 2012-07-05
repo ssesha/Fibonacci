@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.datamodel.Project;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class DeleteTask extends AsyncTask<String, Void, String> {
 
@@ -72,7 +73,7 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 			if (resultJson.getString("msg").equals("success")) {
 				Toast.makeText(context, " Task removed", Toast.LENGTH_SHORT).show();
 				projectListViewWrapper.setRefreshing(false);
-				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + project_id;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + project_id;
 				GetProjectRefresh getProjectTask = new GetProjectRefresh(context, callingActivity, null, task_projectList, projectListViewWrapper, project);
 				getProjectTask.execute(url);
 			} else {

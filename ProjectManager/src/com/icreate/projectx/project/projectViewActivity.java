@@ -44,9 +44,9 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +58,6 @@ import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.IDemoChart;
 import com.icreate.projectx.MemberProgressBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
-import com.icreate.projectx.ProfileProgressChart;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -102,7 +101,7 @@ public class projectViewActivity extends Activity {
 	private GraphicalView mChartView;
 	private final int subActivityID = 53769;
 	private Intent chartIntent;
-	
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -133,7 +132,7 @@ public class projectViewActivity extends Activity {
 
 		ImageButton homeButton = (ImageButton) projectView.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
-		
+
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -166,7 +165,7 @@ public class projectViewActivity extends Activity {
 		postComment = (Button) commentView.findViewById(R.id.proj_sendCommentButton);
 		typeComment = (EditText) commentView.findViewById(R.id.proj_commentTextBox);
 		chartLayout = (LinearLayout) projectView.findViewById(R.id.project_chartlayout);
-		
+
 		TabHost tabHost = (TabHost) commentView.findViewById(R.id.tabhost);
 		tabHost.setup();
 		TabSpec activityspec = tabHost.newTabSpec("Activities");
@@ -175,14 +174,17 @@ public class projectViewActivity extends Activity {
 		TabSpec commentsspec = tabHost.newTabSpec("Comments");
 		commentsspec.setIndicator("Comments", getResources().getDrawable(R.drawable.dustbin));
 		commentsspec.setContent(R.id.project_commentviewlayout);
-		
-		/*TabSpec chartsspec = tabHost.newTabSpec("Charts");
-		chartsspec.setIndicator("Charts", getResources().getDrawable(R.drawable.dustbin));
-		chartsspec.setContent(R.id.project_chartlayout);*/
-		
-		tabHost.addTab(activityspec); 
+
+		/*
+		 * TabSpec chartsspec = tabHost.newTabSpec("Charts");
+		 * chartsspec.setIndicator("Charts",
+		 * getResources().getDrawable(R.drawable.dustbin));
+		 * chartsspec.setContent(R.id.project_chartlayout);
+		 */
+
+		tabHost.addTab(activityspec);
 		tabHost.addTab(commentsspec);
-		//tabHost.addTab(chartsspec);
+		// tabHost.addTab(chartsspec);
 		typeComment.setText("");
 
 		final View[] children = new View[] { commentView, projectView };
@@ -206,7 +208,7 @@ public class projectViewActivity extends Activity {
 				startActivity(memberViewIntent);
 			}
 		});
-		
+
 		createTask.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -266,7 +268,7 @@ public class projectViewActivity extends Activity {
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
 					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
-					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProjectComment.php");
+					createCommentTask.execute(ProjectxGlobalState.urlPrefix + "createProjectComment.php");
 
 					typeComment.setText("");
 
@@ -290,7 +292,6 @@ public class projectViewActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		
 		if (isFirst) {
 			menuOut = true;
 			slide.performClick();
@@ -312,21 +313,20 @@ public class projectViewActivity extends Activity {
 		List<Project> projects = new ArrayList<Project>();
 		projects.add(project);
 		mChartView = mCharts.execute(cont, projects, true);
-		chartLayout.addView(mChartView, new LayoutParams
-				(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		
+		chartLayout.addView(mChartView, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
 		mChartView.setClickable(true);
-		mChartView.setOnClickListener(new View.OnClickListener() {			
+		mChartView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivityForResult(chartIntent, subActivityID);				
+				startActivityForResult(chartIntent, subActivityID);
 			}
 		});
 		memberList = project.getMembers();
 		for (int i = 0; i < memberList.size(); i++)
 			System.out.println("members new:" + memberList.get(i));
 		memberListView.setAdapter(new MemberProgressBaseAdapter(cont, memberList, (ArrayList<Task>) project.getTasks()));
-		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
 		String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -338,7 +338,7 @@ public class projectViewActivity extends Activity {
 		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
 		System.out.println(url);
 		task.execute(url);
-		
+
 	}
 
 	private class CreateCommentTask extends AsyncTask<String, Void, String> {
@@ -399,7 +399,7 @@ public class projectViewActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					// context.startActivity(new Intent(context,
 					// homeActivity.class));
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+					String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
 					params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
 					String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -495,7 +495,7 @@ public class projectViewActivity extends Activity {
 	}
 
 	private void pullltoRefreshCommentsActivity() {
-		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("project_id", new Integer(project.getProject_id()).toString()));
 		String paramString = URLEncodedUtils.format(params, "utf-8");

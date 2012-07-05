@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Application;
 
 public class ProjectxGlobalState extends Application {
+	public static final String urlPrefix = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/";
 	private String authToken;
 	private String apiKey;
 	private String userid;

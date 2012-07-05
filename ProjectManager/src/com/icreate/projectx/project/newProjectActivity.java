@@ -44,13 +44,13 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
 import com.icreate.projectx.datepicker.DefaultDateSlider;
-import com.icreate.projectx.net.GetProjectTask;
 
 public class newProjectActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
@@ -240,8 +240,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					json1.put("members", json_array);
 
 					Log.d("JSON string", json1.toString());
-					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1);
-					createProjectTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProject2.php");
+					ProgressDialog dialog = new ProgressDialog(cont);
+					dialog.setMessage("Creating Project...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
+					dialog.show();
+					CreateProjectTask createProjectTask = new CreateProjectTask(cont, currentActivity, json1, dialog);
+					createProjectTask.execute(ProjectxGlobalState.urlPrefix + "createProject2.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -383,6 +388,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		private final Context context;
 		private final Activity callingActivity;
 		private final JSONObject requestJson;
+		private ProgressDialog dialog;
 
 		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData) {
 			this.context = context;
@@ -390,8 +396,23 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			this.requestJson = requestData;
 		}
 
+		public CreateProjectTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.requestJson = requestData;
+			this.dialog = dialog;
+		}
+
 		@Override
 		protected void onPreExecute() {
+			if (dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Creating Project...");
+					this.dialog.setCancelable(false);
+					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.show();
+				}
+			}
 		}
 
 		@Override
@@ -420,18 +441,22 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		protected void onPostExecute(String result) {
 			System.out.println(result);
 			try {
+				if (dialog != null && this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
+			} catch (Exception e) {
+			}
+			try {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
-					int projectId = resultJson.getInt("project_id");
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
-					ProgressDialog dialog = new ProgressDialog(context);
-					dialog.setMessage("Creating Project...");
-					dialog.setCancelable(false);
-					dialog.setCanceledOnTouchOutside(false);
-					dialog.show();
-					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, 0, true);
-					getProjectTask.execute(url);
+					Gson gson = new Gson();
+					Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
+					System.out.println(project.getProject_name());
+					ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
+					globalState.setProject(project);
+					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
+					callingActivity.startActivity(projectViewIntent);
 
 				} else {
 					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();

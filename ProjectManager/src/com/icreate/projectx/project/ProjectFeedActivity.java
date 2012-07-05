@@ -28,16 +28,18 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.ActivityFeed;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class ProjectFeedActivity extends Activity {
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activityfeed);
-        ListView activities = (ListView) findViewById(R.id.activity);
-        Context cont = this;
-        Bundle extras = getIntent().getExtras();
-        String project_id = extras.getString("project_id");
-        String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getActivityFeed.php";
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activityfeed);
+		ListView activities = (ListView) findViewById(R.id.activity);
+		Context cont = this;
+		Bundle extras = getIntent().getExtras();
+		String project_id = extras.getString("project_id");
+		String url = ProjectxGlobalState.urlPrefix + "getActivityFeed.php";
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
 		params.add(new BasicNameValuePair("project_id", new Integer(project_id).toString()));
 		String paramString = URLEncodedUtils.format(params, "utf-8");
@@ -46,9 +48,9 @@ public class ProjectFeedActivity extends Activity {
 		dialog.setMessage("Loading Activity Feed");
 		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities);
 		System.out.println(url);
-		task.execute(url);        
-    }
-	
+		task.execute(url);
+	}
+
 	private class GetActivityFeed extends AsyncTask<String, Void, String> {
 		private final Context context;
 		private final Activity callingActivity;
@@ -105,7 +107,7 @@ public class ProjectFeedActivity extends Activity {
 				Log.d("ActivityFeed", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);					
+					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
 				} else {
 					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();

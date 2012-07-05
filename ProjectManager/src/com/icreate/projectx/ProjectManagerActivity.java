@@ -22,7 +22,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -34,10 +33,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.icreate.projectx.R;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
 public class ProjectManagerActivity extends Activity {
@@ -87,6 +82,7 @@ public class ProjectManagerActivity extends Activity {
 		Button loginButton = (Button) findViewById(R.id.loginButton);
 
 		loginButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View v) {
 				loginAttempts = 0;
 				dialog.show();
@@ -160,7 +156,7 @@ public class ProjectManagerActivity extends Activity {
 				e.printStackTrace();
 			}
 			Log.i("sdjkfhdkjs", requestJson.toString());
-			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createUser.php";
+			String url = ProjectxGlobalState.urlPrefix + "createUser.php";
 			LoginTask loginTask = new LoginTask(cont, activity, requestJson, dialog);
 			loginTask.execute(url);
 		}
@@ -185,7 +181,7 @@ public class ProjectManagerActivity extends Activity {
 				this.dialog.setMessage("Logging in...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
-				this.dialog.setCancelable(false);				
+				this.dialog.setCancelable(false);
 			}
 		}
 

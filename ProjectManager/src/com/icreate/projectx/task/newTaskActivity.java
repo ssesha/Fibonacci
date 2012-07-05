@@ -219,7 +219,7 @@ public class newTaskActivity extends Activity {
 
 					Log.d("JSON string", json1.toString());
 					CreateTask createTask = new CreateTask(cont, currentActivity, json1);
-					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
+					createTask.execute(ProjectxGlobalState.urlPrefix + "createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -325,7 +325,7 @@ public class newTaskActivity extends Activity {
 					// TODO : Check which activity to call
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
+					String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Creating Task...");
 					dialog.setCancelable(false);
