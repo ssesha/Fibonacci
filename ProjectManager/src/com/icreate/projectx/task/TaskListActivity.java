@@ -42,6 +42,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.PriorityEnum;
@@ -55,6 +57,7 @@ public class TaskListActivity extends Activity {
 	private ProjectxGlobalState globalState;
 	private ListView TaskListView;
 	private myTasksBaseAdapter mytasksAdapter;
+	private PullToRefreshListView taskListViewWrapper;
 	private Context cont;
 	private AlertDialog alert;
 	private ArrayList<Task> tasks;
@@ -62,6 +65,7 @@ public class TaskListActivity extends Activity {
 	private Activity currentActivity;
 	private Button myTaskSearchButton;
 	private TextView myTaskSearch;
+	private String passedUserId;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,11 +82,11 @@ public class TaskListActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
+		//logoText.setTextColor(R.color.white);
 
 		myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
 		myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
-
+		myTaskSearch.setTypeface(font);
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
@@ -90,7 +94,10 @@ public class TaskListActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 
 			}
 		});
@@ -117,12 +124,13 @@ public class TaskListActivity extends Activity {
 		});
 		alert = builder.create();
 
-		TaskListView = (ListView) findViewById(R.id.taskListView);
+		taskListViewWrapper = (PullToRefreshListView) findViewById(R.id.taskListView);
+		TaskListView = taskListViewWrapper.getRefreshableView();
 		TaskListView.setTextFilterEnabled(true);
 		registerForContextMenu(TaskListView);
 
 		Bundle extras = getIntent().getExtras();
-		String passedUserId = null;
+		passedUserId = null;
 		if (extras != null) {
 			passedUserId = extras.getString("requiredId");
 			if (passedUserId.equalsIgnoreCase(globalState.getUserid())) {
@@ -146,6 +154,23 @@ public class TaskListActivity extends Activity {
 			System.out.println(url);
 			ListTasks.execute(url);
 		}
+
+		taskListViewWrapper.setOnRefreshListener(new OnRefreshListener() {
+
+			@Override
+			public void onRefresh() {
+				if (passedUserId != null) {
+					myTaskSearch.setText("");
+					String url = ProjectxGlobalState.urlPrefix + "TaskList.php";
+					List<NameValuePair> params = new LinkedList<NameValuePair>();
+					params.add(new BasicNameValuePair("user_id", passedUserId));
+					String paramString = URLEncodedUtils.format(params, "utf-8");
+					url += "?" + paramString;
+					ListTask listTask = new ListTask(cont, currentActivity, null, TaskListView);
+					listTask.execute(url);
+				}
+			}
+		});
 
 		myTaskSearch.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -226,11 +251,13 @@ public class TaskListActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			if (!this.dialog.isShowing()) {
-				this.dialog.setMessage("Getting Tasks...");
-				this.dialog.show();
-				this.dialog.setCanceledOnTouchOutside(false);
-				this.dialog.setCancelable(false);
+			if (dialog != null) {
+				if (!this.dialog.isShowing()) {
+					this.dialog.setMessage("Getting Tasks...");
+					this.dialog.show();
+					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.setCancelable(false);
+				}
 			}
 		}
 
@@ -259,8 +286,10 @@ public class TaskListActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String result) {
-			if (this.dialog.isShowing()) {
-				this.dialog.dismiss();
+			if (dialog != null) {
+				if (this.dialog.isShowing()) {
+					this.dialog.dismiss();
+				}
 			}
 			System.out.println(result);
 			try {
@@ -285,6 +314,9 @@ public class TaskListActivity extends Activity {
 						System.out.println("task name" + task.getTask_name());
 						System.out.println("project name" + task.getProject_name());
 						System.out.println("task date" + task.getDue_date());
+					}
+					if (dialog == null) {
+						taskListViewWrapper.onRefreshComplete();
 					}
 				} else {
 					Toast.makeText(context, "Task Lists empty", Toast.LENGTH_LONG).show();

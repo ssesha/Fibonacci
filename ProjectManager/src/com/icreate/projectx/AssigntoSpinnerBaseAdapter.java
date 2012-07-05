@@ -21,7 +21,6 @@ public class AssigntoSpinnerBaseAdapter extends BaseAdapter {
 	private final LayoutInflater mInflater;
 	private static ArrayList<Task> tasks;
 	private final Context context;
-	private int current = 0;
 
 	public AssigntoSpinnerBaseAdapter(Context context, List<ProjectMembers> memberList, ArrayList<Task> tasks) {
 		this.memberList = memberList;
@@ -46,15 +45,6 @@ public class AssigntoSpinnerBaseAdapter extends BaseAdapter {
 	public long getItemId(int index) {
 		// TODO Auto-generated method stub
 		return index;
-	}
-
-	public void setSelectedPosition(int selectedPosition) {
-		current = selectedPosition;
-		notifyDataSetChanged();
-	}
-
-	public int getSelectedPosition() {
-		return current;
 	}
 
 	@Override
@@ -89,30 +79,23 @@ public class AssigntoSpinnerBaseAdapter extends BaseAdapter {
 			holder.CompletedTask.setVisibility(View.GONE);
 			holder.MemberProgress.setVisibility(View.GONE);
 		} else {
-			if (current == position) {
-				holder.MemberName.setVisibility(View.VISIBLE);
-				holder.MemberName.setText(memberList.get(position).getUser_name());
-				holder.TotalTask.setVisibility(View.GONE);
-				holder.CompletedTask.setVisibility(View.GONE);
-				holder.MemberProgress.setVisibility(View.GONE);
-			} else {
-				holder.TotalTask.setVisibility(View.VISIBLE);
-				holder.CompletedTask.setVisibility(View.VISIBLE);
-				holder.MemberProgress.setVisibility(View.VISIBLE);
-				double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
-				double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
-				double progress = 0;
-				if (totalTasks != 0) {
-					progress = (completedTasks / totalTasks) * 100.0;
-				}
-				convertView.setTag(R.id.member_total_tasks, totalTasks);
-				convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
-				convertView.setTag(R.id.member_progress, progress);
-				holder.MemberName.setText(memberList.get(position).getUser_name());
-				holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
-				holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
-				holder.MemberProgress.setProgress((int) progress);
+
+			holder.TotalTask.setVisibility(View.VISIBLE);
+			holder.CompletedTask.setVisibility(View.VISIBLE);
+			holder.MemberProgress.setVisibility(View.VISIBLE);
+			double totalTasks = GetTotalTasks(memberList.get(position).getMember_id());
+			double completedTasks = GetCompletedTasks(memberList.get(position).getMember_id());
+			double progress = 0;
+			if (totalTasks != 0) {
+				progress = (completedTasks / totalTasks) * 100.0;
 			}
+			convertView.setTag(R.id.member_total_tasks, totalTasks);
+			convertView.setTag(R.id.member_total_completed_tasks, completedTasks);
+			convertView.setTag(R.id.member_progress, progress);
+			holder.MemberName.setText(memberList.get(position).getUser_name());
+			holder.TotalTask.setText("Total Tasks: " + (int) totalTasks);
+			holder.CompletedTask.setText("Completed Tasks: " + (int) completedTasks);
+			holder.MemberProgress.setProgress((int) progress);
 		}
 
 		return convertView;

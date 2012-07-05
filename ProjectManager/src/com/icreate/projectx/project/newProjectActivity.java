@@ -179,7 +179,10 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		logoButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -457,7 +460,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					globalState.setProject(project);
 					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
 					callingActivity.startActivity(projectViewIntent);
-
+					callingActivity.finish();
 				} else {
 					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
@@ -510,13 +513,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 								ProjectxGlobalState globalData1 = (ProjectxGlobalState) getApplication();
 								if (viewMode == ProjectViewMode.NEW) {
-									if (!obj.getString("UserID").equals(globalData1.getUserid())) {
+									if (!obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
 										studentList.add(name);
 										student_id_list.add(obj.getString("UserID"));
 									}
 								} else {
-									if (obj.getString("UserID").equals(globalData1.getUserid())) {
-									} else if (obj.getString("UserID").equals(leader_id)) {
+									if (obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
+									} else if (obj.getString("UserID").equalsIgnoreCase(leader_id)) {
 									} else {
 										studentList.add(name);
 										student_id_list.add(obj.getString("UserID"));

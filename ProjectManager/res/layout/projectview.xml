@@ -249,6 +249,20 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/editbutton" />
             </RelativeLayout>
+            
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/scheduleMeeting"
+                    android:layout_width="48dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/calendarbutton2" />
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 

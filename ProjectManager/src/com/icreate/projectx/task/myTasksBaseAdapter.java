@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.icreate.projectx.R;
@@ -21,10 +21,12 @@ public class myTasksBaseAdapter extends BaseAdapter {
 	private static ArrayList<Task> taskList;
 
 	private final LayoutInflater mInflater;
+	private static Context context;
 
 	public myTasksBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
 		mInflater = LayoutInflater.from(context);
+		this.context = context;
 	}
 
 	@Override
@@ -45,21 +47,28 @@ public class myTasksBaseAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.mytaskitem, null);
+			convertView = mInflater.inflate(R.layout.taskitem, null);
 			holder = new ViewHolder();
-			holder.txtName = (TextView) convertView.findViewById(R.id.mytasklistname);
-			holder.txtProjectName = (TextView) convertView.findViewById(R.id.mytaskProjectName);
-			holder.txtdate = (TextView) convertView.findViewById(R.id.mytasklistduedate);
-			holder.txtstatus = (TextView) convertView.findViewById(R.id.mytaskliststatus);
-			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.mytaskProgress);
-			holder.priority = (ImageView) convertView.findViewById(R.id.myimageViewPriority);
-
+			holder.txtName = (TextView) convertView
+					.findViewById(R.id.mytaskitemlistname);
+			holder.txtName.setTypeface(font);
+			holder.txtProjectName = (TextView) convertView
+					.findViewById(R.id.mytaskitemProjectName);
+			holder.txtProjectName.setTypeface(font);
+			holder.txtdate = (TextView) convertView
+					.findViewById(R.id.mytaskitemlistduedate);
+			holder.txtdate.setTypeface(font);
+			holder.txtstatus = (TextView) convertView
+					.findViewById(R.id.mytaskitemliststatus);
+			holder.txtstatus.setTypeface(font);
+			holder.priority = (ImageView) convertView
+					.findViewById(R.id.myitemimageViewPriority);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		holder.TaskProgress.setVisibility(View.GONE);
 		holder.txtName.setText(taskList.get(position).getTask_name());
 
 		holder.txtProjectName.setText(taskList.get(position).getProject_name());
@@ -80,14 +89,17 @@ public class myTasksBaseAdapter extends BaseAdapter {
 		else if (priority.equals("CRITICAL"))
 			holder.priority.setImageResource(R.drawable.icon_priority_critical);
 
-		if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
+		if (taskList.get(position).getTask_status()
+				.equalsIgnoreCase("COMPLETE")) {
 			holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
 			holder.txtProjectName.setTextColor(Color.parseColor("#AAB3B6"));
-			holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags()
+					| Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
-			holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
-			holder.txtProjectName.setTextColor(Color.parseColor("#FFFF00"));
-			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.txtName.setTextColor(Color.parseColor("#f5ad24"));
+			holder.txtProjectName.setTextColor(Color.parseColor("#f5ad24"));
+			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags()
+					& ~Paint.STRIKE_THRU_TEXT_FLAG);
 		}
 
 		return convertView;
@@ -98,7 +110,6 @@ public class myTasksBaseAdapter extends BaseAdapter {
 		TextView txtProjectName;
 		TextView txtdate;
 		TextView txtstatus;
-		ProgressBar TaskProgress;
 		ImageView priority;
 	}
 

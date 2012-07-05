@@ -39,7 +39,6 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.project.ProjectChartActivity;
 
 public class ProfileActivity extends Activity {
-	@SuppressWarnings("unused")
 	private TextView logoText, NameText, Email, Gmail;
 	private ImageButton logoButton;
 	private Context cont;
@@ -54,13 +53,13 @@ public class ProfileActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cont = this;
+		final Activity currentActivity = this;
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.profileview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 		logoText.setText("My Profile");
 		chartIntent = new Intent(cont, ProjectChartActivity.class);
 		chartIntent.putExtra("activity", 0);
@@ -76,7 +75,10 @@ public class ProfileActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 		myProgressBar = (ProgressBar) findViewById(R.id.profileviewProgress);

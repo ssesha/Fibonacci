@@ -83,8 +83,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.arrow.setVisibility(View.GONE);
 			holder.priority.setVisibility(View.GONE);
 			holder.txtassignee.setVisibility(View.GONE);
-			holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
-			holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
+			holder.txtName.setTextColor(Color.parseColor("#f5ad24"));
+			holder.txtParentName.setTextColor(Color.parseColor("#f5ad24"));
 			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
 			holder.txtParentName.setVisibility(View.VISIBLE);
@@ -98,17 +98,17 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			System.out.println("assignee" + taskList.get(position).getAssignee_name());
 
 			if (taskList.get(position).getAssignee_name() == null)
-				holder.txtassignee.setVisibility(View.GONE);
+				holder.txtassignee.setText("Unassigned");
 			else
 				holder.txtassignee.setText(taskList.get(position).getAssignee_name());
 
 			int parent_id = taskList.get(position).getParentId();
 			int flag = 0;
-			for (int i = 0; i < taskList.size(); i++) {
-				if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
-					System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
-					System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
-					holder.txtParentName.setText(taskList.get(i).getTask_name());
+			for (int i = 0; i < allTaskList.size(); i++) {
+				if (parent_id == allTaskList.get(i).getTask_id() && parent_id != 0) {
+					System.out.println("parent test" + parent_id + allTaskList.get(i).getTask_id());
+					System.out.println("i have a parent.my name is" + allTaskList.get(position).getTask_name() + "my parent is" + allTaskList.get(i).getTask_name());
+					holder.txtParentName.setText(allTaskList.get(i).getTask_name());
 					flag = 1;
 					break;
 				} else
@@ -145,8 +145,8 @@ public class TaskListBaseAdapter extends BaseAdapter {
 				holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));
 				holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 			} else {
-				holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
-				holder.txtParentName.setTextColor(Color.parseColor("#FFFF00"));
+				holder.txtName.setTextColor(Color.parseColor("#f5ad24"));
+				holder.txtParentName.setTextColor(Color.parseColor("#f5ad24"));
 				holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
 			}
 

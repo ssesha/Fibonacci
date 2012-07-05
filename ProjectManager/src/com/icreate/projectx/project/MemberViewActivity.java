@@ -14,12 +14,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
@@ -30,7 +32,8 @@ import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
-	private TextView logoText, progressnumber;
+	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView, tasksCompletedLabel, totaltasksLabel;
+	private ImageButton logoButton;
 	private ProgressBar mem_progress;
 	private ProjectxGlobalState globalState;
 	private Project project;
@@ -48,17 +51,37 @@ public class MemberViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.memberview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
 		cont = this;
 		currentActivity = this;
 
+		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
+		totaltasksView = (TextView) findViewById(R.id.noTotalTasks);
+		tasksCompletedLabel = (TextView) findViewById(R.id.memberCompletedTasks);
+		totaltasksLabel = (TextView) findViewById(R.id.memberTotalTasks);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) findViewById(R.id.logoText);
+		logoText = (TextView) findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
+		logoText.setSelected(true);
+		tasksCompletedView.setTypeface(font);
+		totaltasksView.setTypeface(font);
+		tasksCompletedLabel.setTypeface(font);
+		totaltasksLabel.setTypeface(font);
+		logoButton = (ImageButton) findViewById(R.id.projectlogoImageButton);
+		logoButton.setBackgroundResource(R.drawable.home_button);
+		logoButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
+			}
+		});
 
 		progressnumber = (TextView) findViewById(R.id.taskprogressnumber);
 		System.out.println("ok then");
@@ -76,24 +99,6 @@ public class MemberViewActivity extends Activity {
 			currentMember = null;
 
 		}
-
-		taskListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Object o = taskListView.getItemAtPosition(position);
-				Task selectedTask = (Task) o;
-				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
-				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
-				TaskViewIntent.putExtra("project", projectString);
-				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
-				startActivity(TaskViewIntent);
-			}
-		});
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
 		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
@@ -107,6 +112,18 @@ public class MemberViewActivity extends Activity {
 		mem_progress.setProgress((int) memberProgress);
 		taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
 		System.out.println(project.getTasks().size());
+		taskListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = taskListView.getItemAtPosition(position);
+				Task selectedTask = (Task) o;
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				startActivity(TaskViewIntent);
+				currentActivity.finish();
+			}
+		});
 	}
 
 	@Override

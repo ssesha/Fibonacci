@@ -3,7 +3,6 @@ package com.icreate.projectx.net;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -23,7 +22,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.task.TaskListBaseAdapter;
 
 public class GetProjectRefresh extends AsyncTask<String, Void, String> {
@@ -31,7 +29,7 @@ public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 	private final Context context;
 	private final Activity callingActivity;
 	private final ProgressDialog dialog;
-	private Project project;
+	private final Project project;
 	private TaskListBaseAdapter taskListBaseAdapter;
 	private final ListView task_projectListView;
 	private final PullToRefreshListView projectListViewWrapper;
@@ -98,19 +96,6 @@ public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 				ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
 				globalState.setProject(projectobj);
 
-				globalState = (ProjectxGlobalState) callingActivity.getApplication();
-				project = globalState.getProject();
-				for (int i = 0; i < project.getTasks().size(); i++) {
-					System.out.println("task" + i + project.getTasks().get(i).getTask_name());
-					if (project.getTasks().get(i).getAssignee() != 0) {
-						for (int j = 0; j < project.getMembers().size(); j++) {
-							if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
-								project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
-						}
-					}
-				}
-				taskListBaseAdapter = new TaskListBaseAdapter(context, (ArrayList<Task>) project.getTasks());
-				task_projectListView.setAdapter(taskListBaseAdapter);
 				if (dialog == null) {
 					projectListViewWrapper.onRefreshComplete();
 				}

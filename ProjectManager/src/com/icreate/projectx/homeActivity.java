@@ -51,7 +51,7 @@ public class homeActivity extends Activity {
 	private ProjectxGlobalState globalData;
 	private TextView logoText;
 	private ImageButton logoButton, myProjectButton, myTaskButton,
-			logoutButton, profileButton, calendarButton, findButton;
+			logoutButton, profileButton;
 	private Context context;
 	private Activity callingActivity;
 
@@ -74,8 +74,6 @@ public class homeActivity extends Activity {
 		profileButton = (ImageButton) findViewById(R.id.profileButton);
 		myProjectButton = (ImageButton) findViewById(R.id.myProjectButton);
 		myTaskButton = (ImageButton) findViewById(R.id.myTaskButton);
-		calendarButton = (ImageButton) findViewById(R.id.calenderButton);
-		findButton = (ImageButton) findViewById(R.id.findButton);
 		logoutButton = (ImageButton) findViewById(R.id.logoutButton);
 
 		logoText.setTypeface(font);
@@ -121,7 +119,7 @@ public class homeActivity extends Activity {
 			}
 		});
 
-		calendarButton.setOnClickListener(new View.OnClickListener() {
+		/*calendarButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				ProjectxGlobalState global = (ProjectxGlobalState) getApplication();
@@ -137,20 +135,17 @@ public class homeActivity extends Activity {
 				// startActivity(new Intent(cont,
 				// SelectAttendeesActivity.class));
 			}
-		});
+		});*/
 
-		findButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-			}
-		});
 
 		logoutButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				ProjectXPreferences.getEditor(cont).clear().commit();
-				startActivity(new Intent(cont, ProjectManagerActivity.class));
+				Intent HomeIntent = new Intent(cont, ProjectManagerActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				finish();
 			}
 		});
 	}

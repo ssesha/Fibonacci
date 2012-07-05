@@ -34,7 +34,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -109,8 +108,6 @@ public class TaskViewActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -143,7 +140,10 @@ public class TaskViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -452,7 +452,7 @@ public class TaskViewActivity extends Activity {
 					json1.put("taskId", task.getTask_id());
 					json1.put("user", glob_data.getUserid());
 					json1.put("projectId", project.getProject_id());
-					json1.put("name", TaskName.getText());
+					json1.put("name", task.getTask_name());
 					if (task.getParentId() != 0)
 						json1.put("parentId", task.getParentId());
 					json1.put("description", TaskDesc.getText());
