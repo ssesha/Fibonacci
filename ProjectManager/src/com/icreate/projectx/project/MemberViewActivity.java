@@ -32,7 +32,7 @@ import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
-	private TextView logoText, progressnumber;
+	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView, tasksCompletedLabel, totaltasksLabel;
 	private ImageButton logoButton;
 	private ProgressBar mem_progress;
 	private ProjectxGlobalState globalState;
@@ -51,18 +51,26 @@ public class MemberViewActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.memberview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 
 		cont = this;
 		currentActivity = this;
 
+		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
+		totaltasksView = (TextView) findViewById(R.id.noTotalTasks);
+		tasksCompletedLabel = (TextView) findViewById(R.id.memberCompletedTasks);
+		totaltasksLabel = (TextView) findViewById(R.id.memberTotalTasks);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-		logoText = (TextView) findViewById(R.id.logoText);
+		logoText = (TextView) findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
-		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
+		logoText.setSelected(true);
+		tasksCompletedView.setTypeface(font);
+		totaltasksView.setTypeface(font);
+		tasksCompletedLabel.setTypeface(font);
+		totaltasksLabel.setTypeface(font);
+		logoButton = (ImageButton) findViewById(R.id.projectlogoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
 		logoButton.setOnClickListener(new View.OnClickListener() {
 

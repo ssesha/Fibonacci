@@ -85,7 +85,10 @@ public class homeActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				ProjectXPreferences.getEditor(cont).clear().commit();
-				startActivity(new Intent(cont, ProjectManagerActivity.class));
+				Intent HomeIntent = new Intent(cont, ProjectManagerActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				finish();
 			}
 		});
 	}
