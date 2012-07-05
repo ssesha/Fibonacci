@@ -33,7 +33,6 @@
         <activity android:name="headerActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name=".project.newProjectActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="homeActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
-        <activity android:name=".project.myProjectsActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name="loginActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name=".project.ProjectListActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>
         <activity android:name=".project.projectViewActivity" android:screenOrientation="portrait" android:windowSoftInputMode="adjustPan" android:launchMode="standard"></activity>

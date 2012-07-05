@@ -140,6 +140,8 @@ public class TaskListActivity extends Activity {
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Tasks");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
 			ListTask ListTasks = new ListTask(cont, currentActivity, dialog, TaskListView);
 			System.out.println(url);
 			ListTasks.execute(url);
@@ -157,18 +159,20 @@ public class TaskListActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = myTaskSearch.getText().length();
-				System.out.println(myTaskSearch.getText());
-				filteredTasks.clear();
-				for (int i = 0; i < tasks.size(); i++) {
-					Log.d("YOLO", tasks.get(i).getTask_name());
-					if (textLength2 <= tasks.get(i).getTask_name().length()) {
-						if (myTaskSearch.getText().toString().equalsIgnoreCase((String) tasks.get(i).getTask_name().subSequence(0, textLength2))) {
-							filteredTasks.add(tasks.get(i));
+				if (tasks != null) {
+					System.out.println(myTaskSearch.getText());
+					filteredTasks.clear();
+					for (int i = 0; i < tasks.size(); i++) {
+						Log.d("YOLO", tasks.get(i).getTask_name());
+						if (textLength2 <= tasks.get(i).getTask_name().length()) {
+							if (myTaskSearch.getText().toString().equalsIgnoreCase((String) tasks.get(i).getTask_name().subSequence(0, textLength2))) {
+								filteredTasks.add(tasks.get(i));
+							}
 						}
 					}
+					mytasksAdapter = new myTasksBaseAdapter(cont, filteredTasks);
+					TaskListView.setAdapter(mytasksAdapter);
 				}
-				mytasksAdapter = new myTasksBaseAdapter(cont, filteredTasks);
-				TaskListView.setAdapter(mytasksAdapter);
 			}
 		});
 
@@ -192,6 +196,8 @@ public class TaskListActivity extends Activity {
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
 				dialog.show();
 				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, selectedTask.getTask_id(), false);
 				getProjectTask.execute(url);
@@ -224,6 +230,7 @@ public class TaskListActivity extends Activity {
 				this.dialog.setMessage("Getting Tasks...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 

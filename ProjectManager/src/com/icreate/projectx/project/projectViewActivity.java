@@ -263,6 +263,8 @@ public class projectViewActivity extends Activity {
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
 					dialog.setMessage("Create Comments...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
 					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
 					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createProjectComment.php");
 
@@ -331,6 +333,8 @@ public class projectViewActivity extends Activity {
 		url += "?" + paramString;
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Activity Feed...");
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities, commentlist);
 		System.out.println(url);
 		task.execute(url);
@@ -356,6 +360,7 @@ public class projectViewActivity extends Activity {
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 
@@ -400,6 +405,8 @@ public class projectViewActivity extends Activity {
 					String paramString = URLEncodedUtils.format(params, "utf-8");
 					url += "?" + paramString;
 					dialog.setMessage("Loading Activity Feed...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
 					GetActivityFeed task = new GetActivityFeed(context, callingActivity, dialog, activities, commentlist);
 					System.out.println(url);
 					task.execute(url);
@@ -526,6 +533,7 @@ public class projectViewActivity extends Activity {
 				if (!this.dialog.isShowing()) {
 					this.dialog.setMessage("Loading...");
 					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.setCancelable(false);
 					this.dialog.show();
 				}
 			}

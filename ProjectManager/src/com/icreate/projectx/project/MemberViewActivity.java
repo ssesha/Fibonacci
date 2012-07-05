@@ -38,6 +38,11 @@ public class MemberViewActivity extends Activity {
 	private ProjectMembers currentMember;
 	private Context cont;
 	private Activity currentActivity;
+	private int memberPosition;
+	double memberProgress;
+	double totaltasks;
+	double totalcompletedtasks;
+	private ListView taskListView;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -57,31 +62,18 @@ public class MemberViewActivity extends Activity {
 
 		progressnumber = (TextView) findViewById(R.id.taskprogressnumber);
 		System.out.println("ok then");
-		final ListView taskListView = (ListView) findViewById(R.id.assigneetasklist);
+		taskListView = (ListView) findViewById(R.id.assigneetasklist);
 		taskListView.setTextFilterEnabled(true);
 		registerForContextMenu(taskListView);
 
 		Bundle extras = getIntent().getExtras();
 		globalState = (ProjectxGlobalState) getApplication();
 		if (extras != null) {
-			int memberPosition = extras.getInt("memberPosition", -1);
-			double memberProgress = extras.getDouble("memberProgress", -1);
-			double totaltasks = extras.getDouble("totaltasks", -1);
-			double totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
+			memberPosition = extras.getInt("memberPosition", -1);
+			memberProgress = extras.getDouble("memberProgress", -1);
+			totaltasks = extras.getDouble("totaltasks", -1);
+			totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
 			currentMember = null;
-
-			project = globalState.getProject();
-			Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
-			currentMember = project.getMembers().get(memberPosition);
-			if (currentMember != null) {
-				logoText.setText(currentMember.getUser_name());
-			}
-			mem_progress = (ProgressBar) findViewById(R.id.taskProgress);
-			progressnumber.setText((int) memberProgress + "%");
-
-			mem_progress.setProgress((int) memberProgress);
-			taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
-			System.out.println(project.getTasks().size());
 
 		}
 
@@ -97,6 +89,24 @@ public class MemberViewActivity extends Activity {
 				startActivity(TaskViewIntent);
 			}
 		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		globalState = (ProjectxGlobalState) getApplication();
+		project = globalState.getProject();
+		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
+		currentMember = project.getMembers().get(memberPosition);
+		if (currentMember != null) {
+			logoText.setText(currentMember.getUser_name());
+		}
+		mem_progress = (ProgressBar) findViewById(R.id.taskProgress);
+		progressnumber.setText((int) memberProgress + "%");
+
+		mem_progress.setProgress((int) memberProgress);
+		taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
+		System.out.println(project.getTasks().size());
 	}
 
 	@Override

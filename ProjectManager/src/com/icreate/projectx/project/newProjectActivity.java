@@ -98,6 +98,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		currentActivity = this;
 		addMemberIntent = new Intent(cont, AddMemberActivity.class);
 		dialog = new ProgressDialog(cont);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		firstLoad = true;
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -317,6 +319,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 				this.dialog.setMessage("Retrieving Module List...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 
@@ -424,6 +427,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Creating Project...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
 					dialog.show();
 					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, 0, true);
 					getProjectTask.execute(url);

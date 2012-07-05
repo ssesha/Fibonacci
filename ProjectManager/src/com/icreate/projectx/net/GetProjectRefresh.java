@@ -50,6 +50,8 @@ public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 		if (dialog != null) {
 			if (!this.dialog.isShowing()) {
 				this.dialog.setMessage("Getting Project Info...");
+				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 				this.dialog.show();
 			}
 		}

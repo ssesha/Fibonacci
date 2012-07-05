@@ -26,11 +26,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,7 +40,7 @@ import com.icreate.projectx.project.ProjectChartActivity;
 
 public class ProfileActivity extends Activity {
 	@SuppressWarnings("unused")
-	private TextView logoText, NameText;
+	private TextView logoText, NameText, Email, Gmail;
 	private ImageButton logoButton;
 	private Context cont;
 	private ProjectxGlobalState global;
@@ -49,6 +48,7 @@ public class ProfileActivity extends Activity {
 	private LinearLayout chartLayout;
 	private Intent chartIntent;
 	private final int subActivityID = 98765;
+	private ProgressBar myProgressBar;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,12 @@ public class ProfileActivity extends Activity {
 		logoText.setText("My Profile");
 		chartIntent = new Intent(cont, ProjectChartActivity.class);
 		chartIntent.putExtra("activity", 0);
-		//NameText = (TextView) findViewById(R.id.profileName);
+		NameText = (TextView) findViewById(R.id.profileName);
+		NameText.setTypeface(font);
+		Email = (TextView) findViewById(R.id.profileEmail);
+		Email.setTypeface(font);
+		Gmail = (TextView) findViewById(R.id.profileGmail);
+		Gmail.setTypeface(font);
 		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
 		logoButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +79,7 @@ public class ProfileActivity extends Activity {
 				startActivity(new Intent(cont, homeActivity.class));				
 			}
 		});
-		
+		myProgressBar = (ProgressBar) findViewById(R.id.profileviewProgress);
 		chartLayout = (LinearLayout) findViewById(R.id.chart);
 		
 		String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProfile.php";
@@ -86,6 +91,8 @@ public class ProfileActivity extends Activity {
 		Log.d("profile", url);
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Profile...");
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		ProjectListTask task = new ProjectListTask(cont, this, dialog, chartLayout);
 		task.execute(url);
 	}
@@ -110,6 +117,7 @@ public class ProfileActivity extends Activity {
 					this.dialog.setMessage("Loading...");
 					this.dialog.show();
 					this.dialog.setCanceledOnTouchOutside(false);
+					this.dialog.setCancelable(false);
 				}
 			}
 		}
@@ -150,13 +158,21 @@ public class ProfileActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
 					//Project temp = gson.fromJson(result, Project.class);
+					NameText.setText(resultJson.getString("userName"));
+					Email.setText(resultJson.getString("email"));
+					Gmail.setText(resultJson.getString("gmail"));
+					double totaltask = resultJson.getInt("totalTasks");
+					double totalcompleted = resultJson.getInt("totalCompleted");
+					double progress = (totalcompleted/totaltask)*100.0;
+					Log.d("profile progress", ""+progress);
+					myProgressBar.setProgress((int) progress);
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					global.setProjectList(projectsContainer);
 					IDemoChart mCharts = new ProfileProgressChart();
 					mChartView = mCharts.execute(cont, projectsContainer.getProjects(), true);
 					chartLayout.addView(mChartView, new LayoutParams
 							(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-					mChartView.setClickable(true);
+					mChartView.setClickable(false);
 					mChartView.setOnClickListener(new View.OnClickListener() {			
 						@Override
 						public void onClick(View v) {
