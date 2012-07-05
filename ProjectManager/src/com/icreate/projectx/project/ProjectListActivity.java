@@ -89,7 +89,10 @@ public class ProjectListActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -182,6 +185,7 @@ public class ProjectListActivity extends Activity {
 			@Override
 			public void onRefresh() {
 				if (passedUserId != null) {
+					projectSearch.setText("");
 					String url = ProjectxGlobalState.urlPrefix + "projectList.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
 					params.add(new BasicNameValuePair("user_id", passedUserId));
@@ -303,6 +307,7 @@ public class ProjectListActivity extends Activity {
 			String url = ProjectxGlobalState.urlPrefix + "deleteProject.php?project_id=" + selectedProject.getProject_id();
 			DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, projects);
 			deleteProjectTask.execute(url);
+			projectSearch.setText("");
 			return true;
 		} else {
 			System.out.println("blsldsdlflsfsdf");

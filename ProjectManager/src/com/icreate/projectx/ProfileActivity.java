@@ -54,6 +54,7 @@ public class ProfileActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		cont = this;
+		final Activity currentActivity = this;
 		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.profileview);
 		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
@@ -76,7 +77,10 @@ public class ProfileActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(cont, homeActivity.class));
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
 			}
 		});
 		myProgressBar = (ProgressBar) findViewById(R.id.profileviewProgress);
