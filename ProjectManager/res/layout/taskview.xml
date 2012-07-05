@@ -31,7 +31,7 @@
         android:layout_marginRight="14dp"
         android:layout_marginTop="15dp"
         android:orientation="vertical"
-        android:weightSum="9" >
+        android:weightSum="8" >
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -133,70 +133,60 @@
                         android:orientation="horizontal"
                         android:weightSum="5" >
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/ProjectNameTaskView"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
-                            android:orientation="vertical"
-                            android:weightSum="2" >
+                            android:textColor="#FFFFFF"
+                            android:textSize="17sp" />
 
-                            <TextView
-                                android:id="@+id/ProjectNameTaskView"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:textColor="#FFFFFF"
-                                android:textSize="17sp"
-                                android:layout_weight="1" />
-
-                            <TextView
-                                android:id="@+id/taskDeadline"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"                                
-                                android:gravity="center_vertical"
-                                android:textColor="#f5ad24"
-                                android:textSize="17sp"
-                                android:layout_weight="1" />
-                        </LinearLayout>
-
-                        <LinearLayout
+                        <ProgressBar
+                            android:id="@+id/taskviewProgress"
+                            style="@android:style/Widget.ProgressBar.Horizontal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            android:orientation="vertical"
-                            android:weightSum="2" >
-
-                            <ProgressBar
-                                android:id="@+id/taskviewProgress"
-                                style="@android:style/Widget.ProgressBar.Horizontal"
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:progressDrawable="@drawable/search_progress_drawable" />
-
-                            <LinearLayout
-                                android:layout_width="fill_parent"
-                                android:layout_height="0dp"
-                                android:layout_weight="1"
-                                android:orientation="horizontal" >
-
-                                <TextView
-                                    android:id="@+id/taskstatusView"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textColor="#FFFFFF"
-                                    android:textSize="17sp" />
-
-                                <Spinner
-                                    android:id="@+id/taskstatusSpinner"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:textSize="17sp"
-                                    android:visibility="invisible" />
-                            </LinearLayout>
-                        </LinearLayout>
+                            android:progressDrawable="@drawable/search_progress_drawable" />
                     </LinearLayout>
-                    
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="5" >
+
+                        <TextView
+                            android:id="@+id/taskDeadline"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"
+                            android:textColor="#f5ad24"
+                            android:textSize="17sp" />
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:gravity="center"
+                            android:orientation="horizontal" >
+
+                            <TextView
+                                android:id="@+id/taskstatusView"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColor="#FFFFFF"
+                                android:textSize="17sp" />
+
+                            <Spinner
+                                android:id="@+id/taskstatusSpinner"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignBottom="@+id/taskstatusView"
+                                android:textSize="17sp"
+                                android:visibility="invisible" />
+                        </RelativeLayout>
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -230,15 +220,15 @@
                                 android:orientation="horizontal" >
 
                                 <TextView
-                                    android:id="@+id/taskView_assignee"
+                                    android:id="@+id/taskView_reporter"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Assignee: "
+                                    android:text="Reporter: "
                                     android:textColor="#f5ad24"
-                                    android:textSize="15sp" />
+                                    android:textSize="17sp" />
 
                                 <TextView
-                                    android:id="@+id/taskAssignedToView"
+                                    android:id="@+id/taskCreatedByView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#FFFFFF"
@@ -251,15 +241,15 @@
                                 android:orientation="horizontal" >
 
                                 <TextView
-                                    android:id="@+id/taskView_reporter"
+                                    android:id="@+id/taskView_assignee"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Reporter: "
+                                    android:text="Assignee: "
                                     android:textColor="#f5ad24"
                                     android:textSize="17sp" />
 
                                 <TextView
-                                    android:id="@+id/taskCreatedByView"
+                                    android:id="@+id/taskAssignedToView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:textColor="#FFFFFF"
@@ -282,17 +272,6 @@
                             </ImageView>
                         </LinearLayout>
                     </LinearLayout>
-
-                    <!--
-                         <TextView
-                        android:id="@+id/taskPriorityView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-                    -->
                 </LinearLayout>
             </ScrollView>
         </LinearLayout>
@@ -300,16 +279,16 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="0dp"
-            android:layout_weight="4"
-            android:orientation="vertical"
-            android:paddingBottom="10dp"
-            android:paddingTop="5dp" >
+            android:layout_weight="3"
+            android:orientation="vertical" >
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="210dp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/rounded" >
 
                 <ListView
@@ -334,7 +313,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="3" >
+                android:weightSum="4" >
 
                 <RelativeLayout
                     android:layout_width="0dp"
@@ -343,7 +322,7 @@
 
                     <Button
                         android:id="@+id/goToParent"
-                        android:layout_width="38dp"
+                        android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"
@@ -370,8 +349,22 @@
                     android:layout_weight="1" >
 
                     <Button
+                        android:id="@+id/editButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/editbutton" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" >
+
+                    <Button
                         android:id="@+id/setAlarmButton"
-                        android:layout_width="38dp"
+                        android:layout_width="61dp"
                         android:layout_height="50dp"
                         android:layout_centerHorizontal="true"
                         android:layout_centerVertical="true"

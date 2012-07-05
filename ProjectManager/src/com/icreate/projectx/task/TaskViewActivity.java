@@ -78,8 +78,7 @@ import com.icreate.projectx.project.projectViewActivity;
 
 public class TaskViewActivity extends Activity {
 
-	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName,
-			TaskAssigneeName, TaskCreatorName, TaskStatus;
+	private TextView logoText, TaskDesc, TaskDeadline, ProjectName, TaskName, TaskAssigneeName, TaskCreatorName, TaskStatus;
 	private TextView Assignee, Reporter;
 	private ImageView TaskPriority;
 	private ImageView slide;
@@ -110,10 +109,8 @@ public class TaskViewActivity extends Activity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-				.detectAll().penaltyLog().build());
-		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-				.penaltyLog().build());
+		StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder().detectAll().penaltyLog().build());
+		StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog().build());
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -127,12 +124,9 @@ public class TaskViewActivity extends Activity {
 		cont = this;
 		currentActivity = this;
 
-		ViewGroup slidelayout = (ViewGroup) taskview
-				.findViewById(R.id.slidelayout);
-		slide = (ImageView) slidelayout
-				.findViewById(R.id.rightlogoImageButtontaskview);
-		slide.setOnClickListener(new ClickListenerForScrolling(scrollView,
-				commentview));
+		ViewGroup slidelayout = (ViewGroup) taskview.findViewById(R.id.slidelayout);
+		slide = (ImageView) slidelayout.findViewById(R.id.rightlogoImageButtontaskview);
+		slide.setOnClickListener(new ClickListenerForScrolling(scrollView, commentview));
 
 		globalState = (ProjectxGlobalState) getApplication();
 
@@ -142,8 +136,7 @@ public class TaskViewActivity extends Activity {
 		logoText.setText("Task View");
 		logoText.setSelected(true);
 
-		ImageButton homeButton = (ImageButton) taskview
-				.findViewById(R.id.projectlogoImageButton);
+		ImageButton homeButton = (ImageButton) taskview.findViewById(R.id.projectlogoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
 
 		homeButton.setOnClickListener(new View.OnClickListener() {
@@ -159,28 +152,23 @@ public class TaskViewActivity extends Activity {
 		TaskDesc.setTypeface(font);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
 		TaskDeadline.setTypeface(font);
-		TaskAssigneeName = (TextView) taskview
-				.findViewById(R.id.taskAssignedToView);
+		TaskAssigneeName = (TextView) taskview.findViewById(R.id.taskAssignedToView);
 		TaskAssigneeName.setTypeface(font);
-		TaskCreatorName = (TextView) taskview
-				.findViewById(R.id.taskCreatedByView);
+		TaskCreatorName = (TextView) taskview.findViewById(R.id.taskCreatedByView);
 		TaskCreatorName.setTypeface(font);
 		TaskStatus = (TextView) taskview.findViewById(R.id.taskstatusView);
 		TaskStatus.setTypeface(font);
 		statusSpinner = (Spinner) taskview.findViewById(R.id.taskstatusSpinner);
 		TaskPriority = (ImageView) taskview.findViewById(R.id.taskPriorityView);
-		ProjectName = (TextView) taskview
-				.findViewById(R.id.ProjectNameTaskView);
+		ProjectName = (TextView) taskview.findViewById(R.id.ProjectNameTaskView);
 		ProjectName.setTypeface(font);
 		Assignee = (TextView) taskview.findViewById(R.id.taskView_assignee);
 		Assignee.setTypeface(font);
 		Reporter = (TextView) taskview.findViewById(R.id.taskView_reporter);
 		Reporter.setTypeface(font);
-		commentListViewWrapper = (PullToRefreshListView) commentview
-				.findViewById(R.id.commentList);
+		commentListViewWrapper = (PullToRefreshListView) commentview.findViewById(R.id.commentList);
 		commentListView = commentListViewWrapper.getRefreshableView();
-		commentTextBox = (EditText) commentview
-				.findViewById(R.id.commentTextBox);
+		commentTextBox = (EditText) commentview.findViewById(R.id.commentTextBox);
 		commentTextBox.setTypeface(font);
 		sendComment = (Button) commentview.findViewById(R.id.sendCommentButton);
 		createTask = (Button) taskview.findViewById(R.id.createSubTaskButton);
@@ -192,22 +180,18 @@ public class TaskViewActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Toast.makeText(cont, "fdsdfsdf", Toast.LENGTH_LONG).show();
-				Intent alarmintent = new Intent(getApplicationContext(),
-						AlarmReceiver.class);
+				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
 				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-				if (PendingIntent.getBroadcast(getApplicationContext(),
-						task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
 					System.out.println("Alarm was set now it is removed");
-					PendingIntent sender = PendingIntent.getBroadcast(
-							getApplicationContext(), task_id, alarmintent,
-							PendingIntent.FLAG_UPDATE_CURRENT);
+					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
 					try {
 						am.cancel(sender);
 						sender.cancel();
-						setAlarm.setText("Alarm not Set");
+						// setAlarm.setText("Alarm not Set");
+						setAlarm.setBackgroundResource(R.drawable.alarmoff);
 					} catch (Exception e) {
-						Log.e("Error", "AlarmManager update was not canceled. "
-								+ e.toString());
+						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
 					}
 				} else {
 					System.out.println("Alarm not set now it is set");
@@ -223,19 +207,14 @@ public class TaskViewActivity extends Activity {
 						// cal.setTimeInMillis(System.currentTimeMillis());
 						// cal.add(Calendar.SECOND, 10);
 						alarmintent.putExtra("task_name", task.getTask_name());
-						alarmintent.putExtra("description",
-								task.getDescription());
+						alarmintent.putExtra("description", task.getDescription());
 						alarmintent.putExtra("requestCode", task_id);
-						alarmintent.putExtra("project_id",
-								project.getProject_id());
-						alarmintent.putExtra("project_name",
-								project.getProject_name());
-						PendingIntent sender = PendingIntent.getBroadcast(
-								getApplicationContext(), task_id, alarmintent,
-								PendingIntent.FLAG_UPDATE_CURRENT);
-						am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-								sender);
-						setAlarm.setText("Alarm set");
+						alarmintent.putExtra("project_id", project.getProject_id());
+						alarmintent.putExtra("project_name", project.getProject_name());
+						PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
+						am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
+						// setAlarm.setText("Alarm set");
+						setAlarm.setBackgroundResource(R.drawable.alarmon);
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -246,19 +225,18 @@ public class TaskViewActivity extends Activity {
 
 		if (extras != null) {
 			task_id = extras.getInt("task_id");
-			Intent alarmintent = new Intent(getApplicationContext(),
-					AlarmReceiver.class);
-			if (PendingIntent.getBroadcast(getApplicationContext(), task_id,
-					alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
+			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
+			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
 				System.out.println("Alarm set");
-				setAlarm.setText("Alarm Set");
+				// setAlarm.setText("Alarm Set");
+				setAlarm.setBackgroundResource(R.drawable.alarmon);
 			} else {
-				setAlarm.setText("Alarm not set");
+				// setAlarm.setText("Alarm not set");
+				setAlarm.setBackgroundResource(R.drawable.alarmoff);
 			}
 			project = globalState.getProject();
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
-			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project
-					.getMembers();
+			ArrayList<ProjectMembers> member = (ArrayList<ProjectMembers>) project.getMembers();
 			subTasks = new ArrayList<Task>();
 			for (int i = 0; i < alltasks.size(); i++) {
 				if (alltasks.get(i).getTask_id() == task_id) {
@@ -271,8 +249,7 @@ public class TaskViewActivity extends Activity {
 			status.add("ASSIGNED");
 			status.add("IN PROGRESS");
 			status.add("COMPLETE");
-			dataAdapter = new ArrayAdapter<String>(this,
-					android.R.layout.simple_spinner_item, status);
+			dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, status);
 			/*
 			 * {
 			 * 
@@ -283,8 +260,7 @@ public class TaskViewActivity extends Activity {
 			 * }; ;
 			 */
 
-			dataAdapter
-					.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 			statusSpinner.setAdapter(dataAdapter);
 
 			for (int i = 0; i < status.size(); i++) {
@@ -292,8 +268,7 @@ public class TaskViewActivity extends Activity {
 					statusSpinner.setSelection(i);
 			}
 
-			System.out.println("Task details:" + task.getTask_id() + ""
-					+ task.getDescription() + "" + task.getDue_date());
+			System.out.println("Task details:" + task.getTask_id() + "" + task.getDescription() + "" + task.getDue_date());
 			if (task.getDescription() != null) {
 				TaskDesc.setText(task.getDescription());
 			} else
@@ -321,23 +296,15 @@ public class TaskViewActivity extends Activity {
 			} else if (priority.equalsIgnoreCase("HIGH")) {
 				TaskPriority.setImageResource(R.drawable.icon_priority_high);
 			} else if (priority.equalsIgnoreCase("CRITICAL")) {
-				TaskPriority
-						.setImageResource(R.drawable.icon_priority_critical);
+				TaskPriority.setImageResource(R.drawable.icon_priority_critical);
 			}
 			// TaskPriority.setText(task.getTask_priority());
 			TaskStatus.setText(task.getTask_status());
 			if (!(task.getTask_status().equals("OPEN"))) {
 				for (int i = 0; i < member.size(); i++) {
-					System.out.println("check status"
-							+ member.get(i).getMember_id() + "  "
-							+ task.getAssignee());
-					System.out.println("check user id"
-							+ globalState.getUserid() + " "
-							+ member.get(i).getUser_id());
-					if (member.get(i).getMember_id() == task.getAssignee()
-							&& globalState.getUserid().equalsIgnoreCase(
-									member.get(i).getUser_id())
-							&& task.getSubTasks().size() == 0) {
+					System.out.println("check status" + member.get(i).getMember_id() + "  " + task.getAssignee());
+					System.out.println("check user id" + globalState.getUserid() + " " + member.get(i).getUser_id());
+					if (member.get(i).getMember_id() == task.getAssignee() && globalState.getUserid().equalsIgnoreCase(member.get(i).getUser_id()) && task.getSubTasks().size() == 0) {
 						statusSpinner.setVisibility(View.VISIBLE);
 						TaskStatus.setVisibility(View.GONE);
 					}
@@ -352,11 +319,9 @@ public class TaskViewActivity extends Activity {
 				sub_taskid = task.getTopSubTasks().get(i);
 				System.out.println("sub task id" + sub_taskid);
 				for (int j = 0; j < alltasks.size(); j++) {
-					System.out.println("j" + j + "all task id"
-							+ alltasks.get(j).getTask_id());
+					System.out.println("j" + j + "all task id" + alltasks.get(j).getTask_id());
 					if (sub_taskid == alltasks.get(j).getTask_id()) {
-						System.out.println("j inside " + j + ""
-								+ alltasks.get(j).getTask_name());
+						System.out.println("j inside " + j + "" + alltasks.get(j).getTask_name());
 						subTasks.add(alltasks.get(j));
 						System.out.println(subTasks.size());
 						break;
@@ -369,16 +334,14 @@ public class TaskViewActivity extends Activity {
 
 			String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
-			params.add(new BasicNameValuePair("task_id", new Integer(task_id)
-					.toString()));
+			params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
 			String paramString = URLEncodedUtils.format(params, "utf-8");
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Comments");
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
-			ListComment ListComments = new ListComment(cont, currentActivity,
-					dialog, commentListView);
+			ListComment ListComments = new ListComment(cont, currentActivity, dialog, commentListView);
 			System.out.println(url);
 			ListComments.execute(url);
 
@@ -391,8 +354,7 @@ public class TaskViewActivity extends Activity {
 
 		// Scroll to app (view[1]) when layout finished.
 		int scrollToViewIdx = 1;
-		scrollView.initViews(children, scrollToViewIdx,
-				new SizeCallbackForMenu(slide));
+		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
 		System.out.println("Menu ScrollViewIdx + " + scrollToViewIdx);
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
@@ -412,10 +374,8 @@ public class TaskViewActivity extends Activity {
 					dialog.setMessage("Create Comments...");
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
-					CreateCommentTask createCommentTask = new CreateCommentTask(
-							cont, currentActivity, json1, dialog);
-					createCommentTask
-							.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createComment.php");
+					CreateCommentTask createCommentTask = new CreateCommentTask(cont, currentActivity, json1, dialog);
+					createCommentTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createComment.php");
 
 					/*
 					 * String url =
@@ -451,21 +411,16 @@ public class TaskViewActivity extends Activity {
 				for (Task taskItem : alltasks) {
 					if (taskItem.getTask_id() == extras.getInt("task_id")) {
 						if (taskItem.getParentId() != 0) {
-							parentTaskIntent = new Intent(cont,
-									TaskViewActivity.class);
-							Log.d("taskview to parent",
-									"" + taskItem.getParentId());
+							parentTaskIntent = new Intent(cont, TaskViewActivity.class);
+							Log.d("taskview to parent", "" + taskItem.getParentId());
 							// parentTaskIntent.putExtra("task_id",
 							// ""+taskItem.getParentId());
-							parentTaskIntent.putExtra("task_id",
-									taskItem.getParentId());
+							parentTaskIntent.putExtra("task_id", taskItem.getParentId());
 							startActivity(parentTaskIntent);
 							currentActivity.finish();
 						} else {
-							parentTaskIntent = new Intent(cont,
-									projectViewActivity.class);
-							parentTaskIntent
-									.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							parentTaskIntent = new Intent(cont, projectViewActivity.class);
+							parentTaskIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 							startActivity(parentTaskIntent);
 							currentActivity.finish();
 						}
@@ -477,16 +432,10 @@ public class TaskViewActivity extends Activity {
 
 		taskListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = taskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(
-						cont,
-						"You have chosen: " + " " + selectedTask.getTask_name()
-								+ " " + selectedTask.getTask_id() + " "
-								+ position + " "
-								+ selectedTask.getAssignee_name(),
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position + " " + selectedTask.getAssignee_name(),
 						Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
@@ -497,8 +446,7 @@ public class TaskViewActivity extends Activity {
 
 		statusSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
-			public void onItemSelected(AdapterView<?> parentView,
-					View selectedItemView, int position, long id) {
+			public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
 				JSONObject json1 = new JSONObject();
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
@@ -510,10 +458,8 @@ public class TaskViewActivity extends Activity {
 						json1.put("parentId", task.getParentId());
 					json1.put("description", TaskDesc.getText());
 					for (int i = 0; i < project.getMembers().size(); i++) {
-						if (task.getCreatedBy() == project.getMembers().get(i)
-								.getMember_id())
-							json1.put("createdBy", project.getMembers().get(i)
-									.getUser_id());
+						if (task.getCreatedBy() == project.getMembers().get(i).getMember_id())
+							json1.put("createdBy", project.getMembers().get(i).getUser_id());
 					}
 
 					json1.put("duedate", TaskDeadline.getText());
@@ -528,10 +474,8 @@ public class TaskViewActivity extends Activity {
 					dialog.setMessage("Create Task...");
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
-					CreateTask createTask = new CreateTask(cont,
-							currentActivity, json1, dialog);
-					createTask
-							.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
+					CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
+					createTask.execute("http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/createTask_not.php");
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
@@ -569,16 +513,14 @@ public class TaskViewActivity extends Activity {
 			public void onRefresh() {
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
 				List<NameValuePair> params = new LinkedList<NameValuePair>();
-				params.add(new BasicNameValuePair("task_id", new Integer(
-						task_id).toString()));
+				params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Comments");
 				dialog.setCancelable(false);
 				dialog.setCanceledOnTouchOutside(false);
-				ListComment ListComments = new ListComment(cont,
-						currentActivity, commentListView);
+				ListComment ListComments = new ListComment(cont, currentActivity, commentListView);
 				System.out.println(url);
 				ListComments.execute(url);
 			}
@@ -607,8 +549,7 @@ public class TaskViewActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateCommentTask(Context context, Activity callingActivity,
-				JSONObject requestData, ProgressDialog dialog) {
+		public CreateCommentTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -635,8 +576,7 @@ public class TaskViewActivity extends Activity {
 					httpPut.setEntity(new StringEntity(requestJson.toString()));
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -662,27 +602,22 @@ public class TaskViewActivity extends Activity {
 					// homeActivity.class));
 					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/commentList.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
-					params.add(new BasicNameValuePair("task_id", new Integer(
-							task_id).toString()));
-					String paramString = URLEncodedUtils
-							.format(params, "utf-8");
+					params.add(new BasicNameValuePair("task_id", new Integer(task_id).toString()));
+					String paramString = URLEncodedUtils.format(params, "utf-8");
 					url += "?" + paramString;
 					ProgressDialog dialog1 = new ProgressDialog(cont);
 					dialog1.setMessage("Getting Comments");
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
-					ListComment ListComments = new ListComment(context,
-							callingActivity, dialog, commentListView);
+					ListComment ListComments = new ListComment(context, callingActivity, dialog, commentListView);
 					System.out.println(url);
 					ListComments.execute(url);
 				} else {
-					Toast.makeText(context, R.string.login_error,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
 				// callingActivity.finish();
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
@@ -700,8 +635,7 @@ public class TaskViewActivity extends Activity {
 		 * Menu must NOT be out/shown to start with.
 		 */
 
-		public ClickListenerForScrolling(HorizontalScrollView scrollView,
-				View menu) {
+		public ClickListenerForScrolling(HorizontalScrollView scrollView, View menu) {
 			super();
 			this.scrollView = scrollView;
 			this.menu = menu;
@@ -715,8 +649,7 @@ public class TaskViewActivity extends Activity {
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
-			System.out.println("Guiiiii" + menu.getMeasuredWidth()
-					+ " menuOut= " + menuOut);
+			System.out.println("Guiiiii" + menu.getMeasuredWidth() + " menuOut= " + menuOut);
 
 			// Ensure menu is visible
 			// if (menu.getVisibility() == View.INVISIBLE)
@@ -773,16 +706,14 @@ public class TaskViewActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final ListView commentListView;
 
-		public ListComment(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView commentListView) {
+		public ListComment(Context context, Activity callingActivity, ProgressDialog dialog, ListView commentListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
 			this.commentListView = commentListView;
 		}
 
-		public ListComment(Context context, Activity callingActivity,
-				ListView commentListView) {
+		public ListComment(Context context, Activity callingActivity, ListView commentListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = null;
@@ -811,8 +742,7 @@ public class TaskViewActivity extends Activity {
 					HttpResponse execute = client.execute(httpGet);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -838,34 +768,26 @@ public class TaskViewActivity extends Activity {
 				Log.d("CommentList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					CommentList commentsContainer = gson.fromJson(result,
-							CommentList.class);
+					CommentList commentsContainer = gson.fromJson(result, CommentList.class);
 					globalState.setCommentList(commentsContainer);
 					comments = commentsContainer.getComments();
-					commentListView.setAdapter(new CommentBaseAdapter(context,
-							comments));
-					commentListView
-							.setSelection(commentListView.getCount() - 1);
+					commentListView.setAdapter(new CommentBaseAdapter(context, comments));
+					commentListView.setSelection(commentListView.getCount() - 1);
 					Log.d("testing", "" + comments.size());
 					for (Comment comment : comments) {
 						Log.d("testing", "test test");
-						System.out.println("creator id"
-								+ comment.getCreated_by());
-						System.out.println("creator name"
-								+ comment.getCreator_name());
-						System.out.println("comment name"
-								+ comment.getComment());
+						System.out.println("creator id" + comment.getCreated_by());
+						System.out.println("creator name" + comment.getCreator_name());
+						System.out.println("comment name" + comment.getComment());
 					}
 					if (this.dialog == null) {
 						commentListViewWrapper.onRefreshComplete();
 					}
 				} else {
-					Toast.makeText(context, "Comment Lists empty",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
@@ -899,8 +821,7 @@ public class TaskViewActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final JSONObject requestJson;
 
-		public CreateTask(Context context, Activity callingActivity,
-				JSONObject requestData, ProgressDialog dialog) {
+		public CreateTask(Context context, Activity callingActivity, JSONObject requestData, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.requestJson = requestData;
@@ -928,8 +849,7 @@ public class TaskViewActivity extends Activity {
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
 					Log.d("inside", requestJson.toString());
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -953,23 +873,19 @@ public class TaskViewActivity extends Activity {
 				if (resultJson.getString("msg").equals("success")) {
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
-					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id="
-							+ projectId;
+					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Updating Status...");
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
 					dialog.show();
-					GetProjectTask getProjectTask = new GetProjectTask(context,
-							callingActivity, dialog, taskId, true);
+					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
 					getProjectTask.execute(url);
 				} else {
-					Toast.makeText(context, "error in creation",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
