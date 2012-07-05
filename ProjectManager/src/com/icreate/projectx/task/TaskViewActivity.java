@@ -452,7 +452,7 @@ public class TaskViewActivity extends Activity {
 					json1.put("taskId", task.getTask_id());
 					json1.put("user", glob_data.getUserid());
 					json1.put("projectId", project.getProject_id());
-					json1.put("name", TaskName.getText());
+					json1.put("name", task.getTask_name());
 					if (task.getParentId() != 0)
 						json1.put("parentId", task.getParentId());
 					json1.put("description", TaskDesc.getText());

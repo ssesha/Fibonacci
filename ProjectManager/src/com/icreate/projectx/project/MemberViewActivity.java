@@ -76,24 +76,6 @@ public class MemberViewActivity extends Activity {
 			currentMember = null;
 
 		}
-
-		taskListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Object o = taskListView.getItemAtPosition(position);
-				Task selectedTask = (Task) o;
-				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
-				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
-				TaskViewIntent.putExtra("project", projectString);
-				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
-				startActivity(TaskViewIntent);
-			}
-		});
-	}
-
-	@Override
-	public void onResume() {
-		super.onResume();
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
 		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
@@ -107,6 +89,18 @@ public class MemberViewActivity extends Activity {
 		mem_progress.setProgress((int) memberProgress);
 		taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
 		System.out.println(project.getTasks().size());
+		taskListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Object o = taskListView.getItemAtPosition(position);
+				Task selectedTask = (Task) o;
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
+				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
+				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
+				startActivity(TaskViewIntent);
+				currentActivity.finish();
+			}
+		});
 	}
 
 	@Override

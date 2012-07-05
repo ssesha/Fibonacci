@@ -457,7 +457,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					globalState.setProject(project);
 					Intent projectViewIntent = new Intent(context, projectViewActivity.class);
 					callingActivity.startActivity(projectViewIntent);
-
+					callingActivity.finish();
 				} else {
 					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
