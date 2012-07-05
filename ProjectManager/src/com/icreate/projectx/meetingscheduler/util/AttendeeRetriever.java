@@ -16,8 +16,8 @@
 
 package com.icreate.projectx.meetingscheduler.util;
 
-import com.icreate.projectx.datamodel.Attendee;
-import com.icreate.projectx.datamodel.Constants;
+import com.icreate.projectx.meetingscheduler.model.Attendee;
+import com.icreate.projectx.meetingscheduler.model.Constants;
 
 import android.accounts.Account;
 import android.app.Activity;

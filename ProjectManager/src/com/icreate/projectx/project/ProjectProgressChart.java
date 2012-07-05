@@ -13,6 +13,7 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
+import android.graphics.Typeface;
 
 import com.icreate.projectx.AbstractDemoChart;
 import com.icreate.projectx.datamodel.Project;
@@ -75,7 +76,6 @@ public class ProjectProgressChart extends AbstractDemoChart {
 		renderer.setXLabelsAlign(Align.LEFT);
 		renderer.setYLabels(10);
 		renderer.setYLabelsAlign(Align.LEFT);
-
 		renderer.setBarSpacing(1);
 		renderer.setShowAxes(true);
 

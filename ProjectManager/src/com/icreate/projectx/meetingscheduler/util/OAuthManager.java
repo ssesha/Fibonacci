@@ -16,7 +16,9 @@
 
 package com.icreate.projectx.meetingscheduler.util;
 
-import java.io.IOException;
+import com.google.api.client.googleapis.extensions.android2.auth.GoogleAccountManager;
+import com.icreate.projectx.R;
+import com.icreate.projectx.meetingscheduler.model.Constants;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -34,9 +36,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.google.api.client.googleapis.extensions.android2.auth.GoogleAccountManager;
-import com.icreate.projectx.R;
-import com.icreate.projectx.datamodel.Constants;
+import java.io.IOException;
 
 /**
  * OAuthManager let's the entire application retrieve an OAuth 2.0 access token
@@ -118,13 +118,16 @@ public class OAuthManager {
 	 * @param callback
 	 *            The callback to call when an account and token has been found.
 	 */
-	public void doLogin(boolean invalidate, Activity activity, AuthHandler callback) {
+	public void doLogin(boolean invalidate, Activity activity,
+			AuthHandler callback) {
 		if (account != null) {
 			doLogin(account.name, invalidate, activity, callback);
 		} else {
-			SharedPreferences preference = PreferenceManager.getDefaultSharedPreferences(activity);
+			SharedPreferences preference = PreferenceManager
+					.getDefaultSharedPreferences(activity);
 
-			doLogin(preference.getString("selected_account_preference", ""), invalidate, activity, callback);
+			doLogin(preference.getString("selected_account_preference", ""),
+					invalidate, activity, callback);
 		}
 	}
 
@@ -143,14 +146,17 @@ public class OAuthManager {
 	 * @param callback
 	 *            The callback to call when an account and token has been found.
 	 */
-	public void doLogin(String accountName, boolean invalidate, Activity activity, AuthHandler callback) {
+	public void doLogin(String accountName, boolean invalidate,
+			Activity activity, AuthHandler callback) {
 		if (account != null && accountName.equals(account.name)) {
 			if (!invalidate && authToken != null) {
 				callback.handleAuth(account, authToken);
 			} else {
 				if (authToken != null && invalidate) {
-					final AccountManager accountManager = AccountManager.get(activity);
-					accountManager.invalidateAuthToken(Constants.ACCOUNT_TYPE, authToken);
+					final AccountManager accountManager = AccountManager
+							.get(activity);
+					accountManager.invalidateAuthToken(Constants.ACCOUNT_TYPE,
+							authToken);
 					invalidate = false;
 				}
 				authorize(account, invalidate, activity, callback);
@@ -173,47 +179,55 @@ public class OAuthManager {
 	 * @param callback
 	 *            The callback to call when a token as been retrieved.
 	 */
-	@SuppressWarnings("deprecation")
-	private void authorize(final Account account, final boolean invalidate, final Activity context, final AuthHandler callback) {
+	private void authorize(final Account account, final boolean invalidate,
+			final Activity context, final AuthHandler callback) {
 		final AccountManager accountManager = AccountManager.get(context);
 
-		accountManager.getAuthToken(account, Constants.OAUTH_SCOPE, true, new AccountManagerCallback<Bundle>() {
-			@Override
-			public void run(AccountManagerFuture<Bundle> future) {
-				try {
-					Bundle result = future.getResult();
+		accountManager.getAuthToken(account, Constants.OAUTH_SCOPE, true,
+				new AccountManagerCallback<Bundle>() {
+					@Override
+					public void run(AccountManagerFuture<Bundle> future) {
+						try {
+							Bundle result = future.getResult();
 
-					// AccountManager needs user to grant permission
-					if (result.containsKey(AccountManager.KEY_INTENT)) {
-						Intent intent = (Intent) result.getParcelable(AccountManager.KEY_INTENT);
-						intent.setFlags(intent.getFlags() & ~Intent.FLAG_ACTIVITY_NEW_TASK);
-						context.startActivityForResult(intent, Constants.GET_LOGIN);
-						return;
-					} else if (result.containsKey(AccountManager.KEY_AUTHTOKEN)) {
-						Log.e(Constants.TAG, "Got auth token: " + invalidate);
-						authToken = result.getString(AccountManager.KEY_AUTHTOKEN);
-						if (invalidate) {
-							// Invalidate the current token and request a new
-							// one.
-							accountManager.invalidateAuthToken(Constants.ACCOUNT_TYPE, authToken);
-							authorize(account, false, context, callback);
-						} else {
-							// Return the token to the callback.
-							callback.handleAuth(account, authToken);
+							// AccountManager needs user to grant permission
+							if (result.containsKey(AccountManager.KEY_INTENT)) {
+								Intent intent = (Intent) result
+										.getParcelable(AccountManager.KEY_INTENT);
+								intent.setFlags(intent.getFlags()
+										& ~Intent.FLAG_ACTIVITY_NEW_TASK);
+								context.startActivityForResult(intent,
+										Constants.GET_LOGIN);
+								return;
+							} else if (result
+									.containsKey(AccountManager.KEY_AUTHTOKEN)) {
+								Log.e(Constants.TAG, "Got auth token: "
+										+ invalidate);
+								authToken = result
+										.getString(AccountManager.KEY_AUTHTOKEN);
+								if (invalidate) {
+									// Invalidate the current token and request
+									// a new one.
+									accountManager.invalidateAuthToken(
+											Constants.ACCOUNT_TYPE, authToken);
+									authorize(account, false, context, callback);
+								} else {
+									// Return the token to the callback.
+									callback.handleAuth(account, authToken);
+								}
+							}
+						} catch (OperationCanceledException e) {
+							Log.e(Constants.TAG, "Operation Canceled", e);
+							callback.handleAuth(null, null);
+						} catch (IOException e) {
+							Log.e(Constants.TAG, "IOException", e);
+							callback.handleAuth(null, null);
+						} catch (AuthenticatorException e) {
+							Log.e(Constants.TAG, "Authentication Failed", e);
+							callback.handleAuth(null, null);
 						}
 					}
-				} catch (OperationCanceledException e) {
-					Log.e(Constants.TAG, "Operation Canceled", e);
-					callback.handleAuth(null, null);
-				} catch (IOException e) {
-					Log.e(Constants.TAG, "IOException", e);
-					callback.handleAuth(null, null);
-				} catch (AuthenticatorException e) {
-					Log.e(Constants.TAG, "Authentication Failed", e);
-					callback.handleAuth(null, null);
-				}
-			}
-		}, null /* handler */);
+				}, null /* handler */);
 	}
 
 	/**
@@ -229,8 +243,10 @@ public class OAuthManager {
 	 * @param callback
 	 *            The callback to call when an account and token has been found.
 	 */
-	private void chooseAccount(String accountName, final boolean invalidate, final Activity activity, final AuthHandler callback) {
-		final Account[] accounts = new GoogleAccountManager(activity).getAccounts();
+	private void chooseAccount(String accountName, final boolean invalidate,
+			final Activity activity, final AuthHandler callback) {
+		final Account[] accounts = new GoogleAccountManager(activity)
+				.getAccounts();
 
 		if (accounts.length < 1) {
 			callback.handleAuth(null, null);
@@ -253,7 +269,8 @@ public class OAuthManager {
 				choices[i] = accounts[i].name;
 			}
 
-			final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+			final AlertDialog.Builder builder = new AlertDialog.Builder(
+					activity);
 			builder.setTitle(R.string.choose_account_title);
 			builder.setItems(choices, new DialogInterface.OnClickListener() {
 				@Override
@@ -283,8 +300,10 @@ public class OAuthManager {
 	 * @param callback
 	 *            Method to call when auth token has been retrieved.
 	 */
-	private void gotAccount(Account account, boolean invalidate, Activity activity, AuthHandler callback) {
-		SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(activity).edit();
+	private void gotAccount(Account account, boolean invalidate,
+			Activity activity, AuthHandler callback) {
+		SharedPreferences.Editor editor = PreferenceManager
+				.getDefaultSharedPreferences(activity).edit();
 		editor.putString("selected_account_preference", account.name);
 		editor.commit();
 

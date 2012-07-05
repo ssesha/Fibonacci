@@ -16,16 +16,7 @@
 
 package com.icreate.projectx.meetingscheduler.util;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import android.util.Log;
-
+import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
@@ -35,7 +26,17 @@ import com.google.api.services.calendar.model.FreeBusyRequest;
 import com.google.api.services.calendar.model.FreeBusyRequestItem;
 import com.google.api.services.calendar.model.FreeBusyResponse;
 import com.google.api.services.calendar.model.TimePeriod;
-import com.icreate.projectx.datamodel.Constants;
+import com.icreate.projectx.meetingscheduler.model.Constants;
+
+import android.util.Log;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Retrieves the busy times from the Google Calendar API.
@@ -44,89 +45,87 @@ import com.icreate.projectx.datamodel.Constants;
  */
 public class FreeBusyTimesRetriever {
 
-	private final Calendar service;
+  private Calendar service;
 
-	public FreeBusyTimesRetriever(String accessToken) {
-		this.service = CalendarServiceBuilder.build(accessToken);
-	}
+  public FreeBusyTimesRetriever(String accessToken) {
+    this.service = CalendarServiceBuilder.build(accessToken);
+  }
 
-	/**
-	 * Constructor.
-	 */
-	public FreeBusyTimesRetriever(Calendar service) {
-		this.service = service;
-	}
+  /**
+   * Constructor.
+   */
+  public FreeBusyTimesRetriever(Calendar service) {
+    this.service = service;
+  }
 
-	/**
-	 * Get busy times from the Calendar API.
-	 * 
-	 * @param attendees
-	 *            Attendees to retrieve busy times for.
-	 * @param startDate
-	 *            Start date to retrieve busy times from.
-	 * @param timeSpan
-	 *            Number of days to retrieve busy times for.
-	 * @return Busy times for the selected attendees.
-	 * @throws IOException
-	 */
-	public Map<String, List<TimePeriod>> getBusyTimes(List<String> attendees, Date startDate, int timeSpan) throws IOException {
-		Map<String, List<TimePeriod>> result = new HashMap<String, List<TimePeriod>>();
-		List<FreeBusyRequestItem> requestItems = new ArrayList<FreeBusyRequestItem>();
-		FreeBusyRequest request = new FreeBusyRequest();
+  /**
+   * Get busy times from the Calendar API.
+   * 
+   * @param attendees Attendees to retrieve busy times for.
+   * @param startDate Start date to retrieve busy times from.
+   * @param timeSpan Number of days to retrieve busy times for.
+   * @return Busy times for the selected attendees.
+   * @throws IOException
+   */
+  public Map<String, List<TimePeriod>> getBusyTimes(List<String> attendees, Date startDate,
+      int timeSpan) throws IOException {
+    Map<String, List<TimePeriod>> result = new HashMap<String, List<TimePeriod>>();
+    List<FreeBusyRequestItem> requestItems = new ArrayList<FreeBusyRequestItem>();
+    FreeBusyRequest request = new FreeBusyRequest();
 
-		request.setTimeMin(getDateTime(startDate, 0));
-		request.setTimeMax(getDateTime(startDate, timeSpan));
+    request.setTimeMin(getDateTime(startDate, 0));
+    request.setTimeMax(getDateTime(startDate, timeSpan));
 
-		for (String attendee : attendees) {
-			requestItems.add(new FreeBusyRequestItem().setId(attendee));
-		}
-		request.setItems(requestItems);
+    for (String attendee : attendees) {
+    	Log.d("attendee", attendee);
+      requestItems.add(new FreeBusyRequestItem().setId(attendee));
+    }
+    request.setItems(requestItems);
 
-		FreeBusyResponse busyTimes;
-		try {
-			Freebusy.Query query = service.freebusy().query(request);
-			// Use partial GET to only retrieve needed fields.
-			query.setFields("calendars");
-			busyTimes = query.execute();
-			for (Map.Entry<String, FreeBusyCalendar> busyCalendar : busyTimes.getCalendars().entrySet()) {
-				result.put(busyCalendar.getKey(), busyCalendar.getValue().getBusy());
-			}
-		} catch (IOException e) {
-			Log.e(Constants.TAG, "Exception occured while retrieving busy times: " + e.toString());
-			if (e instanceof HttpResponseException) {
-				HttpResponseException exceptionResponse = (HttpResponseException) e;
-				String responseMessage = exceptionResponse.getMessage();
-				int statusCode = exceptionResponse.getStatusCode();
-				if (statusCode == 401) {
-					// The token might have expired, throw the exception to let
-					// calling
-					// Activity know.
-					Log.e("Freebusy error", responseMessage);
-					throw e;
-				}
-			}
-		}
+    FreeBusyResponse busyTimes;
+    try {
+      Freebusy.Query query = service.freebusy().query(request);
+      // Use partial GET to only retrieve needed fields.
+      query.setFields("calendars");
+      Log.d("query", query.toString());
+      busyTimes = query.execute();
+      Log.d("FreeBusy Response", busyTimes.toString());
+      for (Map.Entry<String, FreeBusyCalendar> busyCalendar : busyTimes.getCalendars().entrySet()) {
+        result.put(busyCalendar.getKey(), busyCalendar.getValue().getBusy());
+      }
+      Log.d("result", result.toString());
+    } catch (IOException e) {
+      Log.e(Constants.TAG, "Exception occured while retrieving busy times: " + e.toString());
+      if (e instanceof HttpResponseException) {
+    	  HttpResponseException exceptionResponse = (HttpResponseException) e;
+			String response = exceptionResponse.getMessage();
+			int statusCode = exceptionResponse.getStatusCode();
+        if (statusCode == 401) {
+          // The token might have expired, throw the exception to let calling
+          // Activity know.
+          throw e;
+        }
+      }
+    }
 
-		return result;
-	}
+    return result;
+  }
 
-	/**
-	 * Create a new DateTime object initialized at the current day +
-	 * {@code daysToAdd}.
-	 * 
-	 * @param startDate
-	 *            The date from which to compute the DateTime.
-	 * @param daysToAdd
-	 *            The number of days to add to the result.
-	 * 
-	 * @return The new DateTime object initialized at the current day +
-	 *         {@code daysToAdd}.
-	 */
-	private DateTime getDateTime(Date startDate, int daysToAdd) {
-		java.util.Calendar date = new GregorianCalendar();
-		date.setTime(startDate);
-		date.add(java.util.Calendar.DAY_OF_YEAR, daysToAdd);
-		return new DateTime(date.getTime().getTime(), 0);
-	}
+  /**
+   * Create a new DateTime object initialized at the current day +
+   * {@code daysToAdd}.
+   * 
+   * @param startDate The date from which to compute the DateTime.
+   * @param daysToAdd The number of days to add to the result.
+   * 
+   * @return The new DateTime object initialized at the current day +
+   *         {@code daysToAdd}.
+   */
+  private DateTime getDateTime(Date startDate, int daysToAdd) {
+    java.util.Calendar date = new GregorianCalendar();
+    date.setTime(startDate);
+    date.add(java.util.Calendar.DAY_OF_YEAR, daysToAdd);
+    return new DateTime(date.getTime().getTime(), 0);
+  }
 
 }

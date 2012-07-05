@@ -1,6 +1,6 @@
 package com.icreate.projectx.meetingscheduler.util;
 
-import com.icreate.projectx.datamodel.Attendee;
+import com.icreate.projectx.meetingscheduler.model.Attendee;
 
 import java.util.Comparator;
 

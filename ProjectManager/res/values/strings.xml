@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, ProjectManagerActivity!</string>
-    <string name="app_name">ProjectManager</string>
+    <string name="app_name">Project Manager</string>
     <string name="module">Select Module</string>
     <string name="assigned">Assign To</string>
     <string name="priority">Priority</string>

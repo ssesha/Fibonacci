@@ -18,8 +18,8 @@ package com.icreate.projectx.meetingscheduler.util;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.TimePeriod;
-import com.icreate.projectx.datamodel.AvailableMeetingTime;
-import com.icreate.projectx.datamodel.Constants;
+import com.icreate.projectx.meetingscheduler.model.AvailableMeetingTime;
+import com.icreate.projectx.meetingscheduler.model.Constants;
 
 import android.util.Log;
 
@@ -160,6 +160,7 @@ public class EventTimesRetriever {
         + " days.");
     Map<String, List<TimePeriod>> busyTimes =
         busyTimeRetriever.getBusyTimes(attendees, startDate, timeSpan);
+    
     Log.d(Constants.TAG, "Cleaning busy times from " + startDate.toString() + " for " + timeSpan
         + " days.");
     List<TimePeriod> listBusyTimes = cleanBusyTimes(busyTimes, startDate, timeSpan);

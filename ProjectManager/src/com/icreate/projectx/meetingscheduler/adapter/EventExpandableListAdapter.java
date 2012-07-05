@@ -41,7 +41,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.icreate.projectx.R;
-import com.icreate.projectx.datamodel.AvailableMeetingTime;
+import com.icreate.projectx.meetingscheduler.model.AvailableMeetingTime;
 
 /**
  * Adapts the Meeting data to the ExpendableListView.

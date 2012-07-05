@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.icreate.projectx.R;
-import com.icreate.projectx.datamodel.Attendee;
+import com.icreate.projectx.meetingscheduler.model.Attendee;
 import com.icreate.projectx.meetingscheduler.util.AttendeeComparator;
 
 /**

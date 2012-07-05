@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.icreate.projectx.meeting;
+package com.icreate.projectx.meetingscheduler.activity;
 
 import java.io.IOException;
 import java.io.NotSerializableException;
