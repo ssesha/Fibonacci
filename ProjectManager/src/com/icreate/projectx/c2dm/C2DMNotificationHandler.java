@@ -22,6 +22,6 @@ public class C2DMNotificationHandler extends Activity {
 		Log.d("C2DMHandler", "starting activity taskid =" + task_id + " projectid=" + projectId);
 		GetProjectTask getProjectTask = new GetProjectTask(this, this, dialog, task_id, false);
 		getProjectTask.execute(url);
-		finish();
+		//finish();
 	}
 }
