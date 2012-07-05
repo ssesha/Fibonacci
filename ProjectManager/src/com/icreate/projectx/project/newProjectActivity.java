@@ -513,13 +513,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 								ProjectxGlobalState globalData1 = (ProjectxGlobalState) getApplication();
 								if (viewMode == ProjectViewMode.NEW) {
-									if (!obj.getString("UserID").equals(globalData1.getUserid())) {
+									if (!obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
 										studentList.add(name);
 										student_id_list.add(obj.getString("UserID"));
 									}
 								} else {
-									if (obj.getString("UserID").equals(globalData1.getUserid())) {
-									} else if (obj.getString("UserID").equals(leader_id)) {
+									if (obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
+									} else if (obj.getString("UserID").equalsIgnoreCase(leader_id)) {
 									} else {
 										studentList.add(name);
 										student_id_list.add(obj.getString("UserID"));
