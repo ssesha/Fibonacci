@@ -25,7 +25,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -46,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datepicker.DateSlider;
@@ -98,6 +98,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		currentActivity = this;
 		addMemberIntent = new Intent(cont, AddMemberActivity.class);
 		dialog = new ProgressDialog(cont);
+		dialog.setCancelable(false);
+		dialog.setCanceledOnTouchOutside(false);
 		firstLoad = true;
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -106,7 +108,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		if (extras != null) {
 			flag = extras.getInt("flag");
 		}
-		
+
 		moduleTextBox = (Spinner) findViewById(R.id.moduleTextBox);
 		nameTextBox = (EditText) findViewById(R.id.nameTextBox);
 		aboutTextBox = (EditText) findViewById(R.id.aboutTextBox);
@@ -173,42 +175,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		String[] items = new String[2];
 		items[0] = "Something1";
 		items[1] = "Something2";
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.newproject, items) {
 
+		logoButton.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public View getView(int position, View convertView, ViewGroup parent) {
-				View v = super.getView(position, convertView, parent);
-
-				Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-				((TextView) v).setTypeface(font);
-
-				return v;
+			public void onClick(View v) {
+				startActivity(new Intent(cont, homeActivity.class));
 			}
-
-			@Override
-			public View getDropDownView(int position, View convertView, ViewGroup parent) {
-				View v = super.getDropDownView(position, convertView, parent);
-
-				Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-				((TextView) v).setTypeface(font);
-				v.setBackgroundColor(Color.GREEN);
-
-				return v;
-			}
-
-		};
-
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		moduleTextBox.setAdapter(adapter);
-
-		/*
-		 * logoButton.setOnClickListener(new View.OnClickListener() {
-		 * 
-		 * @Override public void onClick(View v) { startActivity(new
-		 * Intent(cont, homeActivity.class));
-		 * 
-		 * } });
-		 */
+		});
 
 		addMemberButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -346,6 +319,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 				this.dialog.setMessage("Retrieving Module List...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 
@@ -453,6 +427,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 					ProgressDialog dialog = new ProgressDialog(context);
 					dialog.setMessage("Creating Project...");
+					dialog.setCancelable(false);
+					dialog.setCanceledOnTouchOutside(false);
 					dialog.show();
 					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, 0, true);
 					getProjectTask.execute(url);

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,12 @@ import com.icreate.projectx.datamodel.Task;
 public class subtaskBaseAdapter extends BaseAdapter {
 
 	private static ArrayList<Task> taskList;
-
+	private Context context;
 	private final LayoutInflater mInflater;
 
 	public subtaskBaseAdapter(Context context, ArrayList<Task> taskList) {
 		this.taskList = taskList;
+		this.context = context;
 		mInflater = LayoutInflater.from(context);
 	}
 
@@ -45,15 +47,26 @@ public class subtaskBaseAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
+		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.mytaskitem, null);
 			holder = new ViewHolder();
-			holder.txtName = (TextView) convertView.findViewById(R.id.mytasklistname);
-			holder.txtProjectName = (TextView) convertView.findViewById(R.id.mytaskProjectName);
-			holder.txtdate = (TextView) convertView.findViewById(R.id.mytasklistduedate);
-			holder.txtstatus = (TextView) convertView.findViewById(R.id.mytaskliststatus);
-			holder.TaskProgress = (ProgressBar) convertView.findViewById(R.id.mytaskProgress);
-			holder.priority = (ImageView) convertView.findViewById(R.id.myimageViewPriority);
+			holder.txtName = (TextView) convertView
+					.findViewById(R.id.mytasklistname);
+			holder.txtName.setTypeface(font);
+			holder.txtProjectName = (TextView) convertView
+					.findViewById(R.id.mytaskProjectName);
+			holder.txtProjectName.setTypeface(font);
+			holder.txtdate = (TextView) convertView
+					.findViewById(R.id.mytasklistduedate);
+			holder.txtdate.setTypeface(font);
+			holder.txtstatus = (TextView) convertView
+					.findViewById(R.id.mytaskliststatus);
+			holder.txtstatus.setTypeface(font);
+			holder.TaskProgress = (ProgressBar) convertView
+					.findViewById(R.id.mytaskProgress);
+			holder.priority = (ImageView) convertView
+					.findViewById(R.id.myimageViewPriority);
 
 			convertView.setTag(holder);
 		} else {
@@ -81,14 +94,17 @@ public class subtaskBaseAdapter extends BaseAdapter {
 		else if (priority.equals("CRITICAL"))
 			holder.priority.setImageResource(R.drawable.icon_priority_critical);
 
-		if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
+		if (taskList.get(position).getTask_status()
+				.equalsIgnoreCase("COMPLETE")) {
 			holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
 			holder.txtProjectName.setTextColor(Color.parseColor("#AAB3B6"));
-			holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.txtName.setPaintFlags(holder.txtdate.getPaintFlags()
+					| Paint.STRIKE_THRU_TEXT_FLAG);
 		} else {
-			holder.txtName.setTextColor(Color.parseColor("#FFFF00"));
-			holder.txtProjectName.setTextColor(Color.parseColor("#FFFF00"));
-			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+			holder.txtName.setTextColor(Color.parseColor("#f5ad24"));
+			holder.txtProjectName.setTextColor(Color.parseColor("#f5ad24"));
+			holder.txtName.setPaintFlags(holder.txtName.getPaintFlags()
+					& ~Paint.STRIKE_THRU_TEXT_FLAG);
 		}
 
 		return convertView;

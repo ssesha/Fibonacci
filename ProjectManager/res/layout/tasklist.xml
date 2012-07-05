@@ -15,9 +15,9 @@
         android:weightSum="1" >
         
         <LinearLayout 
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.80">
+            android:layout_weight="0.8">
 
         <EditText
             android:id="@+id/mytaskSearch"
@@ -29,14 +29,14 @@
             android:textSize="20sp" />
         </LinearLayout>
         <LinearLayout 
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.20">
+            android:layout_weight="0.2">
         <Button
                 android:id="@+id/mytaskSearchButton"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="F"
+                android:layout_height="45dp"
+                android:background="@drawable/filter"
                 android:layout_gravity="right"
                 android:textColor="#05261f"/>
     </LinearLayout>

@@ -140,6 +140,8 @@ public class TaskListActivity extends Activity {
 			url += "?" + paramString;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Tasks");
+			dialog.setCancelable(false);
+			dialog.setCanceledOnTouchOutside(false);
 			ListTask ListTasks = new ListTask(cont, currentActivity, dialog, TaskListView);
 			System.out.println(url);
 			ListTasks.execute(url);
@@ -194,6 +196,8 @@ public class TaskListActivity extends Activity {
 				String url = "http://ec2-54-251-4-64.ap-southeast-1.compute.amazonaws.com/api/getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
+				dialog.setCancelable(false);
+				dialog.setCanceledOnTouchOutside(false);
 				dialog.show();
 				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, selectedTask.getTask_id(), false);
 				getProjectTask.execute(url);
@@ -226,6 +230,7 @@ public class TaskListActivity extends Activity {
 				this.dialog.setMessage("Getting Tasks...");
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
 			}
 		}
 
