@@ -80,7 +80,6 @@ public class ProjectListActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);

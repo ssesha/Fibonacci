@@ -39,7 +39,6 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.project.ProjectChartActivity;
 
 public class ProfileActivity extends Activity {
-	@SuppressWarnings("unused")
 	private TextView logoText, NameText, Email, Gmail;
 	private ImageButton logoButton;
 	private Context cont;
@@ -60,7 +59,6 @@ public class ProfileActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		logoText.setTextColor(R.color.white);
 		logoText.setText("My Profile");
 		chartIntent = new Intent(cont, ProjectChartActivity.class);
 		chartIntent.putExtra("activity", 0);

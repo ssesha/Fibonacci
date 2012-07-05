@@ -37,8 +37,6 @@ public class homeActivity extends Activity {
 		profileButton = (ImageButton) findViewById(R.id.profileButton);
 		myProjectButton = (ImageButton) findViewById(R.id.myProjectButton);
 		myTaskButton = (ImageButton) findViewById(R.id.myTaskButton);
-		calendarButton = (ImageButton) findViewById(R.id.calenderButton);
-		findButton = (ImageButton) findViewById(R.id.findButton);
 		logoutButton = (ImageButton) findViewById(R.id.logoutButton);
 
 		logoText.setTypeface(font);
@@ -80,21 +78,6 @@ public class homeActivity extends Activity {
 					TaskListIntent.putExtra("requiredId", currentUserId);
 					startActivity(TaskListIntent);
 				}
-			}
-		});
-
-		calendarButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// startActivity(new Intent(cont,
-				// MeetingSchedulerActivity.class));
-			}
-		});
-
-		findButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
 			}
 		});
 

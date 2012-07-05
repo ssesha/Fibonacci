@@ -298,6 +298,13 @@
                     android:divider="#ffffff"
                     android:dividerHeight="1dp"
                     android:padding="3dp" />
+
+                <TextView
+                    android:id="@+id/subTaskempty"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
+                    android:text="No Sub-Tasks" />
             </LinearLayout>
         </LinearLayout>
 

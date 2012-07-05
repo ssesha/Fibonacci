@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center_horizontal|center_vertical"
         android:orientation="vertical"
         android:weightSum="3" >
 
@@ -83,51 +82,6 @@
                         android:layout_height="match_parent"
                         android:layout_margin="10dp"
                         android:background="@drawable/tasksbutton" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal|center_vertical" >
-
-                    <ImageButton
-                        android:id="@+id/calenderButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/calendarbutton" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_weight="1" >
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:weightSum="2" >
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_horizontal|center_vertical" >
-
-                    <ImageButton
-                        android:id="@+id/findButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
-                        android:background="@drawable/findbutton" />
                 </LinearLayout>
 
                 <LinearLayout
