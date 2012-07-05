@@ -157,18 +157,20 @@ public class TaskListActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = myTaskSearch.getText().length();
-				System.out.println(myTaskSearch.getText());
-				filteredTasks.clear();
-				for (int i = 0; i < tasks.size(); i++) {
-					Log.d("YOLO", tasks.get(i).getTask_name());
-					if (textLength2 <= tasks.get(i).getTask_name().length()) {
-						if (myTaskSearch.getText().toString().equalsIgnoreCase((String) tasks.get(i).getTask_name().subSequence(0, textLength2))) {
-							filteredTasks.add(tasks.get(i));
+				if (tasks != null) {
+					System.out.println(myTaskSearch.getText());
+					filteredTasks.clear();
+					for (int i = 0; i < tasks.size(); i++) {
+						Log.d("YOLO", tasks.get(i).getTask_name());
+						if (textLength2 <= tasks.get(i).getTask_name().length()) {
+							if (myTaskSearch.getText().toString().equalsIgnoreCase((String) tasks.get(i).getTask_name().subSequence(0, textLength2))) {
+								filteredTasks.add(tasks.get(i));
+							}
 						}
 					}
+					mytasksAdapter = new myTasksBaseAdapter(cont, filteredTasks);
+					TaskListView.setAdapter(mytasksAdapter);
 				}
-				mytasksAdapter = new myTasksBaseAdapter(cont, filteredTasks);
-				TaskListView.setAdapter(mytasksAdapter);
 			}
 		});
 
