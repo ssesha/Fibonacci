@@ -72,16 +72,23 @@ public class ProjectListBaseAdapter extends BaseAdapter {
 		holder.txtLeader.setText(projectList.get(position).getLeader_name());
 
 		Calendar now = Calendar.getInstance();
+		Calendar due = Calendar.getInstance();
+		Date date = new Date(0);
+		due.setTime(date);
 
 		String[] temp = projectList.get(position).getDue_date().split("-");
 		int dueYear = Integer.parseInt(temp[0]);
 		int dueMonth = Integer.parseInt(temp[1]);
 		int dueDate = Integer.parseInt(temp[2]);
-		Date duedateDate = new Date(dueYear, dueMonth, dueDate);
-		Date nowdateDate = new Date(now.get(Calendar.YEAR), now.get(Calendar.MONTH) + 1, now.get(Calendar.DATE));
+
+		due.set(Calendar.YEAR, dueYear);
+		due.set(Calendar.MONTH, dueMonth - 1);
+		due.set(Calendar.DATE, dueDate);
+
+		Date duedateDate = due.getTime();
+		Date nowdateDate = now.getTime();
 
 		int diffinDays = (int) (duedateDate.getTime() - nowdateDate.getTime()) / (1000 * 60 * 60 * 24 * 7);
-
 		projectList.get(position).getDue_date();
 
 		if (diffinDays >= 0) {
