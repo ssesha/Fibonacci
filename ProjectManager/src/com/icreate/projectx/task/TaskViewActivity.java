@@ -188,7 +188,8 @@ public class TaskViewActivity extends Activity {
 					try {
 						am.cancel(sender);
 						sender.cancel();
-						setAlarm.setText("Alarm not Set");
+						// setAlarm.setText("Alarm not Set");
+						setAlarm.setBackgroundResource(R.drawable.alarmoff);
 					} catch (Exception e) {
 						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
 					}
@@ -212,7 +213,8 @@ public class TaskViewActivity extends Activity {
 						alarmintent.putExtra("project_name", project.getProject_name());
 						PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
 						am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), sender);
-						setAlarm.setText("Alarm set");
+						// setAlarm.setText("Alarm set");
+						setAlarm.setBackgroundResource(R.drawable.alarmon);
 					} catch (ParseException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -226,9 +228,11 @@ public class TaskViewActivity extends Activity {
 			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
 			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
 				System.out.println("Alarm set");
-				setAlarm.setText("Alarm Set");
+				// setAlarm.setText("Alarm Set");
+				setAlarm.setBackgroundResource(R.drawable.alarmon);
 			} else {
-				setAlarm.setText("Alarm not set");
+				// setAlarm.setText("Alarm not set");
+				setAlarm.setBackgroundResource(R.drawable.alarmoff);
 			}
 			project = globalState.getProject();
 			ArrayList<Task> alltasks = (ArrayList<Task>) project.getTasks();
