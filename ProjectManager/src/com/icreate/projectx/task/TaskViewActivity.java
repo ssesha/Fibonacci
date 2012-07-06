@@ -97,6 +97,7 @@ public class TaskViewActivity extends Activity {
 	private Bundle extras;
 	private Button parentTaskButton;
 	private ArrayAdapter<String> dataAdapter;
+	private TextView empty;
 
 	static boolean menuOut = false;
 	int btnWidth, task_id = 0;
@@ -145,6 +146,8 @@ public class TaskViewActivity extends Activity {
 		});
 
 		taskListView = (ListView) taskview.findViewById(R.id.subTaskList);
+		empty = (TextView) taskview.findViewById(R.id.subTaskempty);
+		empty.setTypeface(font);
 		TaskDesc = (TextView) taskview.findViewById(R.id.taskDesc);
 		TaskDesc.setTypeface(font);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
@@ -327,7 +330,11 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 
-			taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
+			if (subTasks.size() == 0) {
+				taskListView.setVisibility(View.GONE);
+			} else {
+				taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
+			}
 
 			String url = ProjectxGlobalState.urlPrefix + "commentList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
