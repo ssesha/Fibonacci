@@ -70,6 +70,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.txtName.setTypeface(font);
 			holder.txtParentName.setTypeface(font);
 			holder.txtassignee.setTypeface(font);
+			holder.txtdate.setTypeface(font);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();

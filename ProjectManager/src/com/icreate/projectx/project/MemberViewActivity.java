@@ -30,7 +30,7 @@ import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
-	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView, tasksCompletedLabel, totaltasksLabel;
+	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView;
 	private Button assignTaskbutton, createTaskButton;
 	private ImageButton logoButton;
 	private ProgressBar mem_progress;
@@ -57,18 +57,14 @@ public class MemberViewActivity extends Activity {
 		cont = this;
 		currentActivity = this;
 
-		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
 		totaltasksView = (TextView) findViewById(R.id.noTotalTasks);
-		tasksCompletedLabel = (TextView) findViewById(R.id.memberCompletedTasks);
-		totaltasksLabel = (TextView) findViewById(R.id.memberTotalTasks);
+		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
 		logoText.setSelected(true);
 		tasksCompletedView.setTypeface(font);
 		totaltasksView.setTypeface(font);
-		tasksCompletedLabel.setTypeface(font);
-		totaltasksLabel.setTypeface(font);
 		logoButton = (ImageButton) findViewById(R.id.projectlogoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
 		logoButton.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +92,11 @@ public class MemberViewActivity extends Activity {
 			totaltasks = extras.getDouble("totaltasks", -1);
 			totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
 			currentMember = null;
+			System.out.println("total tasks:" + (int) totaltasks + "comp" + (int) totalcompletedtasks);
+			int inttotaltasks = (int) totaltasks;
+			int inttotalcompletedtasks = (int) totalcompletedtasks;
+			totaltasksView.setText("Tasks Assigned : " + inttotaltasks);
+			tasksCompletedView.setText("Tasks Completed : " + inttotalcompletedtasks);
 
 		}
 		globalState = (ProjectxGlobalState) getApplication();
