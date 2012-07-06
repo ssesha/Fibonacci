@@ -42,43 +42,39 @@
                 android:orientation="vertical"
                 android:paddingBottom="25dp"
                 android:paddingLeft="25dp"
-                android:paddingRight="25dp" >
+                android:paddingRight="25dp"
+                android:weightSum="9" >
 
                 <com.handmark.pulltorefresh.library.PullToRefreshListView
                     android:id="@+id/proj_comments"
                     android:layout_width="fill_parent"
-                    android:layout_height="350dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="8"
                     android:cacheColorHint="@android:color/transparent"
-                    android:divider="#ffffff"
-                    android:dividerHeight="1dp"
                     android:scrollbars="vertical" />
 
                 <LinearLayout
                     android:id="@+id/proj_sendcomment"
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="10dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:orientation="horizontal"
                     android:weightSum="5" >
 
                     <EditText
                         android:id="@+id/proj_commentTextBox"
-                        android:layout_width="fill_parent"
+                        android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_marginLeft="20dp"
-                        android:layout_weight="1.5" />
+                        android:layout_weight="4" />
 
                     <Button
                         android:id="@+id/proj_sendCommentButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3.5"
-                        android:background="@drawable/scribble1"
-                        android:text="Send"
-                        android:textColor="#05261f"
-                        android:textSize="20sp" />
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/comment" />
                 </LinearLayout>
-            </LinearLayout>            
+            </LinearLayout>
         </FrameLayout>
     </LinearLayout>
 

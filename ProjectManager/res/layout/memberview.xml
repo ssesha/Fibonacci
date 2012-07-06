@@ -2,277 +2,269 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_marginBottom="15dp"
-    android:layout_marginLeft="18dp"
-    android:layout_marginRight="14dp"
-    android:layout_marginTop="15dp"
     android:background="@drawable/background"
-    android:orientation="vertical"
-    android:weightSum="8" >
+    android:orientation="vertical" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="right"
-        android:orientation="horizontal" >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="15dp"
+        android:orientation="vertical"
+        android:weightSum="8" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="horizontal"
-            android:weightSum="1" >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:orientation="horizontal" >
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight="0.19" >
-
-                <ImageButton
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginTop="10dp"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.81" >
+                android:orientation="horizontal"
+                android:weightSum="1" >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="0.19" >
+
+                    <ImageButton
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="5dp"
-                    android:weightSum="1" >
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.85" >
-
-                        <TextView
-                            android:id="@+id/projectlogoText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerHorizontal="true"
-                            android:layout_centerVertical="true"
-                            android:ellipsize="marquee"
-                            android:fadingEdge="horizontal"
-                            android:lines="1"
-                            android:marqueeRepeatLimit="marquee_forever"
-                            android:scrollHorizontally="true"
-                            android:singleLine="true"
-                            android:text="TextView"
-                            android:textColor="#ffffff"
-                            android:textSize="25sp" />
-                    </RelativeLayout>
+                    android:layout_weight="0.81" >
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="0.15" >
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:weightSum="1" >
 
-                        <ImageButton
-                            android:id="@+id/projectlogoImageButton"
-                            android:layout_width="fill_parent"
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.85" >
+
+                            <TextView
+                                android:id="@+id/projectlogoText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:ellipsize="marquee"
+                                android:fadingEdge="horizontal"
+                                android:lines="1"
+                                android:marqueeRepeatLimit="marquee_forever"
+                                android:scrollHorizontally="true"
+                                android:singleLine="true"
+                                android:text="TextView"
+                                android:textColor="#ffffff"
+                                android:textSize="25sp" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="fill_parent"
-                            android:layout_marginBottom="10dp"
-                            android:layout_marginTop="10dp" />
+                            android:layout_weight="0.15" >
+
+                            <ImageButton
+                                android:id="@+id/projectlogoImageButton"
+                                android:layout_width="fill_parent"
+                                android:layout_height="fill_parent"
+                                android:layout_marginBottom="10dp"
+                                android:layout_marginTop="10dp" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:weightSum="5" >
-
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3" >
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:id="@+id/noTotalTasks"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#f5ad24"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/memberTotalTasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="horizontal" >
-
-                    <TextView
-                        android:id="@+id/noCompletedTasks"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#f5ad24"
-                        android:textSize="17sp" />
-
-                    <TextView
-                        android:id="@+id/memberCompletedTasks"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="#FFFFFF"
-                        android:textSize="17sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </ScrollView>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="2"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:paddingBottom="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp" >
-
-            <LinearLayout
-                android:id="@+id/memberprogresscontainer"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="vertical" >
-
-                <TextView
-                    android:id="@+id/taskprogressnumber"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <ProgressBar
-                    android:id="@+id/taskProgress"
-                    style="@android:style/Widget.ProgressBar.Horizontal"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:progressDrawable="@drawable/search_progress_drawable" />
-            </LinearLayout>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:orientation="vertical"
-        android:paddingBottom="10dp"
-        android:paddingTop="5dp" >
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="210dp"
-            android:layout_marginLeft="22dp"
-            android:background="@drawable/rounded"
-            android:layout_marginRight="22dp" >
+            android:layout_height="0dp"
+            android:layout_weight="2"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:weightSum="5" >
 
-            <ListView
-                android:id="@+id/assigneetasklist"
-                android:layout_width="fill_parent"
+            <ScrollView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:cacheColorHint="@android:color/transparent"
-                android:divider="#d1d1d1"
-                android:dividerHeight="1dp"
-                android:padding="5dp" />
+                android:layout_weight="3" >
 
-            <TextView
-                android:id="@+id/assigneetasklistempty"
-                android:layout_width="fill_parent"
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/noTotalTasks"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#f5ad24"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/memberTotalTasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#FFFFFF"
+                            android:textSize="17sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="horizontal" >
+
+                        <TextView
+                            android:id="@+id/noCompletedTasks"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#f5ad24"
+                            android:textSize="17sp" />
+
+                        <TextView
+                            android:id="@+id/memberCompletedTasks"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="#FFFFFF"
+                            android:textSize="17sp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:text="No Tasks Assigned" 
-                android:gravity="center"
-                android:layout_gravity="center"/>
+                android:layout_weight="2"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:paddingBottom="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp" >
+
+                <LinearLayout
+                    android:id="@+id/memberprogresscontainer"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/taskprogressnumber"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ProgressBar
+                        android:id="@+id/taskProgress"
+                        style="@android:style/Widget.ProgressBar.Horizontal"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:progressDrawable="@drawable/search_progress_drawable" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearlayout4"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_weight="1"
-        android:orientation="horizontal" >
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="5dp" >
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="210dp"
+                android:layout_marginLeft="22dp"
+                android:layout_marginRight="22dp"
+                android:background="@drawable/rounded" >
 
-            <Button
-                android:id="@+id/createNewTaskButton"
-                android:layout_width="38dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/newtaskbutton" />
-        </RelativeLayout>
+                <ListView
+                    android:id="@+id/assigneetasklist"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:cacheColorHint="@android:color/transparent"
+                    android:divider="#d1d1d1"
+                    android:dividerHeight="1dp"
+                    android:padding="5dp" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+                <TextView
+                    android:id="@+id/assigneetasklistempty"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="No Tasks Assigned" />
+            </LinearLayout>
+        </LinearLayout>
 
-            <Button
-                android:id="@+id/taskListButton"
-                android:layout_width="38dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/tasklistbutton" />
-        </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/linearlayout4"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
+            android:orientation="horizontal" >
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/editProjectButton"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:background="@drawable/editbutton" />
-        </RelativeLayout>
+                <Button
+                    android:id="@+id/assignTaskButton"
+                    android:layout_width="38dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/assigntask" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" >
+
+                <Button
+                    android:id="@+id/membernewtaskButton"
+                    android:layout_width="38dp"
+                    android:layout_height="50dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/newtaskbutton" />
+            </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

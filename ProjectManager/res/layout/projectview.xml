@@ -257,11 +257,11 @@
 
                 <Button
                     android:id="@+id/scheduleMeeting"
-                    android:layout_width="48dp"
+                    android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    android:background="@drawable/calendarbutton2" />
+                    android:background="@drawable/calendar" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

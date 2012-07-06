@@ -3,11 +3,6 @@ package com.icreate.projectx.project;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.icreate.projectx.R;
-import com.icreate.projectx.R.drawable;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +21,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.icreate.projectx.R;
 
 public class AddMemberActivity extends Activity {
 
@@ -87,9 +84,10 @@ public class AddMemberActivity extends Activity {
 
 		logoText.setTypeface(font);
 		logoText.setText("Add Members");
-		logoButton.setBackgroundResource(R.drawable.newprojectbutton);
+		logoButton.setBackgroundResource(R.drawable.tickicon);
 
 		logoButton.setOnClickListener(new View.OnClickListener() {
+			@Override
 			public void onClick(View view) {
 				Intent intent = new Intent();
 				Bundle b = new Bundle();
@@ -102,12 +100,15 @@ public class AddMemberActivity extends Activity {
 		});
 
 		memberSearch.addTextChangedListener(new TextWatcher() {
+			@Override
 			public void afterTextChanged(Editable s) {
 			}
 
+			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
+			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = memberSearch.getText().length();
 				filteredPair.clear();
@@ -133,18 +134,22 @@ public class AddMemberActivity extends Activity {
 			mInflater = LayoutInflater.from(context);
 		}
 
+		@Override
 		public int getCount() {
 			return filteredPair.size();
 		}
 
+		@Override
 		public Object getItem(int position) {
 			return filteredPair.get(position);
 		}
 
+		@Override
 		public long getItemId(int position) {
 			return position;
 		}
 
+		@Override
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			final ViewHolder holder;
 			Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
@@ -161,6 +166,7 @@ public class AddMemberActivity extends Activity {
 			holder.studentName.setText(filteredPair.get(position).first);
 			holder.status.setChecked(filteredPair.get(position).second);
 			holder.status.setOnClickListener(new View.OnClickListener() {
+				@Override
 				public void onClick(View v) {
 					if (holder.status.isChecked()) {
 						int index = studentPair.indexOf(filteredPair.get(position));
