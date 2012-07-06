@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2010 Google Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package com.icreate.projectx.meetingscheduler.activity;
 
 import java.io.IOException;
@@ -51,14 +35,7 @@ import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;
 
-/**
- * Activity displaying a UI to edit event's Title, Description and Location.
- * Clicking on "Create event" send a request to the API to create the events
- * with the specified attendees on the user's primary calendar.
- * 
- * @since 2.2
- * @author Alain Vongsouvanh (alainv@google.com)
- */
+
 public class CreateEventActivity extends Activity {
 
 	/** The constant to store the selectedAttendees list in an intent */
@@ -172,11 +149,14 @@ public class CreateEventActivity extends Activity {
 					List<EventAttendee> attendees = new ArrayList<EventAttendee>();
 
 					newEvent.setSummary(title);
+					Log.d("newEvent ", title);
 					newEvent.setLocation(where);
 					newEvent.setDescription(description);
 					newEvent.setStart(new EventDateTime().setDateTime(startDate));
+					Log.d("newEvent", startDate.toString());
 					newEvent.setEnd(new EventDateTime().setDateTime(endDate));
-
+					newEvent.setEnd(newEvent.getStart());
+					Log.d("newEvent", startDate.toString());
 					for (String attendee : selectedAttendees) {
 						attendees.add(new EventAttendee().setEmail(attendee));
 					}

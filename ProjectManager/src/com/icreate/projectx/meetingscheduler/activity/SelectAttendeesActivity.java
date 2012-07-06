@@ -1,31 +1,31 @@
-/*
- * Copyright (c) 2010 Google Inc.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-
 package com.icreate.projectx.meetingscheduler.activity;
 
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.gson.Gson;
 import com.icreate.projectx.R;
+import com.icreate.projectx.datamodel.Event;
+import com.icreate.projectx.datamodel.EventList_IVLE;
+import com.icreate.projectx.datamodel.ProjectMembers;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;
 import com.icreate.projectx.meetingscheduler.model.Attendee;
 import com.icreate.projectx.meetingscheduler.model.Constants;
 import com.icreate.projectx.meetingscheduler.util.AttendeeRetriever;
+import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;
+import com.icreate.projectx.net.DeleteTask;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -45,245 +45,525 @@ import android.widget.Filter.FilterListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.NotSerializableException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.TimeZone;
 
-/**
- * Activity Screen where the user selects the meeting attendees.
- * 
- * @author Alain Vongsouvanh (alainv@google.com)
- */
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class SelectAttendeesActivity extends Activity {
 
-  /** List of attendees that can be selected. */
-  private List<Attendee> attendees = new ArrayList<Attendee>();
+	/** List of attendees that can be selected. */
+	private List<Attendee> attendees = new ArrayList<Attendee>();
+	private ProjectxGlobalState global;
+	/** ArrayAdapter for the attendees. */
+	private SelectableAttendeeAdapter attendeeAdapter;
+	private List<String> memberGmails = new ArrayList<String>();
+	private String myGmail;
+	private static boolean Sync;
+	private Activity callingActivity;
+	private Context context;
+	/** UI Attributes. */
+	private Handler handler = new Handler();
+	private ProgressDialog progressBar;
+	private Button findMeetingButton;
 
-  /** ArrayAdapter for the attendees. */
-  private SelectableAttendeeAdapter attendeeAdapter;
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		Sync = false;
+		callingActivity = this;
+		context = this;
+		global = (ProjectxGlobalState) getApplication();
+		List<ProjectMembers> memberList = global.getProject().getMembers();
+		for (ProjectMembers member : memberList) {
+			memberGmails.add(member.getGmail());
+			if (member.getUser_id().equals(global.getUserid())) {
+				myGmail = member.getGmail();
+				if (member.getIsSynced().equals("N"))
+					Sync = true;
+			}
+		}
+		// Creating main layout
+		setContentView(R.layout.select_attendees);
 
-  /** UI Attributes. */
-  private Handler handler = new Handler();
-  private ProgressDialog progressBar;
+		// Custom title bar
+		if (customTitleSupported) {
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
+					R.layout.app_title_select_attendees);
+		}
+		findMeetingButton = (Button) findViewById(R.id.find_time_button);
+		// Adding action to the button
+		addFindMeetingButtonListener();
+		setAttendeeListView();
+	}
 
-  /** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	/**
+	 * Add the OnClickListner to the findMeetingButton.
+	 */
+	private void addFindMeetingButtonListener() {
+		findMeetingButton.setText("Find meetings");
+		findMeetingButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				List<String> selectedAttendees = getSelectedAttendees();
+				if (selectedAttendees.size() > 0) {
+					Log.i(Constants.TAG,
+							"Find meeting button pressed - about to launch SelectMeeting activity");
 
-    // Creating main layout
-    setContentView(R.layout.select_attendees);
+					// the results are called on widgetActivityCallback
+					try {
+						
+						if (Sync) {
+							AlertDialog.Builder builder = new AlertDialog.Builder(
+									callingActivity);
+							builder.setCancelable(true);
+							builder.setTitle("Sync Calendar");
+							builder.setMessage("Do you want to sync your IVLE and Google Calendars?");
+							builder.setInverseBackgroundForced(true);
+							builder.setPositiveButton("Yes",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
 
-    // Custom title bar
-    if (customTitleSupported) {
-      getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.app_title_select_attendees);
-    }
+											String url = "https://ivle.nus.edu.sg/api/Lapi.svc/MyOrganizer_Events?APIKey=tlXXFhEsNoTIVTJQruS2o"
+												+ "&AuthToken="
+												+ global.getAuthToken()
+												+ "&StartDate=23/11/2011&EndDate=23/11/2012";
+										Log.d("events url", url);
+										ProgressDialog dialog1 = new ProgressDialog(context);
+										GetEventsTask task = new GetEventsTask(context,
+												callingActivity, dialog1);
+										task.execute(url);
+										}
+									});
+							builder.setNegativeButton("Cancel",
+									new DialogInterface.OnClickListener() {
+										@Override
+										public void onClick(DialogInterface dialog,
+												int which) {
+											dialog.dismiss();
+											Sync = false;
+										}
+									});
+							AlertDialog alert = builder.create();
+							alert.show();
+						} else {
+							startActivity(SelectMeetingTimeActivity
+									.createViewIntent(getApplicationContext(),
+											selectedAttendees));
+						}
 
-    // Adding action to the button
-    addFindMeetingButtonListener();
-    setAttendeeListView();
-  }
+					} catch (NotSerializableException e) {
+						Log.e(Constants.TAG,
+								"Intent is not run because of a NotSerializableException. "
+										+ "Probably the selectedAttendees list which is not serializable.");
+					}
+					Log.i(Constants.TAG,
+							"Find meeting button pressed - successfully launched SelectMeeting activity");
+				} else {
+					Toast toast = Toast.makeText(getApplicationContext(),
+							"You must select at least 1 attendee", 1000);
+					toast.show();
+				}
+			}
+		});
+	}
 
-  /**
-   * Add the OnClickListner to the findMeetingButton.
-   */
-  private void addFindMeetingButtonListener() {
-    Button findMeetingButton = (Button) findViewById(R.id.find_time_button);
-    findMeetingButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        List<String> selectedAttendees = getSelectedAttendees();
-        if (selectedAttendees.size() > 0) {
-          Log.i(Constants.TAG,
-              "Find meeting button pressed - about to launch SelectMeeting activity");
+	/**
+	 * Populate the list of attendees into the activity's ListView.
+	 */
+	private void setAttendeeListView() {
+		final ListView attendeeListView = (ListView) findViewById(R.id.attendee_list);
 
-          // the results are called on widgetActivityCallback
-          try {
+		initializeTextFilter(attendeeListView);
 
-            startActivity(SelectMeetingTimeActivity.createViewIntent(getApplicationContext(),
-                selectedAttendees));
-          } catch (NotSerializableException e) {
-            Log.e(Constants.TAG, "Intent is not run because of a NotSerializableException. "
-                + "Probably the selectedAttendees list which is not serializable.");
-          }
-          Log.i(Constants.TAG,
-              "Find meeting button pressed - successfully launched SelectMeeting activity");
-        } else {
-          Toast toast =
-              Toast.makeText(getApplicationContext(), "You must select at least 1 attendee", 1000);
-          toast.show();
-        }
-      }
-    });
-  }
+		attendeeAdapter = new SelectableAttendeeAdapter(this, attendees);
+		attendeeAdapter.sort();
 
-  /**
-   * Populate the list of attendees into the activity's ListView.
-   */
-  private void setAttendeeListView() {
-    final ListView attendeeListView = (ListView) findViewById(R.id.attendee_list);
+		attendeeListView.setAdapter(attendeeAdapter);
 
-    initializeTextFilter(attendeeListView);
+		// Adding click event to attendees Widgets
+		attendeeListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				// We use position -1 to ignore the header.
+				Attendee attendee = (Attendee) attendeeListView
+						.getItemAtPosition(position);
+				attendee.selected = !attendee.selected;
+				attendeeAdapter.sort();
+			}
+		});
+	}
 
-    attendeeAdapter = new SelectableAttendeeAdapter(this, attendees);
-    attendeeAdapter.sort();
+	/**
+	 * Retrieve the list of attendees from the phone's Contacts database.
+	 */
+	private void retrieveAttendees() {
+		// Retrieves the attendees on a separate thread.
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				AttendeeRetriever attendeeRetriever = new AttendeeRetriever(
+						SelectAttendeesActivity.this, OAuthManager
+								.getInstance().getAccount());
+				final List<Attendee> newAttendees = attendeeRetriever
+						.getAttendees(memberGmails);
 
-    attendeeListView.setAdapter(attendeeAdapter);
+				// Update the progress bar
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						if (newAttendees != null) {
+							attendees.clear();
+							attendees.addAll(newAttendees);
 
-    // Adding click event to attendees Widgets
-    attendeeListView.setOnItemClickListener(new OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // We use position -1 to ignore the header.
-        Attendee attendee = (Attendee) attendeeListView.getItemAtPosition(position);
-        attendee.selected = !attendee.selected;
-        attendeeAdapter.sort();
-      }
-    });
-  }
+							attendeeAdapter.sort();
+							attendeeAdapter.notifyDataSetChanged();
+						}
 
-  /**
-   * Retrieve the list of attendees from the phone's Contacts database.
-   */
-  private void retrieveAttendees() {
-    // Retrieves the attendees on a separate thread.
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        AttendeeRetriever attendeeRetriever =
-            new AttendeeRetriever(SelectAttendeesActivity.this, OAuthManager.getInstance()
-                .getAccount());
-        final List<Attendee> newAttendees = attendeeRetriever.getAttendees();
+						Log.d(Constants.TAG,
+								"Got attendees, dismissing progress bar");
+						if (progressBar != null) {
+							progressBar.dismiss();
+							Log.d(Constants.TAG,
+									"Progress bar should have been dismissed");
+						}
+					}
+				});
+			}
+		}).start();
+		
+		progressBar = ProgressDialog.show(this, null,
+				getString(R.string.retrieve_contacts_wait_text), true);
+	}
 
-        // Update the progress bar
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            if (newAttendees != null) {
-              attendees.clear();
-              attendees.addAll(newAttendees);
+	/**
+	 * Add on text changed listener to filter the attendee list view.
+	 * 
+	 * @param view
+	 *            ListView to add the edit text to.
+	 */
+	private void initializeTextFilter(ListView view) {
+		EditText editText = (EditText) getLayoutInflater().inflate(
+				R.layout.attendees_text_filter, null);
 
-              attendeeAdapter.sort();
-              attendeeAdapter.notifyDataSetChanged();
-            }
+		editText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				if (attendeeAdapter != null) {
+					attendeeAdapter.getFilter().filter(s, new FilterListener() {
+						@Override
+						/**
+						 * Sort the array once the filter has been completed.
+						 */
+						public void onFilterComplete(int count) {
+							attendeeAdapter.sort();
+						}
+					});
+				}
+			}
 
-            Log.d(Constants.TAG, "Got attendees, dismissing progress bar");
-            if (progressBar != null) {
-              progressBar.dismiss();
-              Log.d(Constants.TAG, "Progress bar should have been dismissed");
-            }
-          }
-        });
-      }
-    }).start();
-    // Show a progress bar while the attendees are retrieved from the phone's
-    // database.
-    progressBar =
-        ProgressDialog.show(this, null, getString(R.string.retrieve_contacts_wait_text), true);
-  }
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
 
-  /**
-   * Add on text changed listener to filter the attendee list view.
-   * 
-   * @param view ListView to add the edit text to.
-   */
-  private void initializeTextFilter(ListView view) {
-    EditText editText =
-        (EditText) getLayoutInflater().inflate(R.layout.attendees_text_filter, null);
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 
-    editText.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (attendeeAdapter != null) {
-          attendeeAdapter.getFilter().filter(s, new FilterListener() {
-            @Override
-            /**
-             * Sort the array once the filter has been completed.
-             */
-            public void onFilterComplete(int count) {
-              attendeeAdapter.sort();
-            }
-          });
-        }
-      }
+		view.addHeaderView(editText);
+	}
 
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
+	/**
+	 * Returns the list of currently selected attendees.
+	 * 
+	 * @return the list of currently selected attendees
+	 */
+	private List<String> getSelectedAttendees() {
+		List<String> selectedAttendees = new ArrayList<String>();
 
-      @Override
-      public void afterTextChanged(Editable s) {
-      }
-    });
+		if (attendees != null) {
+			for (Attendee attendee : attendees) {
+				if (attendee.selected) {
+					selectedAttendees.add(attendee.email);
+				}
+			}
+		}
 
-    view.addHeaderView(editText);
-  }
+		return selectedAttendees;
+	}
 
-  /**
-   * Returns the list of currently selected attendees.
-   * 
-   * @return the list of currently selected attendees
-   */
-  private List<String> getSelectedAttendees() {
-    List<String> selectedAttendees = new ArrayList<String>();
+	/**
+	 * Initialize the contents of the Activity's options menu.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.settings, menu);
+		return true;
+	}
 
-    if (attendees != null) {
-      for (Attendee attendee : attendees) {
-        if (attendee.selected) {
-          selectedAttendees.add(attendee.email);
-        }
-      }
-    }
+	/**
+	 * Called whenever an item in the options menu is selected.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.menu.settings:
+			startActivity(PreferencesActivity
+					.createViewIntent(getApplicationContext()));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-    return selectedAttendees;
-  }
+	/**
+	 * Update the settings text whenever this activity resumes
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		getAccount();
+	}
 
-  /**
-   * Initialize the contents of the Activity's options menu.
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.settings, menu);
-    return true;
-  }
+	/**
+	 * Prompt user to choose an account and retrieve attendees from phone's
+	 * database.
+	 */
+	private void getAccount() {
+		OAuthManager.getInstance().doLogin(false, this,
+				new OAuthManager.AuthHandler() {
+					@Override
+					public void handleAuth(Account account, String authToken) {
+						if (account != null) {
 
-  /**
-   * Called whenever an item in the options menu is selected.
-   */
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.menu.settings:
-        startActivity(PreferencesActivity.createViewIntent(getApplicationContext()));
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
-  }
+							retrieveAttendees();
+						}
+					}
+				});
+	}
 
-  /**
-   * Update the settings text whenever this activity resumes
-   */
-  @Override
-  protected void onResume() {
-    super.onResume();
-    getAccount();
-  }
+	private void AddEventToCalendar(EventList_IVLE events) {
+		final ArrayList<Event> eventList = events.getEvents();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Calendar service = CalendarServiceBuilder.build(OAuthManager
+						.getInstance().getAuthToken());
+				for (Event iEvent : eventList) {
+					com.google.api.services.calendar.model.Event newEvent = new com.google.api.services.calendar.model.Event();
+					newEvent.setSummary(iEvent.getTitle());
+					newEvent.setLocation(iEvent.getLocation());
+					newEvent.setDescription(iEvent.getDescription());
 
-  /**
-   * Prompt user to choose an account and retrieve attendees from phone's
-   * database.
-   */
-  private void getAccount() {
-    OAuthManager.getInstance().doLogin(false, this, new OAuthManager.AuthHandler() {
-      @Override
-      public void handleAuth(Account account, String authToken) {
-        if (account != null) {
-          retrieveAttendees();
-        }
-      }
-    });
-  }
+					String hour = iEvent.getDate_js().substring(11, 13);
+					Integer endHr = Integer.parseInt(hour);
+					endHr = endHr + 1;
+					String endHrString = (endHr <= 9) ? "0" + endHr.toString()
+							: endHr.toString();
+					String endTime = iEvent.getDate_js().substring(0, 11)
+							+ endHrString + iEvent.getDate_js().substring(13);
+					DateTime startTime;
+					DateTime endTimeDate;
+					try {
+						startTime = new DateTime((new SimpleDateFormat(
+								"yyyy-MM-dd'T'hh:mm:ss")).parse(iEvent
+								.getDate_js()), TimeZone.getDefault());
+
+						Log.d("startTime", startTime.toString());
+						endTimeDate = new DateTime((new SimpleDateFormat(
+								"yyyy-MM-dd'T'hh:mm:ss")).parse(endTime),
+								TimeZone.getDefault());
+						newEvent.setStart(new EventDateTime()
+								.setDateTime(startTime));
+						newEvent.setEnd(new EventDateTime()
+								.setDateTime(endTimeDate));
+						Log.d("endTime", endTimeDate.toString());
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
+					List<EventAttendee> attendees = new ArrayList<EventAttendee>();
+					attendees.add(new EventAttendee().setEmail(myGmail));
+					newEvent.setAttendees(attendees);
+					try {
+						Log.d("Sync Calendar", newEvent.getSummary());
+						Log.d("Sync Calendar Start", newEvent.getStart()
+								.toString());
+						Log.d("Sync Calendar End", newEvent.getEnd().toString());
+						service.events().insert("primary", newEvent)
+								.setSendNotifications(true).execute();
+					} catch (IOException e) {
+						if (e instanceof HttpResponseException) {
+							HttpResponseException exceptionResponse = (HttpResponseException) e;
+							String response = exceptionResponse.getMessage();
+							int statusCode = exceptionResponse.getStatusCode();
+							if (statusCode == 401) {
+								e.printStackTrace();
+							}
+							e.printStackTrace();
+						}
+						System.out.println(e.getStackTrace());
+					}
+					setResult(RESULT_OK);
+				}
+				Sync = false;
+			}
+		}).start();
+	}
+
+	private class GetEventsTask extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+		private final ProgressDialog dialog;
+
+		public GetEventsTask(Context context, Activity callingActivity,
+				ProgressDialog dialog) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+			this.dialog = dialog;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			if (!this.dialog.isShowing()) {
+				this.dialog.setMessage("Syncing Calendar to IVLE...");
+				this.dialog.show();
+				this.dialog.setCanceledOnTouchOutside(false);
+				this.dialog.setCancelable(false);
+			}
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String content = "";
+			for (String url : urls) {
+				try {
+					HttpClient client = new DefaultHttpClient();
+					HttpGet get = new HttpGet(url);
+					HttpResponse responseGet = client.execute(get);
+					HttpEntity mResEntityGet = responseGet.getEntity();
+					if (mResEntityGet != null) {
+						content = EntityUtils.toString(mResEntityGet);
+						Log.d("response", content);
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return content;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			if (this.dialog.isShowing()) {
+				this.dialog.dismiss();
+			}
+			System.out.println(result);
+			try {
+				JSONObject resultJson = new JSONObject(result);
+				System.out.println(resultJson.toString());
+				Gson gson = new Gson();
+				EventList_IVLE events = gson.fromJson(result,
+						EventList_IVLE.class);
+				AddEventToCalendar(events);
+				String url = ProjectxGlobalState.urlPrefix + "updateSync.php";
+				List<NameValuePair> params = new LinkedList<NameValuePair>();
+				params.add(new BasicNameValuePair("user_id", global.getUserid()));
+				String paramString = URLEncodedUtils.format(params, "utf-8");
+				url += "?" + paramString;
+				UpdateUserSync task = new UpdateUserSync(context,
+						callingActivity);
+				task.execute(url);
+			} catch (JSONException e) {
+				Toast.makeText(context, R.string.server_error,
+						Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private class UpdateUserSync extends AsyncTask<String, Void, String> {
+		private final Context context;
+		private final Activity callingActivity;
+
+		public UpdateUserSync(Context context, Activity callingActivity) {
+			this.context = context;
+			this.callingActivity = callingActivity;
+		}
+
+		@Override
+		protected void onPreExecute() {
+
+		}
+
+		@Override
+		protected String doInBackground(String... urls) {
+			String response = "";
+			for (String url : urls) {
+				HttpClient client = new DefaultHttpClient();
+				HttpPut httpPut = new HttpPut(url);
+				try {
+					HttpResponse execute = client.execute(httpPut);
+					InputStream content = execute.getEntity().getContent();
+					BufferedReader buffer = new BufferedReader(
+							new InputStreamReader(content));
+					String s = "";
+					while ((s = buffer.readLine()) != null) {
+						response += s;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return response;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			System.out.println(result);
+			try {
+				JSONObject resultJson = new JSONObject(result);
+				Log.d("PostComment", resultJson.toString());
+				if (resultJson.getString("msg").equals("success")) {
+					findMeetingButton.setText("Find meetings");
+					Sync= false;
+				} else {
+					Toast.makeText(context, R.string.login_error,
+							Toast.LENGTH_LONG).show();
+				}
+			} catch (JSONException e) {
+				Toast.makeText(context, R.string.server_error,
+						Toast.LENGTH_LONG).show();
+				e.printStackTrace();
+			}
+		}
+	}
 }
