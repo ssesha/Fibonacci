@@ -1,50 +1,5 @@
 package com.icreate.projectx.meetingscheduler.activity;
 
-import com.google.api.client.http.HttpResponseException;
-import com.google.api.client.util.DateTime;
-import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.EventAttendee;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.gson.Gson;
-import com.icreate.projectx.R;
-import com.icreate.projectx.datamodel.Event;
-import com.icreate.projectx.datamodel.EventList_IVLE;
-import com.icreate.projectx.datamodel.ProjectMembers;
-import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;
-import com.icreate.projectx.meetingscheduler.model.Attendee;
-import com.icreate.projectx.meetingscheduler.model.Constants;
-import com.icreate.projectx.meetingscheduler.util.AttendeeRetriever;
-import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
-import com.icreate.projectx.meetingscheduler.util.OAuthManager;
-import com.icreate.projectx.net.DeleteTask;
-
-import android.accounts.Account;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Filter.FilterListener;
-import android.widget.ListView;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,22 +25,74 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Filter.FilterListener;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.api.client.http.HttpResponseException;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.model.EventAttendee;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.gson.Gson;
+import com.icreate.projectx.R;
+import com.icreate.projectx.homeActivity;
+import com.icreate.projectx.datamodel.Event;
+import com.icreate.projectx.datamodel.EventList_IVLE;
+import com.icreate.projectx.datamodel.ProjectMembers;
+import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;
+import com.icreate.projectx.meetingscheduler.model.Attendee;
+import com.icreate.projectx.meetingscheduler.model.Constants;
+import com.icreate.projectx.meetingscheduler.util.AttendeeRetriever;
+import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
+import com.icreate.projectx.meetingscheduler.util.OAuthManager;
+
 public class SelectAttendeesActivity extends Activity {
 
 	/** List of attendees that can be selected. */
-	private List<Attendee> attendees = new ArrayList<Attendee>();
+	private final List<Attendee> attendees = new ArrayList<Attendee>();
 	private ProjectxGlobalState global;
 	/** ArrayAdapter for the attendees. */
 	private SelectableAttendeeAdapter attendeeAdapter;
-	private List<String> memberGmails = new ArrayList<String>();
+	private final List<String> memberGmails = new ArrayList<String>();
 	private String myGmail;
 	private static boolean Sync;
 	private Activity callingActivity;
 	private Context context;
 	/** UI Attributes. */
-	private Handler handler = new Handler();
+	private final Handler handler = new Handler();
 	private ProgressDialog progressBar;
 	private Button findMeetingButton;
+	private TextView logoText;
+	private Context cont;
+	private Activity currentActivity;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -93,6 +100,8 @@ public class SelectAttendeesActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		Sync = false;
+		currentActivity = this;
+		cont = this;
 		callingActivity = this;
 		context = this;
 		global = (ProjectxGlobalState) getApplication();
@@ -110,9 +119,25 @@ public class SelectAttendeesActivity extends Activity {
 
 		// Custom title bar
 		if (customTitleSupported) {
-			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-					R.layout.app_title_select_attendees);
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		}
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		logoText = (TextView) findViewById(R.id.logoText);
+		logoText.setTypeface(font);
+		logoText.setText("New Meeting");
+		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
+		homeButton.setBackgroundResource(R.drawable.home_button);
+
+		homeButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
+			}
+		});
 		findMeetingButton = (Button) findViewById(R.id.find_time_button);
 		// Adding action to the button
 		addFindMeetingButtonListener();
@@ -129,63 +154,48 @@ public class SelectAttendeesActivity extends Activity {
 			public void onClick(View v) {
 				List<String> selectedAttendees = getSelectedAttendees();
 				if (selectedAttendees.size() > 0) {
-					Log.i(Constants.TAG,
-							"Find meeting button pressed - about to launch SelectMeeting activity");
+					Log.i(Constants.TAG, "Find meeting button pressed - about to launch SelectMeeting activity");
 
 					// the results are called on widgetActivityCallback
 					try {
-						
+
 						if (Sync) {
-							AlertDialog.Builder builder = new AlertDialog.Builder(
-									callingActivity);
+							AlertDialog.Builder builder = new AlertDialog.Builder(callingActivity);
 							builder.setCancelable(true);
 							builder.setTitle("Sync Calendar");
 							builder.setMessage("Do you want to sync your IVLE and Google Calendars?");
 							builder.setInverseBackgroundForced(true);
-							builder.setPositiveButton("Yes",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog,
-												int which) {
+							builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
 
-											String url = "https://ivle.nus.edu.sg/api/Lapi.svc/MyOrganizer_Events?APIKey=tlXXFhEsNoTIVTJQruS2o"
-												+ "&AuthToken="
-												+ global.getAuthToken()
-												+ "&StartDate=23/11/2011&EndDate=23/11/2012";
-										Log.d("events url", url);
-										ProgressDialog dialog1 = new ProgressDialog(context);
-										GetEventsTask task = new GetEventsTask(context,
-												callingActivity, dialog1);
-										task.execute(url);
-										}
-									});
-							builder.setNegativeButton("Cancel",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog,
-												int which) {
-											dialog.dismiss();
-											Sync = false;
-										}
-									});
+									String url = "https://ivle.nus.edu.sg/api/Lapi.svc/MyOrganizer_Events?APIKey=tlXXFhEsNoTIVTJQruS2o" + "&AuthToken=" + global.getAuthToken()
+											+ "&StartDate=23/11/2011&EndDate=23/11/2012";
+									Log.d("events url", url);
+									ProgressDialog dialog1 = new ProgressDialog(context);
+									GetEventsTask task = new GetEventsTask(context, callingActivity, dialog1);
+									task.execute(url);
+								}
+							});
+							builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+									Sync = false;
+								}
+							});
 							AlertDialog alert = builder.create();
 							alert.show();
 						} else {
-							startActivity(SelectMeetingTimeActivity
-									.createViewIntent(getApplicationContext(),
-											selectedAttendees));
+							startActivity(SelectMeetingTimeActivity.createViewIntent(getApplicationContext(), selectedAttendees));
 						}
 
 					} catch (NotSerializableException e) {
-						Log.e(Constants.TAG,
-								"Intent is not run because of a NotSerializableException. "
-										+ "Probably the selectedAttendees list which is not serializable.");
+						Log.e(Constants.TAG, "Intent is not run because of a NotSerializableException. " + "Probably the selectedAttendees list which is not serializable.");
 					}
-					Log.i(Constants.TAG,
-							"Find meeting button pressed - successfully launched SelectMeeting activity");
+					Log.i(Constants.TAG, "Find meeting button pressed - successfully launched SelectMeeting activity");
 				} else {
-					Toast toast = Toast.makeText(getApplicationContext(),
-							"You must select at least 1 attendee", 1000);
+					Toast toast = Toast.makeText(getApplicationContext(), "You must select at least 1 attendee", 1000);
 					toast.show();
 				}
 			}
@@ -208,11 +218,9 @@ public class SelectAttendeesActivity extends Activity {
 		// Adding click event to attendees Widgets
 		attendeeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// We use position -1 to ignore the header.
-				Attendee attendee = (Attendee) attendeeListView
-						.getItemAtPosition(position);
+				Attendee attendee = (Attendee) attendeeListView.getItemAtPosition(position);
 				attendee.selected = !attendee.selected;
 				attendeeAdapter.sort();
 			}
@@ -227,11 +235,8 @@ public class SelectAttendeesActivity extends Activity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				AttendeeRetriever attendeeRetriever = new AttendeeRetriever(
-						SelectAttendeesActivity.this, OAuthManager
-								.getInstance().getAccount());
-				final List<Attendee> newAttendees = attendeeRetriever
-						.getAttendees(memberGmails);
+				AttendeeRetriever attendeeRetriever = new AttendeeRetriever(SelectAttendeesActivity.this, OAuthManager.getInstance().getAccount());
+				final List<Attendee> newAttendees = attendeeRetriever.getAttendees(memberGmails);
 
 				// Update the progress bar
 				handler.post(new Runnable() {
@@ -245,20 +250,17 @@ public class SelectAttendeesActivity extends Activity {
 							attendeeAdapter.notifyDataSetChanged();
 						}
 
-						Log.d(Constants.TAG,
-								"Got attendees, dismissing progress bar");
+						Log.d(Constants.TAG, "Got attendees, dismissing progress bar");
 						if (progressBar != null) {
 							progressBar.dismiss();
-							Log.d(Constants.TAG,
-									"Progress bar should have been dismissed");
+							Log.d(Constants.TAG, "Progress bar should have been dismissed");
 						}
 					}
 				});
 			}
 		}).start();
-		
-		progressBar = ProgressDialog.show(this, null,
-				getString(R.string.retrieve_contacts_wait_text), true);
+
+		progressBar = ProgressDialog.show(this, null, getString(R.string.retrieve_contacts_wait_text), true);
 	}
 
 	/**
@@ -268,13 +270,11 @@ public class SelectAttendeesActivity extends Activity {
 	 *            ListView to add the edit text to.
 	 */
 	private void initializeTextFilter(ListView view) {
-		EditText editText = (EditText) getLayoutInflater().inflate(
-				R.layout.attendees_text_filter, null);
+		EditText editText = (EditText) getLayoutInflater().inflate(R.layout.attendees_text_filter, null);
 
 		editText.addTextChangedListener(new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				if (attendeeAdapter != null) {
 					attendeeAdapter.getFilter().filter(s, new FilterListener() {
 						@Override
@@ -289,8 +289,7 @@ public class SelectAttendeesActivity extends Activity {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
 			@Override
@@ -337,8 +336,7 @@ public class SelectAttendeesActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.menu.settings:
-			startActivity(PreferencesActivity
-					.createViewIntent(getApplicationContext()));
+			startActivity(PreferencesActivity.createViewIntent(getApplicationContext()));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -359,16 +357,15 @@ public class SelectAttendeesActivity extends Activity {
 	 * database.
 	 */
 	private void getAccount() {
-		OAuthManager.getInstance().doLogin(false, this,
-				new OAuthManager.AuthHandler() {
-					@Override
-					public void handleAuth(Account account, String authToken) {
-						if (account != null) {
+		OAuthManager.getInstance().doLogin(false, this, new OAuthManager.AuthHandler() {
+			@Override
+			public void handleAuth(Account account, String authToken) {
+				if (account != null) {
 
-							retrieveAttendees();
-						}
-					}
-				});
+					retrieveAttendees();
+				}
+			}
+		});
 	}
 
 	private void AddEventToCalendar(EventList_IVLE events) {
@@ -376,8 +373,7 @@ public class SelectAttendeesActivity extends Activity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Calendar service = CalendarServiceBuilder.build(OAuthManager
-						.getInstance().getAuthToken());
+				Calendar service = CalendarServiceBuilder.build(OAuthManager.getInstance().getAuthToken());
 				for (Event iEvent : eventList) {
 					com.google.api.services.calendar.model.Event newEvent = new com.google.api.services.calendar.model.Event();
 					newEvent.setSummary(iEvent.getTitle());
@@ -387,25 +383,17 @@ public class SelectAttendeesActivity extends Activity {
 					String hour = iEvent.getDate_js().substring(11, 13);
 					Integer endHr = Integer.parseInt(hour);
 					endHr = endHr + 1;
-					String endHrString = (endHr <= 9) ? "0" + endHr.toString()
-							: endHr.toString();
-					String endTime = iEvent.getDate_js().substring(0, 11)
-							+ endHrString + iEvent.getDate_js().substring(13);
+					String endHrString = (endHr <= 9) ? "0" + endHr.toString() : endHr.toString();
+					String endTime = iEvent.getDate_js().substring(0, 11) + endHrString + iEvent.getDate_js().substring(13);
 					DateTime startTime;
 					DateTime endTimeDate;
 					try {
-						startTime = new DateTime((new SimpleDateFormat(
-								"yyyy-MM-dd'T'hh:mm:ss")).parse(iEvent
-								.getDate_js()), TimeZone.getDefault());
+						startTime = new DateTime((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")).parse(iEvent.getDate_js()), TimeZone.getDefault());
 
 						Log.d("startTime", startTime.toString());
-						endTimeDate = new DateTime((new SimpleDateFormat(
-								"yyyy-MM-dd'T'hh:mm:ss")).parse(endTime),
-								TimeZone.getDefault());
-						newEvent.setStart(new EventDateTime()
-								.setDateTime(startTime));
-						newEvent.setEnd(new EventDateTime()
-								.setDateTime(endTimeDate));
+						endTimeDate = new DateTime((new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss")).parse(endTime), TimeZone.getDefault());
+						newEvent.setStart(new EventDateTime().setDateTime(startTime));
+						newEvent.setEnd(new EventDateTime().setDateTime(endTimeDate));
 						Log.d("endTime", endTimeDate.toString());
 					} catch (ParseException e1) {
 						e1.printStackTrace();
@@ -415,11 +403,9 @@ public class SelectAttendeesActivity extends Activity {
 					newEvent.setAttendees(attendees);
 					try {
 						Log.d("Sync Calendar", newEvent.getSummary());
-						Log.d("Sync Calendar Start", newEvent.getStart()
-								.toString());
+						Log.d("Sync Calendar Start", newEvent.getStart().toString());
 						Log.d("Sync Calendar End", newEvent.getEnd().toString());
-						service.events().insert("primary", newEvent)
-								.setSendNotifications(true).execute();
+						service.events().insert("primary", newEvent).setSendNotifications(true).execute();
 					} catch (IOException e) {
 						if (e instanceof HttpResponseException) {
 							HttpResponseException exceptionResponse = (HttpResponseException) e;
@@ -444,8 +430,7 @@ public class SelectAttendeesActivity extends Activity {
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
 
-		public GetEventsTask(Context context, Activity callingActivity,
-				ProgressDialog dialog) {
+		public GetEventsTask(Context context, Activity callingActivity, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
@@ -491,20 +476,17 @@ public class SelectAttendeesActivity extends Activity {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				Gson gson = new Gson();
-				EventList_IVLE events = gson.fromJson(result,
-						EventList_IVLE.class);
+				EventList_IVLE events = gson.fromJson(result, EventList_IVLE.class);
 				AddEventToCalendar(events);
 				String url = ProjectxGlobalState.urlPrefix + "updateSync.php";
 				List<NameValuePair> params = new LinkedList<NameValuePair>();
 				params.add(new BasicNameValuePair("user_id", global.getUserid()));
 				String paramString = URLEncodedUtils.format(params, "utf-8");
 				url += "?" + paramString;
-				UpdateUserSync task = new UpdateUserSync(context,
-						callingActivity);
+				UpdateUserSync task = new UpdateUserSync(context, callingActivity);
 				task.execute(url);
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
@@ -533,8 +515,7 @@ public class SelectAttendeesActivity extends Activity {
 				try {
 					HttpResponse execute = client.execute(httpPut);
 					InputStream content = execute.getEntity().getContent();
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -554,14 +535,12 @@ public class SelectAttendeesActivity extends Activity {
 				Log.d("PostComment", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					findMeetingButton.setText("Find meetings");
-					Sync= false;
+					Sync = false;
 				} else {
-					Toast.makeText(context, R.string.login_error,
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}

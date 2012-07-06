@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,6 +21,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.util.DateTime;
@@ -28,13 +31,10 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.icreate.projectx.R;
-import com.icreate.projectx.R.id;
-import com.icreate.projectx.R.layout;
-import com.icreate.projectx.R.string;
+import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;
-
 
 public class CreateEventActivity extends Activity {
 
@@ -49,6 +49,9 @@ public class CreateEventActivity extends Activity {
 	/** UI attributes. */
 	private final Handler handler = new Handler();
 	private ProgressDialog progressBar = null;
+	private TextView logoText;
+	private Context cont;
+	private Activity currentActivity;
 
 	/** Class attributes retrieved from the intent. */
 	List<String> selectedAttendees;
@@ -61,13 +64,33 @@ public class CreateEventActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
+		currentActivity = this;
+		cont = this;
+
 		// Creating main layout
 		setContentView(R.layout.set_event_details);
 
 		// Custom title bar
 		if (customTitleSupported) {
-			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.app_title_set_event_details);
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.logo1);
 		}
+		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
+		logoText = (TextView) findViewById(R.id.logoText);
+		logoText.setTypeface(font);
+		logoText.setText("New Meeting");
+		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
+		homeButton.setBackgroundResource(R.drawable.home_button);
+
+		homeButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent HomeIntent = new Intent(cont, homeActivity.class);
+				HomeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(HomeIntent);
+				currentActivity.finish();
+			}
+		});
 
 		getParameters();
 		setSaveButtonAction();

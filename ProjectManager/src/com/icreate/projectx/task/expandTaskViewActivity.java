@@ -69,6 +69,7 @@ public class expandTaskViewActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
+		logoText.setText("Tasks");
 
 		Button projectTaskSearchButton = (Button) findViewById(R.id.projecttaskSearchButton);
 		projectTaskSearch = (TextView) findViewById(R.id.projecttaskSearch);
