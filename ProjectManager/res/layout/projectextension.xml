@@ -45,7 +45,7 @@
                 android:paddingRight="25dp"
                 android:weightSum="9" >
 
-                <com.handmark.pulltorefresh.library.PullToRefreshListView
+                <com.icreate.projectx.pulltorefresh.library.PullToRefreshListView
                     android:id="@+id/proj_comments"
                     android:layout_width="fill_parent"
                     android:layout_height="0dp"
