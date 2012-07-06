@@ -31,7 +31,6 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.datamodel.ProjectList;
@@ -184,10 +183,10 @@ public class ProfileActivity extends Activity {
 						}
 					});
 				} else {
-					Toast.makeText(context, "Project Lists empty", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (Exception e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

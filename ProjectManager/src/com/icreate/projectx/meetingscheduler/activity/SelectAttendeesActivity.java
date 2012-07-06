@@ -16,12 +16,9 @@
 
 package com.icreate.projectx.meetingscheduler.activity;
 
-import com.icreate.projectx.R;
-import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;
-import com.icreate.projectx.meetingscheduler.model.Attendee;
-import com.icreate.projectx.meetingscheduler.model.Constants;
-import com.icreate.projectx.meetingscheduler.util.AttendeeRetriever;
-import com.icreate.projectx.meetingscheduler.util.OAuthManager;
+import java.io.NotSerializableException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -43,11 +40,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter.FilterListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import java.io.NotSerializableException;
-import java.util.ArrayList;
-import java.util.List;
+import com.icreate.projectx.R;
+import com.icreate.projectx.meetingscheduler.adapter.SelectableAttendeeAdapter;
+import com.icreate.projectx.meetingscheduler.model.Attendee;
+import com.icreate.projectx.meetingscheduler.model.Constants;
+import com.icreate.projectx.meetingscheduler.util.AttendeeRetriever;
+import com.icreate.projectx.meetingscheduler.util.OAuthManager;
 
 /**
  * Activity Screen where the user selects the meeting attendees.
@@ -56,234 +55,226 @@ import java.util.List;
  */
 public class SelectAttendeesActivity extends Activity {
 
-  /** List of attendees that can be selected. */
-  private List<Attendee> attendees = new ArrayList<Attendee>();
+	/** List of attendees that can be selected. */
+	private final List<Attendee> attendees = new ArrayList<Attendee>();
 
-  /** ArrayAdapter for the attendees. */
-  private SelectableAttendeeAdapter attendeeAdapter;
+	/** ArrayAdapter for the attendees. */
+	private SelectableAttendeeAdapter attendeeAdapter;
 
-  /** UI Attributes. */
-  private Handler handler = new Handler();
-  private ProgressDialog progressBar;
+	/** UI Attributes. */
+	private final Handler handler = new Handler();
+	private ProgressDialog progressBar;
 
-  /** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+	/** Called when the activity is first created. */
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		final boolean customTitleSupported = requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 
-    // Creating main layout
-    setContentView(R.layout.select_attendees);
+		// Creating main layout
+		setContentView(R.layout.select_attendees);
 
-    // Custom title bar
-    if (customTitleSupported) {
-      getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.app_title_select_attendees);
-    }
+		// Custom title bar
+		if (customTitleSupported) {
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.app_title_select_attendees);
+		}
 
-    // Adding action to the button
-    addFindMeetingButtonListener();
-    setAttendeeListView();
-  }
+		// Adding action to the button
+		addFindMeetingButtonListener();
+		setAttendeeListView();
+	}
 
-  /**
-   * Add the OnClickListner to the findMeetingButton.
-   */
-  private void addFindMeetingButtonListener() {
-    Button findMeetingButton = (Button) findViewById(R.id.find_time_button);
-    findMeetingButton.setOnClickListener(new OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        List<String> selectedAttendees = getSelectedAttendees();
-        if (selectedAttendees.size() > 0) {
-          Log.i(Constants.TAG,
-              "Find meeting button pressed - about to launch SelectMeeting activity");
+	/**
+	 * Add the OnClickListner to the findMeetingButton.
+	 */
+	private void addFindMeetingButtonListener() {
+		Button findMeetingButton = (Button) findViewById(R.id.find_time_button);
+		findMeetingButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				List<String> selectedAttendees = getSelectedAttendees();
+				if (selectedAttendees.size() > 0) {
+					Log.i(Constants.TAG, "Find meeting button pressed - about to launch SelectMeeting activity");
 
-          // the results are called on widgetActivityCallback
-          try {
+					// the results are called on widgetActivityCallback
+					try {
 
-            startActivity(SelectMeetingTimeActivity.createViewIntent(getApplicationContext(),
-                selectedAttendees));
-          } catch (NotSerializableException e) {
-            Log.e(Constants.TAG, "Intent is not run because of a NotSerializableException. "
-                + "Probably the selectedAttendees list which is not serializable.");
-          }
-          Log.i(Constants.TAG,
-              "Find meeting button pressed - successfully launched SelectMeeting activity");
-        } else {
-          Toast toast =
-              Toast.makeText(getApplicationContext(), "You must select at least 1 attendee", 1000);
-          toast.show();
-        }
-      }
-    });
-  }
+						startActivity(SelectMeetingTimeActivity.createViewIntent(getApplicationContext(), selectedAttendees));
+					} catch (NotSerializableException e) {
+						Log.e(Constants.TAG, "Intent is not run because of a NotSerializableException. " + "Probably the selectedAttendees list which is not serializable.");
+					}
+					Log.i(Constants.TAG, "Find meeting button pressed - successfully launched SelectMeeting activity");
+				} else {
 
-  /**
-   * Populate the list of attendees into the activity's ListView.
-   */
-  private void setAttendeeListView() {
-    final ListView attendeeListView = (ListView) findViewById(R.id.attendee_list);
+				}
+			}
+		});
+	}
 
-    initializeTextFilter(attendeeListView);
+	/**
+	 * Populate the list of attendees into the activity's ListView.
+	 */
+	private void setAttendeeListView() {
+		final ListView attendeeListView = (ListView) findViewById(R.id.attendee_list);
 
-    attendeeAdapter = new SelectableAttendeeAdapter(this, attendees);
-    attendeeAdapter.sort();
+		initializeTextFilter(attendeeListView);
 
-    attendeeListView.setAdapter(attendeeAdapter);
+		attendeeAdapter = new SelectableAttendeeAdapter(this, attendees);
+		attendeeAdapter.sort();
 
-    // Adding click event to attendees Widgets
-    attendeeListView.setOnItemClickListener(new OnItemClickListener() {
-      @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // We use position -1 to ignore the header.
-        Attendee attendee = (Attendee) attendeeListView.getItemAtPosition(position);
-        attendee.selected = !attendee.selected;
-        attendeeAdapter.sort();
-      }
-    });
-  }
+		attendeeListView.setAdapter(attendeeAdapter);
 
-  /**
-   * Retrieve the list of attendees from the phone's Contacts database.
-   */
-  private void retrieveAttendees() {
-    // Retrieves the attendees on a separate thread.
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        AttendeeRetriever attendeeRetriever =
-            new AttendeeRetriever(SelectAttendeesActivity.this, OAuthManager.getInstance()
-                .getAccount());
-        final List<Attendee> newAttendees = attendeeRetriever.getAttendees();
+		// Adding click event to attendees Widgets
+		attendeeListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				// We use position -1 to ignore the header.
+				Attendee attendee = (Attendee) attendeeListView.getItemAtPosition(position);
+				attendee.selected = !attendee.selected;
+				attendeeAdapter.sort();
+			}
+		});
+	}
 
-        // Update the progress bar
-        handler.post(new Runnable() {
-          @Override
-          public void run() {
-            if (newAttendees != null) {
-              attendees.clear();
-              attendees.addAll(newAttendees);
+	/**
+	 * Retrieve the list of attendees from the phone's Contacts database.
+	 */
+	private void retrieveAttendees() {
+		// Retrieves the attendees on a separate thread.
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				AttendeeRetriever attendeeRetriever = new AttendeeRetriever(SelectAttendeesActivity.this, OAuthManager.getInstance().getAccount());
+				final List<Attendee> newAttendees = attendeeRetriever.getAttendees();
 
-              attendeeAdapter.sort();
-              attendeeAdapter.notifyDataSetChanged();
-            }
+				// Update the progress bar
+				handler.post(new Runnable() {
+					@Override
+					public void run() {
+						if (newAttendees != null) {
+							attendees.clear();
+							attendees.addAll(newAttendees);
 
-            Log.d(Constants.TAG, "Got attendees, dismissing progress bar");
-            if (progressBar != null) {
-              progressBar.dismiss();
-              Log.d(Constants.TAG, "Progress bar should have been dismissed");
-            }
-          }
-        });
-      }
-    }).start();
-    // Show a progress bar while the attendees are retrieved from the phone's
-    // database.
-    progressBar =
-        ProgressDialog.show(this, null, getString(R.string.retrieve_contacts_wait_text), true);
-  }
+							attendeeAdapter.sort();
+							attendeeAdapter.notifyDataSetChanged();
+						}
 
-  /**
-   * Add on text changed listener to filter the attendee list view.
-   * 
-   * @param view ListView to add the edit text to.
-   */
-  private void initializeTextFilter(ListView view) {
-    EditText editText =
-        (EditText) getLayoutInflater().inflate(R.layout.attendees_text_filter, null);
+						Log.d(Constants.TAG, "Got attendees, dismissing progress bar");
+						if (progressBar != null) {
+							progressBar.dismiss();
+							Log.d(Constants.TAG, "Progress bar should have been dismissed");
+						}
+					}
+				});
+			}
+		}).start();
+		// Show a progress bar while the attendees are retrieved from the
+		// phone's
+		// database.
+		progressBar = ProgressDialog.show(this, null, getString(R.string.retrieve_contacts_wait_text), true);
+	}
 
-    editText.addTextChangedListener(new TextWatcher() {
-      @Override
-      public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (attendeeAdapter != null) {
-          attendeeAdapter.getFilter().filter(s, new FilterListener() {
-            @Override
-            /**
-             * Sort the array once the filter has been completed.
-             */
-            public void onFilterComplete(int count) {
-              attendeeAdapter.sort();
-            }
-          });
-        }
-      }
+	/**
+	 * Add on text changed listener to filter the attendee list view.
+	 * 
+	 * @param view
+	 *            ListView to add the edit text to.
+	 */
+	private void initializeTextFilter(ListView view) {
+		EditText editText = (EditText) getLayoutInflater().inflate(R.layout.attendees_text_filter, null);
 
-      @Override
-      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-      }
+		editText.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				if (attendeeAdapter != null) {
+					attendeeAdapter.getFilter().filter(s, new FilterListener() {
+						@Override
+						/**
+						 * Sort the array once the filter has been completed.
+						 */
+						public void onFilterComplete(int count) {
+							attendeeAdapter.sort();
+						}
+					});
+				}
+			}
 
-      @Override
-      public void afterTextChanged(Editable s) {
-      }
-    });
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+			}
 
-    view.addHeaderView(editText);
-  }
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		});
 
-  /**
-   * Returns the list of currently selected attendees.
-   * 
-   * @return the list of currently selected attendees
-   */
-  private List<String> getSelectedAttendees() {
-    List<String> selectedAttendees = new ArrayList<String>();
+		view.addHeaderView(editText);
+	}
 
-    if (attendees != null) {
-      for (Attendee attendee : attendees) {
-        if (attendee.selected) {
-          selectedAttendees.add(attendee.email);
-        }
-      }
-    }
+	/**
+	 * Returns the list of currently selected attendees.
+	 * 
+	 * @return the list of currently selected attendees
+	 */
+	private List<String> getSelectedAttendees() {
+		List<String> selectedAttendees = new ArrayList<String>();
 
-    return selectedAttendees;
-  }
+		if (attendees != null) {
+			for (Attendee attendee : attendees) {
+				if (attendee.selected) {
+					selectedAttendees.add(attendee.email);
+				}
+			}
+		}
 
-  /**
-   * Initialize the contents of the Activity's options menu.
-   */
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.settings, menu);
-    return true;
-  }
+		return selectedAttendees;
+	}
 
-  /**
-   * Called whenever an item in the options menu is selected.
-   */
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-      case R.menu.settings:
-        startActivity(PreferencesActivity.createViewIntent(getApplicationContext()));
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
-  }
+	/**
+	 * Initialize the contents of the Activity's options menu.
+	 */
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.settings, menu);
+		return true;
+	}
 
-  /**
-   * Update the settings text whenever this activity resumes
-   */
-  @Override
-  protected void onResume() {
-    super.onResume();
-    getAccount();
-  }
+	/**
+	 * Called whenever an item in the options menu is selected.
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.menu.settings:
+			startActivity(PreferencesActivity.createViewIntent(getApplicationContext()));
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
 
-  /**
-   * Prompt user to choose an account and retrieve attendees from phone's
-   * database.
-   */
-  private void getAccount() {
-    OAuthManager.getInstance().doLogin(false, this, new OAuthManager.AuthHandler() {
-      @Override
-      public void handleAuth(Account account, String authToken) {
-        if (account != null) {
-          retrieveAttendees();
-        }
-      }
-    });
-  }
+	/**
+	 * Update the settings text whenever this activity resumes
+	 */
+	@Override
+	protected void onResume() {
+		super.onResume();
+		getAccount();
+	}
+
+	/**
+	 * Prompt user to choose an account and retrieve attendees from phone's
+	 * database.
+	 */
+	private void getAccount() {
+		OAuthManager.getInstance().doLogin(false, this, new OAuthManager.AuthHandler() {
+			@Override
+			public void handleAuth(Account account, String authToken) {
+				if (account != null) {
+					retrieveAttendees();
+				}
+			}
+		});
+	}
 }

@@ -16,7 +16,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -101,7 +100,6 @@ public class MemberViewActivity extends Activity {
 		}
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
-		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
 		currentMember = project.getMembers().get(memberPosition);
 		if (currentMember != null) {
 			logoText.setText(currentMember.getUser_name());
@@ -117,7 +115,7 @@ public class MemberViewActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = taskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
+
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				startActivity(TaskViewIntent);

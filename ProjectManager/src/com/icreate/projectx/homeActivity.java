@@ -2,12 +2,11 @@ package com.icreate.projectx;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -15,7 +14,6 @@ import org.json.JSONObject;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,19 +25,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.api.client.http.HttpResponseException;
-import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
-import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.gson.Gson;
 import com.icreate.projectx.datamodel.Event;
 import com.icreate.projectx.datamodel.EventList_IVLE;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
-import com.icreate.projectx.meetingscheduler.activity.CreateEventActivity;
-import com.icreate.projectx.meetingscheduler.activity.SelectAttendeesActivity;
 import com.icreate.projectx.meetingscheduler.model.Constants;
 import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;
@@ -50,8 +43,7 @@ import com.icreate.projectx.task.TaskListActivity;
 public class homeActivity extends Activity {
 	private ProjectxGlobalState globalData;
 	private TextView logoText;
-	private ImageButton logoButton, myProjectButton, myTaskButton,
-			logoutButton, profileButton;
+	private ImageButton logoButton, myProjectButton, myTaskButton, logoutButton, profileButton;
 	private Context context;
 	private Activity callingActivity;
 
@@ -97,8 +89,7 @@ public class homeActivity extends Activity {
 		myProjectButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent projectListIntent = new Intent(cont,
-						ProjectListActivity.class);
+				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
 				String currentUserId = globalData.getUserid();
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);
@@ -119,24 +110,19 @@ public class homeActivity extends Activity {
 			}
 		});
 
-		/*calendarButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				ProjectxGlobalState global = (ProjectxGlobalState) getApplication();
-				String url = "https://ivle.nus.edu.sg/api/Lapi.svc/MyOrganizer_Events?APIKey=tlXXFhEsNoTIVTJQruS2o"
-						+ "&AuthToken="
-						+ global.getAuthToken()
-						+ "&StartDate=23/11/2011&EndDate=23/11/2012";
-				Log.d("events url", url);
-				ProgressDialog dialog = new ProgressDialog(context);
-				GetEventsTask task = new GetEventsTask(context,
-						callingActivity, dialog);
-				task.execute(url);
-				// startActivity(new Intent(cont,
-				// SelectAttendeesActivity.class));
-			}
-		});*/
-
+		/*
+		 * calendarButton.setOnClickListener(new View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { ProjectxGlobalState global =
+		 * (ProjectxGlobalState) getApplication(); String url =
+		 * "https://ivle.nus.edu.sg/api/Lapi.svc/MyOrganizer_Events?APIKey=tlXXFhEsNoTIVTJQruS2o"
+		 * + "&AuthToken=" + global.getAuthToken() +
+		 * "&StartDate=23/11/2011&EndDate=23/11/2012"; Log.d("events url", url);
+		 * ProgressDialog dialog = new ProgressDialog(context); GetEventsTask
+		 * task = new GetEventsTask(context, callingActivity, dialog);
+		 * task.execute(url); // startActivity(new Intent(cont, //
+		 * SelectAttendeesActivity.class)); } });
+		 */
 
 		logoutButton.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -155,8 +141,7 @@ public class homeActivity extends Activity {
 		private final Activity callingActivity;
 		private final ProgressDialog dialog;
 
-		public GetEventsTask(Context context, Activity callingActivity,
-				ProgressDialog dialog) {
+		public GetEventsTask(Context context, Activity callingActivity, ProgressDialog dialog) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
@@ -202,12 +187,9 @@ public class homeActivity extends Activity {
 				JSONObject resultJson = new JSONObject(result);
 				System.out.println(resultJson.toString());
 				Gson gson = new Gson();
-				EventList_IVLE events = gson.fromJson(result,
-						EventList_IVLE.class);
+				EventList_IVLE events = gson.fromJson(result, EventList_IVLE.class);
 				AddEventToCalendar(events);
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}
@@ -219,26 +201,21 @@ public class homeActivity extends Activity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Calendar service = CalendarServiceBuilder.build(OAuthManager
-						.getInstance().getAuthToken());
+				Calendar service = CalendarServiceBuilder.build(OAuthManager.getInstance().getAuthToken());
 				for (Event iEvent : eventList) {
 					com.google.api.services.calendar.model.Event newEvent = new com.google.api.services.calendar.model.Event();
 					newEvent.setSummary(iEvent.getTitle());
 					newEvent.setLocation(iEvent.getLocation());
 					newEvent.setDescription(iEvent.getDescription());
-					newEvent.setStart(new EventDateTime().setDate(iEvent
-							.getDate_js()));
-					newEvent.setEnd(new EventDateTime().setDate(iEvent
-							.getDate_js()));
+					newEvent.setStart(new EventDateTime().setDate(iEvent.getDate_js()));
+					newEvent.setEnd(new EventDateTime().setDate(iEvent.getDate_js()));
 					// newEvent.setEnd(newEvent.getStart().)
 					newEvent.setAttendees(null);
 					try {
 						Log.d("Sync Calendar", newEvent.getSummary());
-						Log.d("Sync Calendar Start", newEvent.getStart()
-								.toString());
+						Log.d("Sync Calendar Start", newEvent.getStart().toString());
 						Log.d("Sync Calendar End", newEvent.getEnd().toString());
-						service.events().insert("primary", newEvent)
-								.setSendNotifications(false).execute();
+						service.events().insert("primary", newEvent).setSendNotifications(false).execute();
 					} catch (IOException e) {
 						if (e instanceof HttpResponseException) {
 							HttpResponseException exceptionResponse = (HttpResponseException) e;
@@ -257,7 +234,7 @@ public class homeActivity extends Activity {
 
 	private void getAuthToken() {
 		OAuthManager authManager = OAuthManager.getInstance();
-		
+
 		if (authManager.getAuthToken() == null) {
 			authManager.doLogin(false, this, new OAuthManager.AuthHandler() {
 				@Override

@@ -49,7 +49,6 @@ import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -203,7 +202,7 @@ public class projectViewActivity extends Activity {
 				double totaltasks = (Double) view.getTag(R.id.member_total_tasks);
 				double totalcompletedtasks = (Double) view.getTag(R.id.member_total_completed_tasks);
 				double progress = (Double) view.getTag(R.id.member_progress);
-				Toast.makeText(cont, "You have chosen: " + " " + selectedMember.getUser_name() + " " + selectedMember.getMember_id(), Toast.LENGTH_LONG).show();
+
 				System.out.println("oi oi test" + project.getTasks(selectedMember.getMember_id()) + " " + totaltasks + " " + totalcompletedtasks + " " + progress);
 				Intent memberViewIntent = new Intent(cont, MemberViewActivity.class);
 				memberViewIntent.putExtra("memberPosition", position);
@@ -300,7 +299,7 @@ public class projectViewActivity extends Activity {
 		globalState = (ProjectxGlobalState) getApplication();
 
 		project = globalState.getProject();
-		Toast.makeText(cont, project.getProject_name(), Toast.LENGTH_LONG).show();
+
 		logoText.setText(project.getProject_name());
 		projDesc.setText(project.getProject_desc());
 		projDeadline.setText(project.getDue_date());
@@ -393,11 +392,11 @@ public class projectViewActivity extends Activity {
 					System.out.println(url);
 					task.execute(url);
 				} else {
-					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
+
 				}
 				// callingActivity.finish();
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
@@ -421,7 +420,7 @@ public class projectViewActivity extends Activity {
 		public void onClick(View v) {
 			Context context = menu.getContext();
 			String msg = "Slide " + new Date();
-			Toast.makeText(context, msg, 1000).show();
+
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
@@ -592,10 +591,10 @@ public class projectViewActivity extends Activity {
 					}
 
 				} else {
-					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

@@ -15,10 +15,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.project.projectViewActivity;
@@ -106,10 +104,8 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 					callingActivity.finish();
 
 			} else {
-				Toast.makeText(context, "Unable to get Project", Toast.LENGTH_LONG).show();
 			}
 		} catch (JSONException e) {
-			Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
 	}

@@ -16,16 +16,12 @@
 
 package com.icreate.projectx.meetingscheduler.activity;
 
-import com.google.api.client.http.HttpResponseException;
-import com.icreate.projectx.R;
-import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter;
-import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter.EventHandler;
-import com.icreate.projectx.meetingscheduler.model.AvailableMeetingTime;
-import com.icreate.projectx.meetingscheduler.model.Constants;
-import com.icreate.projectx.meetingscheduler.util.DateUtils;
-import com.icreate.projectx.meetingscheduler.util.EventTimesRetriever;
-import com.icreate.projectx.meetingscheduler.util.FreeBusyTimesRetriever;
-import com.icreate.projectx.meetingscheduler.util.OAuthManager;
+import java.io.IOException;
+import java.io.NotSerializableException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import android.accounts.Account;
 import android.app.Activity;
@@ -42,14 +38,17 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import com.google.api.client.http.HttpResponseException;
+import com.icreate.projectx.R;
+import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter;
+import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter.EventHandler;
+import com.icreate.projectx.meetingscheduler.model.AvailableMeetingTime;
+import com.icreate.projectx.meetingscheduler.model.Constants;
+import com.icreate.projectx.meetingscheduler.util.DateUtils;
+import com.icreate.projectx.meetingscheduler.util.EventTimesRetriever;
+import com.icreate.projectx.meetingscheduler.util.FreeBusyTimesRetriever;
+import com.icreate.projectx.meetingscheduler.util.OAuthManager;
 
 /**
  * Activity Screen where the user selects the meeting time between the meeting
@@ -66,7 +65,7 @@ public class SelectMeetingTimeActivity extends Activity {
 	public static final String MESSAGE = "MESSAGE";
 
 	/** UI attributes. */
-	private Handler handler = new Handler();
+	private final Handler handler = new Handler();
 	private ProgressDialog progressBar = null;
 
 	/** The date from which to start to look for available meeting times */
@@ -91,14 +90,12 @@ public class SelectMeetingTimeActivity extends Activity {
 
 		// Custom title bar
 		if (customTitleSupported) {
-			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE,
-					R.layout.app_title_select_time);
+			getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.app_title_select_time);
 		}
 
 		// Getting the selectedAttendees list from the intent
 		Intent intent = getIntent();
-		selectedAttendees = (List<String>) intent
-				.getSerializableExtra(SELECTED_ATTENDEES);
+		selectedAttendees = (List<String>) intent.getSerializableExtra(SELECTED_ATTENDEES);
 
 		availableMeetingTimes = new ArrayList<AvailableMeetingTime>();
 
@@ -126,17 +123,14 @@ public class SelectMeetingTimeActivity extends Activity {
 	 * @throws NotSerializableException
 	 *             If the {@code selectedAttendees} is not serializable
 	 */
-	public static Intent createViewIntent(Context context,
-			List<String> selectedAttendees) throws NotSerializableException {
+	public static Intent createViewIntent(Context context, List<String> selectedAttendees) throws NotSerializableException {
 		Intent intent = new Intent(context, SelectMeetingTimeActivity.class);
 		if (!(selectedAttendees instanceof Serializable)) {
-			Log.e(Constants.TAG,
-					"List<Attendee> selectedAttendees is not serializable");
+			Log.e(Constants.TAG, "List<Attendee> selectedAttendees is not serializable");
 			throw new NotSerializableException();
 		}
 		intent.putExtra(SELECTED_ATTENDEES, (Serializable) selectedAttendees);
-		Log.e(Constants.TAG,
-				"Successfully serialized List<Attendee> selectedAttendees in the intent");
+		Log.e(Constants.TAG, "Successfully serialized List<Attendee> selectedAttendees in the intent");
 		intent.setClass(context, SelectMeetingTimeActivity.class);
 		return intent;
 	}
@@ -145,23 +139,14 @@ public class SelectMeetingTimeActivity extends Activity {
 	 * Called when sub activity returns.
 	 */
 	@Override
-	public void onActivityResult(int requestCode, int resultCode,
-			final Intent results) {
+	public void onActivityResult(int requestCode, int resultCode, final Intent results) {
 		super.onActivityResult(requestCode, resultCode, results);
 		switch (requestCode) {
 		case Constants.CREATE_EVENT:
 			if (resultCode == RESULT_OK) {
-				Toast.makeText(this,
-						getString(R.string.event_creation_success),
-						Toast.LENGTH_SHORT).show();
+
 			} else if (resultCode == RESULT_FIRST_USER && results != null) {
-				Toast.makeText(
-						this,
-						getString(R.string.event_creation_failure)
-								+ ": "
-								+ results
-										.getStringExtra(CreateEventActivity.MESSAGE),
-						Toast.LENGTH_LONG).show();
+
 			}
 			break;
 		}
@@ -207,30 +192,15 @@ public class SelectMeetingTimeActivity extends Activity {
 	 */
 	private void setPreferences(EventTimesRetriever eventTimeRetriever) {
 		if (eventTimeRetriever != null) {
-			SharedPreferences preferences = PreferenceManager
-					.getDefaultSharedPreferences(this);
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-			eventTimeRetriever.setSkipWeekEnds(preferences.getBoolean(
-					Constants.SKIP_WEEKENDS_PREFERENCE, true));
-			eventTimeRetriever.setUseWorkingHours(preferences.getBoolean(
-					Constants.USE_WORKING_HOURS_PREFERENCE, true));
-			eventTimeRetriever
-					.setWorkingHoursStart(DateUtils.getCalendar(preferences
-							.getString(
-									Constants.WORKING_HOURS_START_PREFERENCE,
-									getString(R.string.working_hours_start_default_value))));
-			eventTimeRetriever
-					.setWorkingHoursEnd(DateUtils.getCalendar(preferences
-							.getString(
-									Constants.WORKING_HOURS_END_PREFERENCE,
-									getString(R.string.working_hours_end_default_value))));
+			eventTimeRetriever.setSkipWeekEnds(preferences.getBoolean(Constants.SKIP_WEEKENDS_PREFERENCE, true));
+			eventTimeRetriever.setUseWorkingHours(preferences.getBoolean(Constants.USE_WORKING_HOURS_PREFERENCE, true));
+			eventTimeRetriever.setWorkingHoursStart(DateUtils.getCalendar(preferences.getString(Constants.WORKING_HOURS_START_PREFERENCE, getString(R.string.working_hours_start_default_value))));
+			eventTimeRetriever.setWorkingHoursEnd(DateUtils.getCalendar(preferences.getString(Constants.WORKING_HOURS_END_PREFERENCE, getString(R.string.working_hours_end_default_value))));
 
-			timeSpan = Integer.parseInt(preferences.getString(
-					Constants.TIME_SPAN_PREFERENCE,
-					getString(R.string.time_span_default_value)));
-			meetingLength = Integer.parseInt(preferences.getString(
-					Constants.MEETING_LENGTH_PREFERENCE,
-					getString(R.string.meeting_length_default_value)));
+			timeSpan = Integer.parseInt(preferences.getString(Constants.TIME_SPAN_PREFERENCE, getString(R.string.time_span_default_value)));
+			meetingLength = Integer.parseInt(preferences.getString(Constants.MEETING_LENGTH_PREFERENCE, getString(R.string.meeting_length_default_value)));
 		}
 	}
 
@@ -243,8 +213,7 @@ public class SelectMeetingTimeActivity extends Activity {
 	private void findMeetingTimes(final int tryNumber) {
 		if (progressBar == null) {
 			// Show a progress bar while the meeting times are computed.
-			progressBar = ProgressDialog.show(this, null,
-					getString(R.string.find_meeting_time_wait_text), true);
+			progressBar = ProgressDialog.show(this, null, getString(R.string.find_meeting_time_wait_text), true);
 		}
 
 		// Retrieves the common free time on a separate thread.
@@ -257,14 +226,9 @@ public class SelectMeetingTimeActivity extends Activity {
 					// Calculating the available meeting times from the
 					// selectedAttendees
 					// and the settings
-					final EventTimesRetriever eventTimeRetriever = new EventTimesRetriever(
-							new FreeBusyTimesRetriever(OAuthManager
-									.getInstance().getAuthToken()));
+					final EventTimesRetriever eventTimeRetriever = new EventTimesRetriever(new FreeBusyTimesRetriever(OAuthManager.getInstance().getAuthToken()));
 					setPreferences(eventTimeRetriever);
-					final List<AvailableMeetingTime> newTimes = eventTimeRetriever
-							.getAvailableMeetingTime(selectedAttendees,
-									startDate.getTime(), timeSpan,
-									meetingLength);
+					final List<AvailableMeetingTime> newTimes = eventTimeRetriever.getAvailableMeetingTime(selectedAttendees, startDate.getTime(), timeSpan, meetingLength);
 					// Update the list of available meeting times.
 					handler.post(new Runnable() {
 						@Override
@@ -284,27 +248,20 @@ public class SelectMeetingTimeActivity extends Activity {
 						if (statusCode == 401 && (tryNumber - 1) > 0) {
 							done = false;
 							Log.d(Constants.TAG, "Got 401, refreshing token.");
-							OAuthManager.getInstance().doLogin(true,
-									SelectMeetingTimeActivity.this,
-									new OAuthManager.AuthHandler() {
+							OAuthManager.getInstance().doLogin(true, SelectMeetingTimeActivity.this, new OAuthManager.AuthHandler() {
 
-										@Override
-										public void handleAuth(Account account,
-												String authToken) {
-											findMeetingTimes(tryNumber - 1);
-										}
-									});
+								@Override
+								public void handleAuth(Account account, String authToken) {
+									findMeetingTimes(tryNumber - 1);
+								}
+							});
 						}
 					}
 					if (done) {
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
-								Toast.makeText(
-										SelectMeetingTimeActivity.this,
-										getString(R.string.available_time_retrieval_failure)
-												+ ": " + e.getMessage(),
-										Toast.LENGTH_LONG).show();
+
 							}
 						});
 					}

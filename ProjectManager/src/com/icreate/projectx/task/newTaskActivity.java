@@ -35,7 +35,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
@@ -334,10 +333,10 @@ public class newTaskActivity extends Activity {
 					callingActivity.startActivity(TaskViewIntent);
 					callingActivity.finish();
 				} else {
-					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
