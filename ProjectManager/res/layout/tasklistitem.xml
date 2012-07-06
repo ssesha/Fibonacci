@@ -4,17 +4,17 @@
     android:layout_height="fill_parent"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:weightSum="5" >
+    android:weightSum="8" >
 
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="2"
+        android:layout_weight="4.5"
         android:orientation="vertical" >
 
         <TextView
             android:id="@+id/taskParentName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#f5ad24" />
 
@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/tasklistassignee"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
@@ -58,8 +58,8 @@
 
         <ImageView
             android:id="@+id/imageViewPriority"
-            android:layout_width="24dp"
-            android:layout_height="35dp"
+            android:layout_width="17dp"
+            android:layout_height="25dp"
             android:scaleType="fitCenter"
             android:src="@drawable/icon_priority_low" />
     </LinearLayout>
@@ -68,7 +68,7 @@
         android:id="@+id/ProgressLayout"
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:gravity="center"
         android:orientation="horizontal" >
 

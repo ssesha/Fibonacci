@@ -36,9 +36,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -83,7 +80,7 @@ public class TaskViewActivity extends Activity {
 	private ImageView slide;
 	private Spinner statusSpinner;
 	private EditText commentTextBox;
-	private Button sendComment, createTask, setAlarm;
+	private Button sendComment, createTask, setAlarm, editTaskbutton;
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
 	private PullToRefreshListView commentListViewWrapper;
@@ -100,6 +97,7 @@ public class TaskViewActivity extends Activity {
 	private Bundle extras;
 	private Button parentTaskButton;
 	private ArrayAdapter<String> dataAdapter;
+	private TextView empty;
 
 	static boolean menuOut = false;
 	int btnWidth, task_id = 0;
@@ -148,6 +146,8 @@ public class TaskViewActivity extends Activity {
 		});
 
 		taskListView = (ListView) taskview.findViewById(R.id.subTaskList);
+		empty = (TextView) taskview.findViewById(R.id.subTaskempty);
+		empty.setTypeface(font);
 		TaskDesc = (TextView) taskview.findViewById(R.id.taskDesc);
 		TaskDesc.setTypeface(font);
 		TaskDeadline = (TextView) taskview.findViewById(R.id.taskDeadline);
@@ -330,7 +330,11 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 
-			taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
+			if (subTasks.size() == 0) {
+				taskListView.setVisibility(View.GONE);
+			} else {
+				taskListView.setAdapter(new subtaskBaseAdapter(cont, subTasks));
+			}
 
 			String url = ProjectxGlobalState.urlPrefix + "commentList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -398,6 +402,17 @@ public class TaskViewActivity extends Activity {
 					e.printStackTrace();
 				}
 
+			}
+		});
+
+		editTaskbutton = (Button) taskview.findViewById(R.id.taskeditButton);
+		editTaskbutton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
+				newTaskIntent.putExtra("task_id", task_id);
+				startActivity(newTaskIntent);
+				currentActivity.finish();
 			}
 		});
 
@@ -789,28 +804,6 @@ public class TaskViewActivity extends Activity {
 				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
-		}
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.task_view_option_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.edittask:
-			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
-			newTaskIntent.putExtra("task_id", task_id);
-			startActivity(newTaskIntent);
-			currentActivity.finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
 		}
 	}
 

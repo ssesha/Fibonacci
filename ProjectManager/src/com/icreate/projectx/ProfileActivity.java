@@ -39,7 +39,7 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.project.ProjectChartActivity;
 
 public class ProfileActivity extends Activity {
-	private TextView logoText, NameText, Email, Gmail;
+	private TextView logoText, NameText, Email, Gmail, progNo;
 	private ImageButton logoButton;
 	private Context cont;
 	private ProjectxGlobalState global;
@@ -69,6 +69,8 @@ public class ProfileActivity extends Activity {
 		Email.setTypeface(font);
 		Gmail = (TextView) findViewById(R.id.profileGmail);
 		Gmail.setTypeface(font);
+		progNo = (TextView) findViewById(R.id.profileProgressNumber);
+		progNo.setTypeface(font);
 		logoButton = (ImageButton) findViewById(R.id.logoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
 		logoButton.setOnClickListener(new View.OnClickListener() {
@@ -167,6 +169,7 @@ public class ProfileActivity extends Activity {
 					double totalcompleted = resultJson.getInt("totalCompleted");
 					double progress = (totalcompleted / totaltask) * 100.0;
 					Log.d("profile progress", "" + progress);
+					progNo.setText((int) progress + "%");
 					myProgressBar.setProgress((int) progress);
 					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					global.setProjectList(projectsContainer);

@@ -70,6 +70,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.txtName.setTypeface(font);
 			holder.txtParentName.setTypeface(font);
 			holder.txtassignee.setTypeface(font);
+			holder.txtdate.setTypeface(font);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -97,7 +98,7 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.txtName.setText(taskList.get(position).getTask_name());
 			System.out.println("assignee" + taskList.get(position).getAssignee_name());
 
-			if (taskList.get(position).getAssignee_name() == null)
+			if (taskList.get(position).getAssignee() == 0)
 				holder.txtassignee.setText("Unassigned");
 			else
 				holder.txtassignee.setText(taskList.get(position).getAssignee_name());

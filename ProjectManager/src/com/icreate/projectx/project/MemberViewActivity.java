@@ -7,13 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -32,7 +30,8 @@ import com.icreate.projectx.task.editTaskActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
 public class MemberViewActivity extends Activity {
-	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView, tasksCompletedLabel, totaltasksLabel;
+	private TextView logoText, progressnumber, tasksCompletedView, totaltasksView;
+	private Button assignTaskbutton, createTaskButton;
 	private ImageButton logoButton;
 	private ProgressBar mem_progress;
 	private ProjectxGlobalState globalState;
@@ -58,18 +57,14 @@ public class MemberViewActivity extends Activity {
 		cont = this;
 		currentActivity = this;
 
-		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
 		totaltasksView = (TextView) findViewById(R.id.noTotalTasks);
-		tasksCompletedLabel = (TextView) findViewById(R.id.memberCompletedTasks);
-		totaltasksLabel = (TextView) findViewById(R.id.memberTotalTasks);
+		tasksCompletedView = (TextView) findViewById(R.id.noCompletedTasks);
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.projectlogoText);
 		logoText.setTypeface(font);
 		logoText.setSelected(true);
 		tasksCompletedView.setTypeface(font);
 		totaltasksView.setTypeface(font);
-		tasksCompletedLabel.setTypeface(font);
-		totaltasksLabel.setTypeface(font);
 		logoButton = (ImageButton) findViewById(R.id.projectlogoImageButton);
 		logoButton.setBackgroundResource(R.drawable.home_button);
 		logoButton.setOnClickListener(new View.OnClickListener() {
@@ -97,6 +92,11 @@ public class MemberViewActivity extends Activity {
 			totaltasks = extras.getDouble("totaltasks", -1);
 			totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
 			currentMember = null;
+			System.out.println("total tasks:" + (int) totaltasks + "comp" + (int) totalcompletedtasks);
+			int inttotaltasks = (int) totaltasks;
+			int inttotalcompletedtasks = (int) totalcompletedtasks;
+			totaltasksView.setText("Tasks Assigned : " + inttotaltasks);
+			tasksCompletedView.setText("Tasks Completed : " + inttotalcompletedtasks);
 
 		}
 		globalState = (ProjectxGlobalState) getApplication();
@@ -124,35 +124,30 @@ public class MemberViewActivity extends Activity {
 				currentActivity.finish();
 			}
 		});
-	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.member_view_option_menu, menu);
-		return true;
-	}
+		assignTaskbutton = (Button) findViewById(R.id.assignTaskButton);
+		createTaskButton = (Button) findViewById(R.id.membernewtaskButton);
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.member_assign_task:
-			Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
-			newTaskIntent.putExtra("member", currentMember.getMember_id());
-			startActivity(newTaskIntent);
-			currentActivity.finish();
-			return true;
-		case R.id.member_create_task:
-			Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
-			newTaskIntent2.putExtra("member", currentMember.getMember_id());
-			System.out.println("member id to new task " + currentMember.getMember_id());
-			startActivity(newTaskIntent2);
-			currentActivity.finish();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+		assignTaskbutton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent newTaskIntent = new Intent(cont, editTaskActivity.class);
+				newTaskIntent.putExtra("member", currentMember.getMember_id());
+				startActivity(newTaskIntent);
+				currentActivity.finish();
+			}
+		});
+
+		createTaskButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
+				newTaskIntent2.putExtra("member", currentMember.getMember_id());
+				System.out.println("member id to new task " + currentMember.getMember_id());
+				startActivity(newTaskIntent2);
+				currentActivity.finish();
+			}
+		});
 	}
 
 	@Override
