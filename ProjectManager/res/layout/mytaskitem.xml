@@ -4,12 +4,12 @@
     android:layout_height="fill_parent"
     android:baselineAligned="false"
     android:orientation="horizontal"
-    android:weightSum="6" >
+    android:weightSum="8" >
 
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="3"
+        android:layout_weight="4.5"
         android:orientation="vertical" >
 
         <TextView
@@ -50,16 +50,15 @@
 
         <ImageView
             android:id="@+id/myimageViewPriority"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_priority_low"
-            android:scaleType="fitXY" />
+            android:layout_width="17dp"
+            android:layout_height="25dp"
+            android:src="@drawable/icon_priority_low" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="fill_parent"
-        android:layout_weight="2"
+        android:layout_weight="2.5"
         android:gravity="center"
         android:orientation="horizontal" >
 
