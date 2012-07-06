@@ -103,7 +103,7 @@
             <ScrollView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="3" >
+                android:layout_weight="5" >
 
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -113,66 +113,32 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
+                        android:gravity="center"
                         android:orientation="horizontal" >
 
                         <TextView
                             android:id="@+id/noTotalTasks"
-                            android:layout_width="fill_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
+                            android:text="Tasks Assigned"
                             android:textColor="#f5ad24"
-                            android:textSize="17sp" />
-
-                        <TextView
-                            android:id="@+id/memberTotalTasks"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:textColor="#FFFFFF"
                             android:textSize="17sp" />
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
+                        android:gravity="center"
                         android:orientation="horizontal" >
 
                         <TextView
                             android:id="@+id/noCompletedTasks"
-                            android:layout_width="fill_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="center"
+                            android:text="Tasks Completed"
                             android:textColor="#f5ad24"
                             android:textSize="17sp" />
-
-                        <TextView
-                            android:id="@+id/memberCompletedTasks"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:textColor="#FFFFFF"
-                            android:textSize="17sp" />
                     </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="2"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal"
-                android:paddingBottom="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="20dp" >
-
-                <LinearLayout
-                    android:id="@+id/memberprogresscontainer"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical" >
 
                     <TextView
                         android:id="@+id/taskprogressnumber"
@@ -189,9 +155,11 @@
                         style="@android:style/Widget.ProgressBar.Horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="50dp"
+                        android:layout_marginRight="50dp"
                         android:progressDrawable="@drawable/search_progress_drawable" />
                 </LinearLayout>
-            </LinearLayout>
+            </ScrollView>
         </LinearLayout>
 
         <LinearLayout
