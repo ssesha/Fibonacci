@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<EditText android:id="@+id/event_title_text" android:layout_gravity="top|center"
-			android:hint="@string/event_title_hint" android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:lines="1"/>
-	<EditText android:id="@+id/event_where_text" android:layout_gravity="center"
-			android:hint="@string/event_where_hint" android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:lines="1"/>
-	<EditText android:id="@+id/event_description_text" android:layout_gravity="center"
-			android:hint="@string/event_description_hint" android:gravity="top"
-		  android:layout_width="fill_parent" android:layout_height="fill_parent"
-		  android:layout_weight="1"/>
-	<CheckBox android:id="@+id/send_event_notifications_checkbox" android:layout_gravity="left"
-			android:text="@string/send_event_notifications_label"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"/>
-  <Button android:id="@+id/save_event_button" android:layout_gravity="bottom|center"
-      android:text="@string/save_event_button" android:layout_width="wrap_content"
-      android:layout_height="wrap_content"/>
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/backgrounddown"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <EditText
+        android:id="@+id/event_title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center"
+        android:hint="@string/event_title_hint"
+        android:lines="1"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:id="@+id/event_where_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="@string/event_where_hint"
+        android:lines="1"
+        android:textColor="#ffffff" />
+
+    <EditText
+        android:id="@+id/event_description_text"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="top"
+        android:hint="@string/event_description_hint"
+        android:textColor="#ffffff" />
+
+    <CheckBox
+        android:id="@+id/send_event_notifications_checkbox"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:text="@string/send_event_notifications_label" />
+
+    <Button
+        android:id="@+id/save_event_button"
+        android:layout_width="148dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button"
+        android:text="@string/save_event_button"
+        android:textColor="#05261f"
+        android:textSize="30sp" />
+
 </LinearLayout>

@@ -82,7 +82,7 @@ public class TaskListActivity extends Activity {
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 		logoText = (TextView) findViewById(R.id.logoText);
 		logoText.setTypeface(font);
-		//logoText.setTextColor(R.color.white);
+		// logoText.setTextColor(R.color.white);
 
 		myTaskSearchButton = (Button) findViewById(R.id.mytaskSearchButton);
 		myTaskSearch = (TextView) findViewById(R.id.mytaskSearch);
@@ -102,7 +102,7 @@ public class TaskListActivity extends Activity {
 			}
 		});
 
-		final CharSequence[] items = { "Latest Due", "Priority" };
+		final CharSequence[] items = { "Earliest Due", "Priority" };
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setTitle("Sort By");
@@ -113,6 +113,7 @@ public class TaskListActivity extends Activity {
 				switch (item) {
 				case 0:
 					Collections.sort(tasks, new MyTaskDueDateComparable());
+					Collections.reverse(tasks);
 					break;
 				case 1:
 					Collections.sort(tasks, new MyTaskPriorityComparable());
