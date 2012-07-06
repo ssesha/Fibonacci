@@ -131,6 +131,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 		newProjectMemberstext.setTypeface(font);
 		newProjectleaderText.setTypeface(font);
 		nameTextBox.setTypeface(font);
+		createProjectButton.setTypeface(font);
 		aboutTextBox.setTypeface(font);
 		leaderTextBox.setTypeface(font);
 		deadlineTextBox.setTypeface(font);
@@ -146,7 +147,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			glob = (ProjectxGlobalState) getApplication();
 			project = glob.getProject();
 			newProjectMemberstext.setText("Other Members");
-
+			createProjectButton.setText("Apply");
 			nameTextBox.setText(project.getProject_name());
 			aboutTextBox.setText(project.getProject_desc());
 			leaderTextBox.setText(project.getLeader_name());
