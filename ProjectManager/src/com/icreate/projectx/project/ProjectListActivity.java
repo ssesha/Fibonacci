@@ -43,7 +43,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -111,31 +110,21 @@ public class ProjectListActivity extends Activity {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = projectSearch.getText().length();
 				filteredProjects.clear();
 				for (int i = 0; i < projects.size(); i++) {
-					if (textLength2 <= projects.get(i).getProject_name()
-							.length()) {
-						if (projectSearch
-								.getText()
-								.toString()
-								.equalsIgnoreCase(
-										(String) projects.get(i)
-												.getProject_name()
-												.subSequence(0, textLength2))) {
+					if (textLength2 <= projects.get(i).getProject_name().length()) {
+						if (projectSearch.getText().toString().equalsIgnoreCase((String) projects.get(i).getProject_name().subSequence(0, textLength2))) {
 							filteredProjects.add(projects.get(i));
 						}
 					}
 				}
-				projectListBaseAdapter = new ProjectListBaseAdapter(cont,
-						filteredProjects);
+				projectListBaseAdapter = new ProjectListBaseAdapter(cont, filteredProjects);
 				projectListView.setAdapter(projectListBaseAdapter);
 			}
 		});
@@ -150,8 +139,6 @@ public class ProjectListActivity extends Activity {
 				logoText.setText("Projects");
 			}
 
-			Toast.makeText(cont, extras.getString("requiredId"),
-					Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
 			String url = ProjectxGlobalState.urlPrefix + "projectList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -162,16 +149,14 @@ public class ProjectListActivity extends Activity {
 			dialog.setMessage("Getting Projects");
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
-			ProjectListTask projectListTask = new ProjectListTask(cont,
-					currentActivity, dialog, projectListView);
+			ProjectListTask projectListTask = new ProjectListTask(cont, currentActivity, dialog, projectListView);
 			System.out.println(url);
 			projectListTask.execute(url);
 		}
 
 		projectListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = projectListView.getItemAtPosition(position);
 				Project selectedProject = (Project) o;
 				/*
@@ -182,19 +167,16 @@ public class ProjectListActivity extends Activity {
 				 * .getProjectList().getProjects().get(position).getLeader_id(),
 				 * Toast.LENGTH_LONG).show();
 				 */
-				Intent projectViewIntent = new Intent(cont,
-						projectViewActivity.class);
+				Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
 				int projectId = selectedProject.getProject_id();
-				String url = ProjectxGlobalState.urlPrefix
-						+ "getProject.php?project_id=" + projectId;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 				ProgressDialog dialog = new ProgressDialog(cont);
 				dialog.setMessage("Getting Project Info...");
 				dialog.setCancelable(false);
 				dialog.setCanceledOnTouchOutside(false);
 				dialog.show();
-				GetProjectTask getProjectTask = new GetProjectTask(cont,
-						currentActivity, dialog, 0, false);
+				GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, 0, false);
 				getProjectTask.execute(url);
 			}
 		});
@@ -205,15 +187,12 @@ public class ProjectListActivity extends Activity {
 			public void onRefresh() {
 				if (passedUserId != null) {
 					projectSearch.setText("");
-					String url = ProjectxGlobalState.urlPrefix
-							+ "projectList.php";
+					String url = ProjectxGlobalState.urlPrefix + "projectList.php";
 					List<NameValuePair> params = new LinkedList<NameValuePair>();
 					params.add(new BasicNameValuePair("user_id", passedUserId));
-					String paramString = URLEncodedUtils
-							.format(params, "utf-8");
+					String paramString = URLEncodedUtils.format(params, "utf-8");
 					url += "?" + paramString;
-					ProjectListTask projectListTask = new ProjectListTask(cont,
-							currentActivity, projectListView);
+					ProjectListTask projectListTask = new ProjectListTask(cont, currentActivity, projectListView);
 					projectListTask.execute(url);
 				}
 			}
@@ -232,16 +211,14 @@ public class ProjectListActivity extends Activity {
 		private final ProgressDialog dialog;
 		private final ListView projectListView;
 
-		public ProjectListTask(Context context, Activity callingActivity,
-				ProgressDialog dialog, ListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ProgressDialog dialog, ListView projectListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = dialog;
 			this.projectListView = projectListView;
 		}
 
-		public ProjectListTask(Context context, Activity callingActivity,
-				ListView projectListView) {
+		public ProjectListTask(Context context, Activity callingActivity, ListView projectListView) {
 			this.context = context;
 			this.callingActivity = callingActivity;
 			this.dialog = null;
@@ -270,8 +247,7 @@ public class ProjectListActivity extends Activity {
 					HttpResponse execute = client.execute(httpGet);
 					InputStream content = execute.getEntity().getContent();
 
-					BufferedReader buffer = new BufferedReader(
-							new InputStreamReader(content));
+					BufferedReader buffer = new BufferedReader(new InputStreamReader(content));
 					String s = "";
 					while ((s = buffer.readLine()) != null) {
 						response += s;
@@ -297,23 +273,19 @@ public class ProjectListActivity extends Activity {
 				Log.d("ProjectList", resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
-					ProjectList projectsContainer = gson.fromJson(result,
-							ProjectList.class);
+					ProjectList projectsContainer = gson.fromJson(result, ProjectList.class);
 					globalState.setProjectList(projectsContainer);
 					projects = projectsContainer.getProjects();
-					projectListBaseAdapter = new ProjectListBaseAdapter(
-							context, projects);
+					projectListBaseAdapter = new ProjectListBaseAdapter(context, projects);
 					projectListView.setAdapter(projectListBaseAdapter);
 					if (dialog == null) {
 						projectListViewWrapper.onRefreshComplete();
 					}
 				} else {
-					Toast.makeText(context, "Project Lists empty",
-							Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error,
-						Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
@@ -339,8 +311,7 @@ public class ProjectListActivity extends Activity {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.setHeaderTitle("Actions");
 		menu.add(0, v.getId(), 0, "Delete");
@@ -349,57 +320,44 @@ public class ProjectListActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		final Project selectedProject = (Project) projectListView
-				.getItemAtPosition(info.position);
-		System.out.println(selectedProject.getProject_name() + " "
-				+ selectedProject.getLeader_name());
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final Project selectedProject = (Project) projectListView.getItemAtPosition(info.position);
+		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					currentActivity);
+			AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
 			builder.setCancelable(true);
 			builder.setTitle("Delete Project");
 			builder.setMessage("Delete removes the project and its tasks permanently. Would you like to continue?");
 			builder.setInverseBackgroundForced(true);
-			builder.setPositiveButton("Yes",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							String url = ProjectxGlobalState.urlPrefix
-									+ "deleteProject.php?project_id="
-									+ selectedProject.getProject_id();
-							DeleteProjectTask deleteProjectTask = new DeleteProjectTask(
-									cont, currentActivity,
-									projectListBaseAdapter, info, projects);
-							deleteProjectTask.execute(url);
-						}
-					});
-			builder.setNegativeButton("Cancel",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					});
+			builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					String url = ProjectxGlobalState.urlPrefix + "deleteProject.php?project_id=" + selectedProject.getProject_id();
+					DeleteProjectTask deleteProjectTask = new DeleteProjectTask(cont, currentActivity, projectListBaseAdapter, info, projects);
+					deleteProjectTask.execute(url);
+				}
+			});
+			builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
 			AlertDialog alert = builder.create();
 			alert.show();
 			projectSearch.setText("");
 			return true;
 		} else if (item.getTitle() == "Go to Project") {
-			Intent projectViewIntent = new Intent(cont,
-					projectViewActivity.class);
+			Intent projectViewIntent = new Intent(cont, projectViewActivity.class);
 
 			int projectId = selectedProject.getProject_id();
-			String url = ProjectxGlobalState.urlPrefix
-					+ "getProject.php?project_id=" + projectId;
+			String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 			ProgressDialog dialog = new ProgressDialog(cont);
 			dialog.setMessage("Getting Project Info...");
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 			dialog.show();
-			GetProjectTask getProjectTask = new GetProjectTask(cont,
-					currentActivity, dialog, 0, false);
+			GetProjectTask getProjectTask = new GetProjectTask(cont, currentActivity, dialog, 0, false);
 			getProjectTask.execute(url);
 			return true;
 		} else {

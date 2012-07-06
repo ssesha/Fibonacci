@@ -31,7 +31,6 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 
@@ -127,7 +126,6 @@ public class ProjectManagerActivity extends Activity {
 								dialog.dismiss();
 							}
 							ProjectXPreferences.getEditor(cont).clear().commit();
-							Toast.makeText(cont, R.string.login_error, Toast.LENGTH_LONG).show();
 						}
 						System.out.println(loginAttempts);
 						loginAttempts++;
@@ -228,11 +226,9 @@ public class ProjectManagerActivity extends Activity {
 					context.startActivity(new Intent(context, homeActivity.class));
 					callingActivity.finish();
 				} else {
-					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
 				}
 
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}

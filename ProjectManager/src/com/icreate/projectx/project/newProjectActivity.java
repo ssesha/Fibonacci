@@ -42,7 +42,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
@@ -463,11 +462,10 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					callingActivity.startActivity(projectViewIntent);
 					callingActivity.finish();
 				} else {
-					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
+
 				}
 
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 				e.printStackTrace();
 			}
 		}

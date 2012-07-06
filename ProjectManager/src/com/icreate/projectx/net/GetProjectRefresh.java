@@ -15,7 +15,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
@@ -100,10 +99,8 @@ public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 					projectListViewWrapper.onRefreshComplete();
 				}
 			} else {
-				Toast.makeText(context, "Unable to get Project", Toast.LENGTH_LONG).show();
 			}
 		} catch (JSONException e) {
-			Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
 	}
