@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
-	<ListView android:id="@+id/attendee_list"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:layout_weight="1"
-    android:orientation="vertical" />
-	<Button android:id="@+id/find_time_button" android:layout_gravity="bottom|center"
-		android:layout_width="wrap_content" android:layout_height="wrap_content"
-  	android:text="@string/find_meeting_button" />
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/backgrounddown"
+    android:orientation="vertical"
+    android:padding="10dp" >
+
+    <ListView
+        android:id="@+id/attendee_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="1"
+        android:orientation="vertical" 
+        android:cacheColorHint="@android:color/transparent" />
+
+    <Button
+        android:id="@+id/find_time_button"
+        android:layout_width="160dp"
+        android:layout_height="54dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/button"
+        android:textColor="#05261f"
+        android:textSize="20sp"
+        android:text="@string/find_meeting_button" />
+
 </LinearLayout>

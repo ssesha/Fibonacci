@@ -87,7 +87,7 @@ public class expandTaskViewActivity extends Activity {
 			}
 		});
 
-		final CharSequence[] items = { "Latest Due", "Assignee", "Priority" };
+		final CharSequence[] items = { "Earliest Due", "Assignee", "Priority" };
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(cont);
 		builder.setTitle("Sort By");
@@ -97,20 +97,17 @@ public class expandTaskViewActivity extends Activity {
 				projectTaskSearch.setText("");
 				switch (item) {
 				case 0:
-					Collections.sort(project.getTasks(),
-							project.new TaskDueDateComparable());
+					Collections.sort(project.getTasks(), project.new TaskDueDateComparable());
+					Collections.reverse(project.getTasks());
 					break;
 				case 1:
-					Collections.sort(project.getTasks(),
-							project.new TaskAssigneeComparable());
+					Collections.sort(project.getTasks(), project.new TaskAssigneeComparable());
 					break;
 				case 2:
-					Collections.sort(project.getTasks(),
-							project.new TaskPriorityComparable());
+					Collections.sort(project.getTasks(), project.new TaskPriorityComparable());
 					break;
 				}
-				taskListBaseAdapter = new TaskListBaseAdapter(cont,
-						(ArrayList<Task>) project.getTasks());
+				taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
 				task_projectListView.setAdapter(taskListBaseAdapter);
 			}
 		});
@@ -129,13 +126,11 @@ public class expandTaskViewActivity extends Activity {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = projectTaskSearch.getText().length();
 				System.out.println(projectTaskSearch.getText());
 				filteredTasks.clear();
@@ -143,21 +138,13 @@ public class expandTaskViewActivity extends Activity {
 				project = globalState.getProject();
 				for (int i = 0; i < project.getTasks().size(); i++) {
 					Log.d("YOLO", project.getTasks().get(i).getTask_name());
-					if (textLength2 <= project.getTasks().get(i).getTask_name()
-							.length()) {
-						if (projectTaskSearch
-								.getText()
-								.toString()
-								.equalsIgnoreCase(
-										(String) project.getTasks().get(i)
-												.getTask_name()
-												.subSequence(0, textLength2))) {
+					if (textLength2 <= project.getTasks().get(i).getTask_name().length()) {
+						if (projectTaskSearch.getText().toString().equalsIgnoreCase((String) project.getTasks().get(i).getTask_name().subSequence(0, textLength2))) {
 							filteredTasks.add(project.getTasks().get(i));
 						}
 					}
 				}
-				taskListBaseAdapter = new TaskListBaseAdapter(cont,
-						filteredTasks, (ArrayList<Task>) project.getTasks());
+				taskListBaseAdapter = new TaskListBaseAdapter(cont, filteredTasks, (ArrayList<Task>) project.getTasks());
 				task_projectListView.setAdapter(taskListBaseAdapter);
 			}
 		});
@@ -173,21 +160,14 @@ public class expandTaskViewActivity extends Activity {
 
 		task_projectListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = task_projectListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(
-						cont,
-						"You have chosen: " + " " + selectedTask.getTask_name()
-								+ " " + selectedTask.getTask_id() + " "
-								+ selectedTask.getAssignee(), Toast.LENGTH_LONG)
-						.show();
+				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + selectedTask.getAssignee(), Toast.LENGTH_LONG).show();
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(),
-						0);
+				imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(), 0);
 				startActivity(TaskViewIntent);
 			}
 		});
@@ -198,13 +178,10 @@ public class expandTaskViewActivity extends Activity {
 			public void onRefresh() {
 
 				int projectId = project.getProject_id();
-				String url = ProjectxGlobalState.urlPrefix
-						+ "getProject.php?project_id=" + projectId;
+				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
 				globalState = (ProjectxGlobalState) getApplication();
 				project = globalState.getProject();
-				GetProjectRefresh getProjectTask = new GetProjectRefresh(cont,
-						currentActivity, null, task_projectListView,
-						projectListViewWrapper, project);
+				GetProjectRefresh getProjectTask = new GetProjectRefresh(cont, currentActivity, null, task_projectListView, projectListViewWrapper, project);
 				getProjectTask.execute(url);
 				projectTaskSearch.setText("");
 			}
@@ -220,18 +197,12 @@ public class expandTaskViewActivity extends Activity {
 		for (int i = 0; i < project.getTasks().size(); i++) {
 			if (project.getTasks().get(i).getAssignee() != 0) {
 				for (int j = 0; j < project.getMembers().size(); j++) {
-					if (project.getTasks().get(i).getAssignee() == project
-							.getMembers().get(j).getMember_id())
-						project.getTasks()
-								.get(i)
-								.setAssignee_name(
-										project.getMembers().get(j)
-												.getUser_name());
+					if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())
+						project.getTasks().get(i).setAssignee_name(project.getMembers().get(j).getUser_name());
 				}
 			}
 		}
-		taskListBaseAdapter = new TaskListBaseAdapter(cont,
-				(ArrayList<Task>) project.getTasks());
+		taskListBaseAdapter = new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks());
 		task_projectListView.setAdapter(taskListBaseAdapter);
 	}
 
@@ -256,8 +227,7 @@ public class expandTaskViewActivity extends Activity {
 	}
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.setHeaderTitle("Actions");
 		menu.add(0, v.getId(), 0, "Delete");
@@ -266,63 +236,39 @@ public class expandTaskViewActivity extends Activity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
-				.getMenuInfo();
-		final Task selectedTask = (Task) task_projectListView
-				.getItemAtPosition(info.position);
-		System.out.println(selectedTask.getTask_id() + " "
-				+ selectedTask.getTask_name());
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final Task selectedTask = (Task) task_projectListView.getItemAtPosition(info.position);
+		System.out.println(selectedTask.getTask_id() + " " + selectedTask.getTask_name());
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
 		if (item.getTitle() == "Delete") {
 			if (selectedTask.getSubTasks().size() == 0) {
-				System.out.println("deleting task" + selectedTask.getTask_id()
-						+ " " + selectedTask.getTask_name());
-				String url = ProjectxGlobalState.urlPrefix
-						+ "deleteTask.php?task_id=" + selectedTask.getTask_id()
-						+ "&project_id=" + project.getProject_id();
-				DeleteTask deletetask = new DeleteTask(cont, currentActivity,
-						info, projectListViewWrapper, project.getProject_id(),
-						task_projectListView, null, projectTaskSearch);
+				System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
+				String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
+				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
 				deletetask.execute(url);
 			} else {
-				AlertDialog.Builder builder = new AlertDialog.Builder(
-						currentActivity);
+				AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
 				builder.setCancelable(true);
 				builder.setTitle("Delete Task");
 				builder.setMessage("Delete removes the task and its subtasks permanently. Would you like to continue?");
 				builder.setInverseBackgroundForced(true);
-				builder.setPositiveButton("Yes",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
+				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
 
-								System.out.println("deleting task"
-										+ selectedTask.getTask_id() + " "
-										+ selectedTask.getTask_name());
-								String url = ProjectxGlobalState.urlPrefix
-										+ "deleteTask.php?task_id="
-										+ selectedTask.getTask_id()
-										+ "&project_id="
-										+ project.getProject_id();
-								DeleteTask deletetask = new DeleteTask(cont,
-										currentActivity, info,
-										projectListViewWrapper, project
-												.getProject_id(),
-										task_projectListView, null,
-										projectTaskSearch);
-								deletetask.execute(url);
-							}
-						});
-				builder.setNegativeButton("Cancel",
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dialog.dismiss();
-							}
-						});
+						System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
+						String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
+						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
+						deletetask.execute(url);
+					}
+				});
+				builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.dismiss();
+					}
+				});
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
@@ -331,8 +277,7 @@ public class expandTaskViewActivity extends Activity {
 			Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 			TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(),
-					0);
+			imm.hideSoftInputFromWindow(projectTaskSearch.getWindowToken(), 0);
 			startActivity(TaskViewIntent);
 			return true;
 		} else {
