@@ -23,12 +23,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ExpandableListView;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.api.client.http.HttpResponseException;
-import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter;
 import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter.EventHandler;
@@ -149,9 +144,9 @@ public class SelectMeetingTimeActivity extends Activity {
 		switch (requestCode) {
 		case Constants.CREATE_EVENT:
 			if (resultCode == RESULT_OK) {
-				Toast.makeText(this, getString(R.string.event_creation_success), Toast.LENGTH_SHORT).show();
+
 			} else if (resultCode == RESULT_FIRST_USER && results != null) {
-				Toast.makeText(this, getString(R.string.event_creation_failure) + ": " + results.getStringExtra(CreateEventActivity.MESSAGE), Toast.LENGTH_LONG).show();
+
 			}
 			break;
 		}
@@ -266,7 +261,7 @@ public class SelectMeetingTimeActivity extends Activity {
 						handler.post(new Runnable() {
 							@Override
 							public void run() {
-								Toast.makeText(SelectMeetingTimeActivity.this, getString(R.string.available_time_retrieval_failure) + ": " + e.getMessage(), Toast.LENGTH_LONG).show();
+
 							}
 						});
 					}

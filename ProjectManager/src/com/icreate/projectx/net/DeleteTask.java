@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -80,7 +79,7 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 			JSONObject resultJson = new JSONObject(result);
 			System.out.println(resultJson.toString());
 			if (resultJson.getString("msg").equals("success")) {
-				Toast.makeText(context, " Task removed", Toast.LENGTH_SHORT).show();
+
 				projectListViewWrapper.setRefreshing(false);
 				search.setText("");
 				Gson gson = new Gson();
@@ -103,10 +102,10 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 					projectListViewWrapper.onRefreshComplete();
 				}
 			} else {
-				Toast.makeText(context, "Task can't be removed", Toast.LENGTH_SHORT).show();
+
 			}
 		} catch (JSONException e) {
-			Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+
 			e.printStackTrace();
 		}
 	}

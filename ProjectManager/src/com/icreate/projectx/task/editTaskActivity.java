@@ -34,7 +34,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
@@ -89,7 +88,6 @@ public class editTaskActivity extends Activity {
 
 			memberId = extras.getInt("member", 0);
 			task_id = extras.getInt("task_id", 0);
-			System.out.println("member id" + memberId);
 
 			Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
 			project = global.getProject();
@@ -267,8 +265,7 @@ public class editTaskActivity extends Activity {
 							Log.d("JSON string", json1.toString());
 							CreateTask createTask = new CreateTask(cont, currentActivity, json1, dialog);
 							createTask.execute(ProjectxGlobalState.urlPrefix + "createTask_not.php");
-						} else
-							Toast.makeText(cont, "Choose Task Name", Toast.LENGTH_LONG).show();
+						}
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -420,10 +417,10 @@ public class editTaskActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
+
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
+
 				if (resultJson.getString("msg").equals("success")) {
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
@@ -437,10 +434,10 @@ public class editTaskActivity extends Activity {
 					callingActivity.startActivity(TaskViewIntent);
 					callingActivity.finish();
 				} else {
-					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

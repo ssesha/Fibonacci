@@ -52,7 +52,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -179,7 +178,7 @@ public class TaskViewActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(cont, "fdsdfsdf", Toast.LENGTH_LONG).show();
+
 				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
 				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
@@ -449,8 +448,7 @@ public class TaskViewActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = taskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position + " " + selectedTask.getAssignee_name(),
-						Toast.LENGTH_LONG).show();
+
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				TaskViewIntent.putExtra("task_id", selectedTask.getTask_id());
 				startActivity(TaskViewIntent);
@@ -627,12 +625,11 @@ public class TaskViewActivity extends Activity {
 					System.out.println(url);
 					ListComments.execute(url);
 				} else {
-					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
+
 				}
 				// callingActivity.finish();
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
-				e.printStackTrace();
+
 			}
 		}
 	}
@@ -659,7 +656,7 @@ public class TaskViewActivity extends Activity {
 		public void onClick(View v) {
 			Context context = menu.getContext();
 			String msg = "Slide " + new Date();
-			Toast.makeText(context, msg, 1000).show();
+
 			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
@@ -798,10 +795,10 @@ public class TaskViewActivity extends Activity {
 						commentListViewWrapper.onRefreshComplete();
 					}
 				} else {
-					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
@@ -874,10 +871,10 @@ public class TaskViewActivity extends Activity {
 					GetProjectTask getProjectTask = new GetProjectTask(context, callingActivity, dialog, taskId, true);
 					getProjectTask.execute(url);
 				} else {
-					Toast.makeText(context, "error in creation", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

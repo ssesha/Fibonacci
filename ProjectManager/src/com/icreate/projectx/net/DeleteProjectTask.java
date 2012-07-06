@@ -15,7 +15,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.Toast;
 
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.project.ProjectListBaseAdapter;
@@ -70,12 +69,12 @@ public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 				projectListBaseAdapter.removeItem(info.position - 1);
 				projectListBaseAdapter.notifyDataSetChanged();
 				projects.remove(project);
-				Toast.makeText(context, project.getProject_name() + " removed", Toast.LENGTH_SHORT).show();
+
 			} else {
-				Toast.makeText(context, project.getProject_name() + " can't be removed", Toast.LENGTH_SHORT).show();
+
 			}
 		} catch (JSONException e) {
-			Toast.makeText(context, "Server Error", Toast.LENGTH_SHORT).show();
+
 			e.printStackTrace();
 		}
 	}

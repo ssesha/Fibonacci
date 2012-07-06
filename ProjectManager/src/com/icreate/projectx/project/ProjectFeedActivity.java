@@ -23,7 +23,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.R;
@@ -110,10 +109,10 @@ public class ProjectFeedActivity extends Activity {
 					ActivityFeed feed = gson.fromJson(result, ActivityFeed.class);
 					activityListView.setAdapter(new ActivityFeedAdapter(context, feed.getNotifications()));
 				} else {
-					Toast.makeText(context, "Comment Lists empty", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

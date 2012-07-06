@@ -39,7 +39,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -140,7 +139,6 @@ public class TaskListActivity extends Activity {
 				logoText.setText("Tasks");
 			}
 
-			Toast.makeText(cont, extras.getString("requiredId"), Toast.LENGTH_LONG).show();
 			passedUserId = extras.getString("requiredId");
 			String url = ProjectxGlobalState.urlPrefix + "TaskList.php";
 			List<NameValuePair> params = new LinkedList<NameValuePair>();
@@ -216,7 +214,7 @@ public class TaskListActivity extends Activity {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Object o = TaskListView.getItemAtPosition(position);
 				Task selectedTask = (Task) o;
-				Toast.makeText(cont, "You have chosen: " + " " + selectedTask.getTask_name() + " " + selectedTask.getTask_id() + " " + position, Toast.LENGTH_LONG).show();
+
 				Intent TaskViewIntent = new Intent(cont, TaskViewActivity.class);
 				int projectId = selectedTask.getProjectId();
 				String url = ProjectxGlobalState.urlPrefix + "getProject.php?project_id=" + projectId;
@@ -320,10 +318,10 @@ public class TaskListActivity extends Activity {
 						taskListViewWrapper.onRefreshComplete();
 					}
 				} else {
-					Toast.makeText(context, "Task Lists empty", Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
