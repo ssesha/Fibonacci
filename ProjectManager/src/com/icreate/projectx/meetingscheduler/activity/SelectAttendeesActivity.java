@@ -53,7 +53,6 @@ import android.widget.Filter.FilterListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.util.DateTime;
@@ -195,8 +194,6 @@ public class SelectAttendeesActivity extends Activity {
 					}
 					Log.i(Constants.TAG, "Find meeting button pressed - successfully launched SelectMeeting activity");
 				} else {
-					Toast toast = Toast.makeText(getApplicationContext(), "You must select at least 1 attendee", 1000);
-					toast.show();
 				}
 			}
 		});
@@ -486,7 +483,7 @@ public class SelectAttendeesActivity extends Activity {
 				UpdateUserSync task = new UpdateUserSync(context, callingActivity);
 				task.execute(url);
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}
@@ -537,10 +534,10 @@ public class SelectAttendeesActivity extends Activity {
 					findMeetingButton.setText("Find meetings");
 					Sync = false;
 				} else {
-					Toast.makeText(context, R.string.login_error, Toast.LENGTH_LONG).show();
+
 				}
 			} catch (JSONException e) {
-				Toast.makeText(context, R.string.server_error, Toast.LENGTH_LONG).show();
+
 				e.printStackTrace();
 			}
 		}

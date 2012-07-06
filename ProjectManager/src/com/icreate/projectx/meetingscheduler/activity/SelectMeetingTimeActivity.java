@@ -23,7 +23,11 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
+import com.google.api.client.http.HttpResponseException;
+import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter;
 import com.icreate.projectx.meetingscheduler.adapter.EventExpandableListAdapter.EventHandler;
