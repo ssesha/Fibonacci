@@ -4,6 +4,8 @@ public class ProjectMembers {
 	private int member_id;
 	private String user_name;
 	private String user_id;
+	private String gmail;
+	private String isSynced;
 
 	public ProjectMembers(int x) {
 		member_id = x;
@@ -32,5 +34,21 @@ public class ProjectMembers {
 
 	public void setUser_id(String user_id) {
 		this.user_id = user_id;
+	}
+
+	public void setGmail(String gmail) {
+		this.gmail = gmail;
+	}
+
+	public String getGmail() {
+		return gmail;
+	}
+
+	public void setIsSynced(String isSynced) {
+		this.isSynced = isSynced;
+	}
+
+	public String getIsSynced() {
+		return isSynced;
 	}
 }

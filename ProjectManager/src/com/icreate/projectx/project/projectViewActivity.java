@@ -67,6 +67,7 @@ import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectMembers;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.meetingscheduler.activity.SelectAttendeesActivity;
 import com.icreate.projectx.task.expandTaskViewActivity;
 import com.icreate.projectx.task.newTaskActivity;
 
@@ -74,7 +75,7 @@ public class projectViewActivity extends Activity {
 	private static TextView logoText;
 	private TextView ProjectName, projDesc, projDeadline;
 	private EditText typeComment;
-	private Button createTask, TaskView;
+	private Button createTask, TaskView, scheduleMeeting;
 	private Button editProject, postComment;
 	private ProjectxGlobalState globalState;
 	private static Project project;
@@ -158,7 +159,7 @@ public class projectViewActivity extends Activity {
 		projDeadline.setTypeface(font);
 		editProject = (Button) projectView.findViewById(R.id.editProjectButton);
 		// projDesc.setText(globalState.getProjectList().getProjects().get(position).getProject_Desc());
-
+		scheduleMeeting = (Button) projectView.findViewById(R.id.scheduleMeeting);
 		memberListView = (ListView) projectView.findViewById(R.id.memberProgressList);
 		memberListView.setTextFilterEnabled(true);
 		registerForContextMenu(memberListView);
@@ -237,6 +238,14 @@ public class projectViewActivity extends Activity {
 				editProjectIntent.putExtra("flag", 1);
 				startActivity(editProjectIntent);
 				currentActivity.finish();
+			}
+		});
+		
+		scheduleMeeting.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {				
+				startActivity(new Intent(cont, SelectAttendeesActivity.class));
 			}
 		});
 

@@ -65,7 +65,7 @@ public class AttendeeRetriever {
    * 
    * @return The list of contacts.
    */
-  public List<Attendee> getAttendees() {
+  public List<Attendee> getAttendees(List<String> memberIds) {
     List<Attendee> result = new ArrayList<Attendee>();
     ContentResolver cr = activity.getContentResolver();
     Cursor cursor =
@@ -79,7 +79,7 @@ public class AttendeeRetriever {
           long id = cursor.getLong(cursor.getColumnIndex(BaseColumns._ID));
           String email = getEmail(cr, id);
 
-          if (email != null) {
+          if (email != null && memberIds.contains(email)) {
             String name = cursor.getString(cursor.getColumnIndex(Contacts.DISPLAY_NAME));
             String imageUri = getPhotoUri(cr, id);
 
