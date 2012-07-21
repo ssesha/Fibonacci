@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<item type="id" name="member_total_tasks" />
-<item type="id" name="member_total_completed_tasks" />
-<item type="id" name="member_progress" />
+
+    <item name="member_total_tasks" type="id"/>
+    <item name="member_total_completed_tasks" type="id"/>
+    <item name="member_progress" type="id"/>
+    <item name="gridview" type="id"/>
+    <item name="webview" type="id"/>
+
 </resources>
