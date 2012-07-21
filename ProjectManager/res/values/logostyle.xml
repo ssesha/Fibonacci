@@ -6,7 +6,11 @@
  
     <style name="CustomTheme" parent="@android:style/Theme.Holo">
         <item name="android:windowTitleSize">84dip</item>
-        <item name="android:windowTitleBackgroundStyle">@style/CustomWindowTitleBackground</item>
+        <item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>
         <item name="android:windowActionBar">false</item>
     </style>
+    
+        <style name="android:windowTitleStyle">
+            <item name="android:textColor">@android:color/transparent</item>
+        </style>
 </resources>
