@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
+
     <style name="CustomWindowTitleBackground">
         <item name="android:background">@drawable/titlebackground</item>
     </style>
- 
+
     <style name="CustomTheme" parent="@android:style/Theme.Holo">
         <item name="android:windowTitleSize">84dip</item>
         <item name="android:windowTitleBackgroundStyle">@android:color/transparent</item>
         <item name="android:windowActionBar">false</item>
+        <item name="android:windowTitleStyle">@style/customTitleStyle</item>
     </style>
-    
-        <style name="android:windowTitleStyle">
-            <item name="android:textColor">@android:color/transparent</item>
-        </style>
+
+    <style name="customTitleStyle">
+        <item name="android:textColor">@android:color/transparent</item>
+    </style>
+
 </resources>
