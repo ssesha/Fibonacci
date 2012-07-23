@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -200,13 +201,13 @@ public class newTaskActivity extends Activity {
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
 					json1.put("taskId", 0);
-					json1.put("user", glob_data.getUserid());
+					json1.put("user", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, glob_data.getUserid()));
 					json1.put("projectId", project.getProject_id());
 					json1.put("name", taskNameTextBox.getText());
 					if (!(Parent.getSelectedItemPosition() == 0))
 						json1.put("parentId", parenttasks.get(Parent.getSelectedItemPosition()).getTask_id());
 					json1.put("description", taskAboutTextBox.getText());
-					json1.put("createdBy", glob_data.getUserid());
+					json1.put("createdBy", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, glob_data.getUserid()));
 					json1.put("duedate", taskDateTextBox.getText());
 					if (!(status.equals("OPEN")))
 						json1.put("assignee", memberList.get(Assignto.getSelectedItemPosition()).getMember_id());

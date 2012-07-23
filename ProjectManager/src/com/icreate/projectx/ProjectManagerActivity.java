@@ -98,7 +98,7 @@ public class ProjectManagerActivity extends Activity {
 						EditText uName = (EditText) findViewById(R.id.uname);
 						EditText pass = (EditText) findViewById(R.id.pass);
 						appGlobalState.setUserid(uName.getText().toString());
-						String userName = appGlobalState.getUserid();
+						String userName = ProjectXPreferences.readString(cont, ProjectXPreferences.USER, appGlobalState.getUserid());
 						String password = pass.getText().toString();
 
 						if (loginAttempts == 0) {
@@ -147,7 +147,7 @@ public class ProjectManagerActivity extends Activity {
 			Account[] accounts = AccountManager.get(cont).getAccountsByType("com.google");
 			JSONObject requestJson = new JSONObject();
 			try {
-				requestJson.put("user_id", appGlobalState.getUserid());
+				requestJson.put("user_id", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, appGlobalState.getUserid()));
 				requestJson.put("auth_token", appGlobalState.getAuthToken());
 				requestJson.put("gAccount", accounts[0].name);
 			} catch (JSONException e) {
@@ -220,7 +220,7 @@ public class ProjectManagerActivity extends Activity {
 					Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
 					intent.putExtra("app", PendingIntent.getBroadcast(cont, 0, new Intent(), 0));
 					intent.putExtra("sender", "appsynth.wecreate@gmail.com");
-					intent.putExtra("userid", appGlobalState.getUserid());
+					intent.putExtra("userid", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, appGlobalState.getUserid()));
 					startService(intent);
 					Log.d("userid in login", appGlobalState.getUserid());
 					context.startActivity(new Intent(context, homeActivity.class));

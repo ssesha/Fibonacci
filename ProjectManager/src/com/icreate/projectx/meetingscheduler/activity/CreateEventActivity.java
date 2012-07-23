@@ -35,6 +35,7 @@ import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Constants;
 import com.icreate.projectx.meetingscheduler.util.CalendarServiceBuilder;
 import com.icreate.projectx.meetingscheduler.util.OAuthManager;
+import com.icreate.projectx.project.projectViewActivity;
 
 public class CreateEventActivity extends Activity {
 
@@ -80,7 +81,7 @@ public class CreateEventActivity extends Activity {
 		logoText.setText("New Meeting");
 		ImageButton homeButton = (ImageButton) findViewById(R.id.logoImageButton);
 		homeButton.setBackgroundResource(R.drawable.home_button);
-
+		
 		homeButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -220,6 +221,9 @@ public class CreateEventActivity extends Activity {
 								progressBar.dismiss();
 								progressBar = null;
 							}
+							Intent projViewIntent = new Intent(cont, projectViewActivity.class);
+							projViewIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+							startActivity(projViewIntent);
 							CreateEventActivity.this.finish();
 						}
 					});

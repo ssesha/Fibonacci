@@ -88,7 +88,7 @@ public class ProfileActivity extends Activity {
 		String url = ProjectxGlobalState.urlPrefix + "getProfile.php";
 		global = (ProjectxGlobalState) getApplication();
 		List<NameValuePair> params = new LinkedList<NameValuePair>();
-		params.add(new BasicNameValuePair("user_id", global.getUserid()));
+		params.add(new BasicNameValuePair("user_id", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, global.getUserid())));
 		String paramString = URLEncodedUtils.format(params, "utf-8");
 		url += "?" + paramString;
 		Log.d("profile", url);

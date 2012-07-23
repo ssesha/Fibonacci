@@ -59,6 +59,7 @@ import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -303,7 +304,7 @@ public class TaskViewActivity extends Activity {
 				for (int i = 0; i < member.size(); i++) {
 					System.out.println("check status" + member.get(i).getMember_id() + "  " + task.getAssignee());
 					System.out.println("check user id" + globalState.getUserid() + " " + member.get(i).getUser_id());
-					if (member.get(i).getMember_id() == task.getAssignee() && globalState.getUserid().equalsIgnoreCase(member.get(i).getUser_id()) && task.getSubTasks().size() == 0) {
+					if (member.get(i).getMember_id() == task.getAssignee() && ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(member.get(i).getUser_id()) && task.getSubTasks().size() == 0) {
 						statusSpinner.setVisibility(View.VISIBLE);
 						TaskStatus.setVisibility(View.GONE);
 					}
@@ -370,7 +371,7 @@ public class TaskViewActivity extends Activity {
 					json1.put("taskId", task_id);
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
 					System.out.println("createdby: " + Gs.getUserid());
-					json1.put("createdBy", Gs.getUserid());
+					json1.put("createdBy", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
 
 					Log.d("JSON string", json1.toString());
 					ProgressDialog dialog = new ProgressDialog(cont);
@@ -463,7 +464,7 @@ public class TaskViewActivity extends Activity {
 				ProjectxGlobalState glob_data = (ProjectxGlobalState) getApplication();
 				try {
 					json1.put("taskId", task.getTask_id());
-					json1.put("user", glob_data.getUserid());
+					json1.put("user", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, glob_data.getUserid()));
 					json1.put("projectId", project.getProject_id());
 					json1.put("name", task.getTask_name());
 					if (task.getParentId() != 0)

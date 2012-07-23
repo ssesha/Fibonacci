@@ -90,7 +90,7 @@ public class homeActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent projectListIntent = new Intent(cont, ProjectListActivity.class);
-				String currentUserId = globalData.getUserid();
+				String currentUserId = ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalData.getUserid());
 				if (!(currentUserId.isEmpty())) {
 					projectListIntent.putExtra("requiredId", currentUserId);
 					startActivity(projectListIntent);
@@ -102,7 +102,7 @@ public class homeActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent TaskListIntent = new Intent(cont, TaskListActivity.class);
-				String currentUserId = globalData.getUserid();
+				String currentUserId = ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalData.getUserid());
 				if (!(currentUserId.isEmpty())) {
 					TaskListIntent.putExtra("requiredId", currentUserId);
 					startActivity(TaskListIntent);

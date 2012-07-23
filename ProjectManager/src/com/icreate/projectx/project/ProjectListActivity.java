@@ -47,6 +47,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -133,7 +134,7 @@ public class ProjectListActivity extends Activity {
 		passedUserId = null;
 		if (extras != null) {
 			passedUserId = extras.getString("requiredId");
-			if (passedUserId.equalsIgnoreCase(globalState.getUserid())) {
+			if (passedUserId.equalsIgnoreCase(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()))) {
 				logoText.setText("My Projects");
 			} else {
 				logoText.setText("Projects");

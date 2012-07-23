@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.icreate.projectx.AssigntoSpinnerBaseAdapter;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -239,7 +240,7 @@ public class editTaskActivity extends Activity {
 					try {
 						if (thisTask != null) {
 							json1.put("taskId", thisTask.getTask_id());
-							json1.put("user", glob_data.getUserid());
+							json1.put("user", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, glob_data.getUserid()));
 							json1.put("projectId", project.getProject_id());
 							json1.put("name", taskNameTextBox.getText());
 							if (!(Parent.getSelectedItemPosition() == 0))

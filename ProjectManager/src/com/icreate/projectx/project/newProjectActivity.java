@@ -44,6 +44,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -155,7 +156,7 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			ProjectxGlobalState globalState = (ProjectxGlobalState) getApplication();
 			System.out.println(globalState.getUserid());
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(globalState.getUserid().equalsIgnoreCase(project.getMembers().get(i).getUser_id())))) {
+				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(project.getMembers().get(i).getUser_id())))) {
 					System.out.println("current user" + globalState.getUserid() + "member" + project.getMembers().get(i).getUser_id());
 					members.add(project.getMembers().get(i).getUser_name());
 					memberid.add(project.getMembers().get(i).getUser_id());
@@ -225,13 +226,13 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					json1.put("description", aboutTextBox.getText());
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
 					if (leader_id.equals("")) {
-						json1.put("leader", Gs.getUserid());
+						json1.put("leader", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
 						System.out.println("i am leader");
 					} else {
 						json1.put("leader", leader_id);
 						System.out.println("leader is" + leader_id);
 					}
-					json1.put("user", Gs.getUserid());
+					json1.put("user", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
 					json1.put("moduleCode", moduleTextBox.getSelectedItem());
 					json1.put("duedate", deadlineTextBox.getText());
 					for (int i = 0; i < members.size(); i++) {
@@ -512,12 +513,12 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 								ProjectxGlobalState globalData1 = (ProjectxGlobalState) getApplication();
 								if (viewMode == ProjectViewMode.NEW) {
-									if (!obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
+									if (!obj.getString("UserID").equalsIgnoreCase(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalData1.getUserid()))) {
 										studentList.add(name);
 										student_id_list.add(obj.getString("UserID"));
 									}
 								} else {
-									if (obj.getString("UserID").equalsIgnoreCase(globalData1.getUserid())) {
+									if (obj.getString("UserID").equalsIgnoreCase(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalData1.getUserid()))) {
 									} else if (obj.getString("UserID").equalsIgnoreCase(leader_id)) {
 									} else {
 										studentList.add(name);
