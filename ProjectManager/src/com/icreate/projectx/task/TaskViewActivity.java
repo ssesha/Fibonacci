@@ -84,7 +84,7 @@ public class TaskViewActivity extends Activity {
 	private ProjectxGlobalState globalState;
 	private MyHorizontalScrollView scrollView;
 	private PullToRefreshListView commentListViewWrapper;
-	private ListView taskListView, commentListView;
+	private static ListView taskListView, commentListView;
 	private Context cont;
 	private Activity currentActivity;
 	private String projectString;
@@ -95,7 +95,7 @@ public class TaskViewActivity extends Activity {
 	private View taskview, commentview, logoView;
 	private ArrayList<Comment> comments;
 	private Bundle extras;
-	private Button parentTaskButton;
+	private static Button parentTaskButton;
 	private ArrayAdapter<String> dataAdapter;
 	private TextView empty;
 
@@ -673,10 +673,18 @@ public class TaskViewActivity extends Activity {
 				// Scroll to 0 to reveal menu
 				int left = 0;
 				scrollView.smoothScrollTo(left, 0);
+				taskListView.setClickable(false);
+				taskListView.setEnabled(false);
+				parentTaskButton.setClickable(false);
+				parentTaskButton.setEnabled(false);
 			} else {
 				// Scroll to menuWidth so menu isn't on screen.
 				int left = menuWidth;
 				scrollView.smoothScrollTo(left, 0);
+				taskListView.setClickable(true);
+				taskListView.setEnabled(true);
+				parentTaskButton.setClickable(true);
+				parentTaskButton.setEnabled(true);
 			}
 			menuOut = !menuOut;
 		}

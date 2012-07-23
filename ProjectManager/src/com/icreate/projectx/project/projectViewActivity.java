@@ -76,7 +76,7 @@ public class projectViewActivity extends Activity {
 	private static TextView logoText;
 	private TextView ProjectName, projDesc, projDeadline;
 	private EditText typeComment;
-	private Button createTask, TaskView, scheduleMeeting;
+	private static Button createTask, TaskView, scheduleMeeting;
 	private Button editProject, postComment;
 	private ProjectxGlobalState globalState;
 	private static Project project;
@@ -95,7 +95,7 @@ public class projectViewActivity extends Activity {
 	private static PullToRefreshListView activitiesWrapper;
 	private static PullToRefreshListView commentlistWrapper;
 	private static ListView activities;
-	private ListView memberListView;
+	private static ListView memberListView;
 	private static ListView commentlist;
 	static boolean isFirst = false;
 	static Context cont;
@@ -495,25 +495,18 @@ public class projectViewActivity extends Activity {
 				task.execute(url);
 				int left = 0;
 				scrollView.smoothScrollTo(left, 0);
-				projectView.setClickable(false);
-				projectView.setEnabled(false);
-				projectView.setOnClickListener(new OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						slide.callOnClick();
-					}
-				});
+				memberListView.setEnabled(false);
+				memberListView.setClickable(false);
+				createTask.setEnabled(false);
+				createTask.setClickable(false);
 			} else {
 				// Scroll to menuWidth so menu isn't on screen.
 				int left = menuWidth;
 				scrollView.smoothScrollTo(left, 0);
-				projectView.setClickable(true);
-				projectView.setActivated(true);
-				projectView.setEnabled(true);
-				//projectView.setFilterTouchesWhenObscured(false);
-				
+				memberListView.setEnabled(true);
+				memberListView.setClickable(true);
+				createTask.setEnabled(true);
+				createTask.setClickable(true);
 			}
 			menuOut = !menuOut;
 		}
