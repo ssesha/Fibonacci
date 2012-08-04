@@ -46,7 +46,6 @@ public class ProjectFeedActivity extends Activity {
 		ProgressDialog dialog = new ProgressDialog(cont);
 		dialog.setMessage("Loading Activity Feed");
 		GetActivityFeed task = new GetActivityFeed(cont, this, dialog, activities);
-		System.out.println(url);
 		task.execute(url);
 	}
 
@@ -100,7 +99,6 @@ public class ProjectFeedActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("ActivityFeed", resultJson.toString());

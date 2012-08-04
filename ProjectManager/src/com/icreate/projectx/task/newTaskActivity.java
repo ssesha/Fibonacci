@@ -88,19 +88,13 @@ public class newTaskActivity extends Activity {
 			memberId = extras.getInt("member", 0);
 			parentId = extras.getInt("parent", 0);
 		}
-		System.out.println("member id in new task " + memberId);
 		project = global.getProject();
 
 		ProjectMembers dummyMember = new ProjectMembers(0);
 		memberList.add(dummyMember);
 		memberList.addAll(1, project.getMembers());
-		System.out.println("size" + memberList.size());
 
 		Typeface font = Typeface.createFromAsset(getAssets(), "EraserDust.ttf");
-
-		if (project != null) {
-			System.out.println("project name" + project.getProject_id() + " " + project.getProject_name());
-		}
 
 		taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
 		taskAboutTextBox = (EditText) findViewById(R.id.taskAboutBox);
@@ -167,9 +161,7 @@ public class newTaskActivity extends Activity {
 
 		if (memberId != 0) {
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				System.out.println("i am in member loop");
 				if (memberId == project.getMembers().get(i).getMember_id()) {
-					System.out.println("i am in member if loop");
 					Assignto.setSelection(i + 1);
 				}
 			}
@@ -317,16 +309,13 @@ public class newTaskActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
 					Gson gson = new Gson();
 					Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
-					System.out.println(project.getProject_name());
 					ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
 					globalState.setProject(project);
 					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);

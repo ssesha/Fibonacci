@@ -154,10 +154,9 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			deadlineTextBox.setText(project.getDue_date());
 			project_id = project.getProject_id();
 			ProjectxGlobalState globalState = (ProjectxGlobalState) getApplication();
-			System.out.println(globalState.getUserid());
 			for (int i = 0; i < project.getMembers().size(); i++) {
-				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id()) && (!(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(project.getMembers().get(i).getUser_id())))) {
-					System.out.println("current user" + globalState.getUserid() + "member" + project.getMembers().get(i).getUser_id());
+				if ((project.getLeader_id() != project.getMembers().get(i).getMember_id())
+						&& (!(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(project.getMembers().get(i).getUser_id())))) {
 					members.add(project.getMembers().get(i).getUser_name());
 					memberid.add(project.getMembers().get(i).getUser_id());
 				} else if (project.getLeader_id() == project.getMembers().get(i).getMember_id())
@@ -227,10 +226,8 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
 					if (leader_id.equals("")) {
 						json1.put("leader", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
-						System.out.println("i am leader");
 					} else {
 						json1.put("leader", leader_id);
-						System.out.println("leader is" + leader_id);
 					}
 					json1.put("user", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
 					json1.put("moduleCode", moduleTextBox.getSelectedItem());
@@ -443,7 +440,6 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 
 		@Override
 		protected void onPostExecute(String result) {
-			System.out.println(result);
 			try {
 				if (dialog != null && this.dialog.isShowing()) {
 					this.dialog.dismiss();
@@ -452,11 +448,9 @@ public class newProjectActivity extends Activity implements AdapterView.OnItemSe
 			}
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Gson gson = new Gson();
 					Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
-					System.out.println(project.getProject_name());
 					ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
 					globalState.setProject(project);
 					Intent projectViewIntent = new Intent(context, projectViewActivity.class);

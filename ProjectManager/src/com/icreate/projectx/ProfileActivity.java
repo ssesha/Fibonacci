@@ -154,7 +154,6 @@ public class ProfileActivity extends Activity {
 					this.dialog.dismiss();
 				}
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("ProjectList", resultJson.toString());

@@ -2,14 +2,11 @@ package com.icreate.projectx;
 
 import static com.googlecode.charts4j.Color.BLACK;
 import static com.googlecode.charts4j.Color.GOLD;
-import static com.googlecode.charts4j.Color.LIGHTGREY;
-import static com.googlecode.charts4j.Color.SILVER;
 import static com.googlecode.charts4j.Color.RED;
 import static com.googlecode.charts4j.Color.WHITE;
 import static com.googlecode.charts4j.UrlUtil.normalize;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -74,36 +71,31 @@ public class ChartDataProvider {
 		List<Integer> totalTasks = new ArrayList<Integer>();
 		List<Integer> completedTasks = new ArrayList<Integer>();
 		List<String> projectNames = new ArrayList<String>();
-		//totalTasks.add(MAX_TASK);
-		//completedTasks.add(MAX_TASK);
+		// totalTasks.add(MAX_TASK);
+		// completedTasks.add(MAX_TASK);
 		for (Project projectItem : list) {
-		  totalTasks.add(projectItem.getTotalTasks());
-		  completedTasks.add(projectItem.getTasksCompleted());
-		  projectNames.add(""+projectItem.getProject_id());
+			totalTasks.add(projectItem.getTotalTasks());
+			completedTasks.add(projectItem.getTasksCompleted());
+			projectNames.add("" + projectItem.getProject_id());
 		}
 		Collections.reverse(projectNames);
-		Data totalTasksData = DataUtil.scaleWithinRange(0, MAX_TASK,
-				totalTasks);
-		Data completedTaskData = DataUtil.scaleWithinRange(0, MAX_TASK,
-				completedTasks);
-		
+		Data totalTasksData = DataUtil.scaleWithinRange(0, MAX_TASK, totalTasks);
+		Data completedTaskData = DataUtil.scaleWithinRange(0, MAX_TASK, completedTasks);
+
 		BarChartPlot total = Plots.newBarChartPlot(totalTasksData, GOLD, "Total");
-		BarChartPlot completed = Plots.newBarChartPlot(completedTaskData, RED,
-				"Completed");
-		
+		BarChartPlot completed = Plots.newBarChartPlot(completedTaskData, RED, "Completed");
+
 		BarChart chart = GCharts.newBarChart(total, completed);
 
 		// Defining axis info and styles
-		AxisStyle axisStyle = AxisStyle.newAxisStyle(WHITE, 13,
-				AxisTextAlignment.CENTER);
+		AxisStyle axisStyle = AxisStyle.newAxisStyle(WHITE, 13, AxisTextAlignment.CENTER);
 		AxisLabels project = AxisLabelsFactory.newAxisLabels("Projects", 50.0);
 		project.setAxisStyle(axisStyle);
 		AxisLabels projNames = AxisLabelsFactory.newAxisLabels(projectNames);
 		projNames.setAxisStyle(axisStyle);
 		AxisLabels tasks = AxisLabelsFactory.newAxisLabels("Tasks", 50.0);
 		tasks.setAxisStyle(axisStyle);
-		AxisLabels taskCount = AxisLabelsFactory.newNumericRangeAxisLabels(0,
-				MAX_TASK);
+		AxisLabels taskCount = AxisLabelsFactory.newNumericRangeAxisLabels(0, MAX_TASK);
 		taskCount.setAxisStyle(axisStyle);
 
 		// Adding axis info to chart.
@@ -120,13 +112,10 @@ public class ChartDataProvider {
 		chart.setGrid((50.0 / MAX_TASK) * 20, 200, 3, 2);
 		chart.setBackgroundFill(Fills.newSolidFill(BLACK));
 		chart.setBarWidth(15);
-		LinearGradientFill fill = Fills.newLinearGradientFill(0,
-				Color.newColor("E37600"), 100);
+		LinearGradientFill fill = Fills.newLinearGradientFill(0, Color.newColor("E37600"), 100);
 		fill.addColorAndOffset(Color.newColor("DC4800"), 0);
 		chart.setAreaFill(Fills.newSolidFill(BLACK));
 		String url = chart.toURLString();
-		System.out.println(url);
-		System.out.println(normalize(url));
 		return normalize(url);
 	}
 }

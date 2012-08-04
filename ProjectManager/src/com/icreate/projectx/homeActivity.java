@@ -182,10 +182,8 @@ public class homeActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				Gson gson = new Gson();
 				EventList_IVLE events = gson.fromJson(result, EventList_IVLE.class);
 				AddEventToCalendar(events);

@@ -78,7 +78,6 @@ public class MemberViewActivity extends Activity {
 		});
 
 		progressnumber = (TextView) findViewById(R.id.taskprogressnumber);
-		System.out.println("ok then");
 		taskListView = (ListView) findViewById(R.id.assigneetasklist);
 		taskListView.setTextFilterEnabled(true);
 		registerForContextMenu(taskListView);
@@ -91,7 +90,6 @@ public class MemberViewActivity extends Activity {
 			totaltasks = extras.getDouble("totaltasks", -1);
 			totalcompletedtasks = extras.getDouble("totalcompletedtasks", -1);
 			currentMember = null;
-			System.out.println("total tasks:" + (int) totaltasks + "comp" + (int) totalcompletedtasks);
 			int inttotaltasks = (int) totaltasks;
 			int inttotalcompletedtasks = (int) totalcompletedtasks;
 			totaltasksView.setText("Tasks Assigned : " + inttotaltasks);
@@ -109,7 +107,6 @@ public class MemberViewActivity extends Activity {
 
 		mem_progress.setProgress((int) memberProgress);
 		taskListView.setAdapter(new TaskListBaseAdapter(cont, (ArrayList<Task>) project.getTasks(currentMember.getMember_id())));
-		System.out.println(project.getTasks().size());
 		taskListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -141,7 +138,6 @@ public class MemberViewActivity extends Activity {
 			public void onClick(View v) {
 				Intent newTaskIntent2 = new Intent(cont, newTaskActivity.class);
 				newTaskIntent2.putExtra("member", currentMember.getMember_id());
-				System.out.println("member id to new task " + currentMember.getMember_id());
 				startActivity(newTaskIntent2);
 				currentActivity.finish();
 			}

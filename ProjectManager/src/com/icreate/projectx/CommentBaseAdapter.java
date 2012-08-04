@@ -51,7 +51,7 @@ public class CommentBaseAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		//System.out.println("in base adapter" + CommentList.get(position).getCreator_name() + " " + CommentList.get(position).getComment());
+		//hoola.println("in base adapter" + CommentList.get(position).getCreator_name() + " " + CommentList.get(position).getComment());
 		holder.creatorName.setText(CommentList.get(position).getCreator_name());
 		holder.comment.setText(CommentList.get(position).getComment());
 		holder.lastUpdateTime.setText(CommentList.get(position).getLastUpdateTime());

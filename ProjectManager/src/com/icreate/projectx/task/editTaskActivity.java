@@ -96,7 +96,6 @@ public class editTaskActivity extends Activity {
 			ProjectMembers dummyMember = new ProjectMembers(0);
 			memberList.add(dummyMember);
 			memberList.addAll(1, project.getMembers());
-			System.out.println("size" + memberList.size());
 			taskNameTextBox = (EditText) findViewById(R.id.taskNameBox);
 			taskAboutTextBox = (EditText) findViewById(R.id.taskAboutBox);
 			taskDateTextBox = (EditText) findViewById(R.id.taskDeadlineBox);
@@ -216,12 +215,9 @@ public class editTaskActivity extends Activity {
 					for (int i = 0; i < parenttasks.size(); i++) {
 						if (parenttasks.get(i).getTask_id() == thisTask.getParentId()) {
 							Parent.setSelection(i);
-							System.out.println("parent" + thisTask.getParentId());
 						}
-
 					}
 				}
-
 			}
 
 			taskDateTextBox.setOnClickListener(new View.OnClickListener() {
@@ -255,7 +251,6 @@ public class editTaskActivity extends Activity {
 
 							if (!(status.equals("OPEN")))
 								json1.put("assignee", Assignee);
-							System.out.println("assignee=" + Assignee);
 							json1.put("status", status);
 							json1.put("priority", Priority.getSelectedItem());
 							ProgressDialog dialog = new ProgressDialog(cont);
@@ -310,10 +305,8 @@ public class editTaskActivity extends Activity {
 							Parent.setSelection(0);
 						else {
 							for (int i = 0; i < parenttasks.size(); i++) {
-								System.out.println("in for" + parenttasks.get(i).getTask_id() + "parent" + taskopenlist.get(position - 1).getParentId());
 								if (parenttasks.get(i).getTask_id() == taskopenlist.get(position - 1).getParentId()) {
 									Parent.setSelection(i);
-									System.out.println("parent" + taskopenlist.get(position - 1).getParentId());
 								}
 
 							}
@@ -427,7 +420,6 @@ public class editTaskActivity extends Activity {
 					int taskId = resultJson.getInt("task_id");
 					Gson gson = new Gson();
 					Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
-					System.out.println(project.getProject_name());
 					ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
 					globalState.setProject(project);
 					Intent TaskViewIntent = new Intent(context, TaskViewActivity.class);

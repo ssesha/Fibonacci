@@ -17,10 +17,9 @@ import android.os.AsyncTask;
 import android.widget.ListView;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
-import com.icreate.projectx.R;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.task.TaskListBaseAdapter;
 
 public class GetProjectRefresh extends AsyncTask<String, Void, String> {
@@ -85,10 +84,8 @@ public class GetProjectRefresh extends AsyncTask<String, Void, String> {
 			}
 		} catch (Exception e) {
 		}
-		System.out.println(result);
 		try {
 			JSONObject resultJson = new JSONObject(result);
-			System.out.println(resultJson.toString());
 			if (resultJson.getString("msg").equals("success")) {
 				Gson gson = new Gson();
 				Project projectobj = gson.fromJson(resultJson.getString("project"), Project.class);

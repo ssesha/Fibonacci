@@ -61,10 +61,8 @@ public class ActivityFeedAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		holder.message.setText(projActivities.get(position).getMessage());
-		System.out.println(projActivities.get(position).getSentTime());
 		// holder.sentTime.setText("today");
 		holder.sentTime.setText(projActivities.get(position).getSentTime());
-		System.out.println("out of getView");
 		return convertView;
 	}
 

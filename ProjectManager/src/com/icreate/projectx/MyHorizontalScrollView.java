@@ -128,7 +128,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 
 		@Override
 		public void onGlobalLayout() {
-			// System.out.println("onGlobalLayout");
+			// hoola.println("onGlobalLayout");
 
 			final HorizontalScrollView me = MyHorizontalScrollView.this;
 
@@ -146,7 +146,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 			final int w = me.getMeasuredWidth();
 			final int h = me.getMeasuredHeight();
 
-			// System.out.println("w=" + w + ", h=" + h);
+			// hoola.println("w=" + w + ", h=" + h);
 
 			// Add each view in turn, and apply the width and height returned by
 			// the SizeCallback.
@@ -154,7 +154,7 @@ public class MyHorizontalScrollView extends HorizontalScrollView {
 			scrollToViewPos = 0;
 			for (int i = 0; i < children.length; i++) {
 				sizeCallback.getViewSize(i, w, h, dims);
-				// System.out.println("addView w=" + dims[0] + ", h=" +
+				// hoola.println("addView w=" + dims[0] + ", h=" +
 				// dims[1]);
 				children[i].setVisibility(View.VISIBLE);
 				parent.addView(children[i], dims[0], dims[1]);

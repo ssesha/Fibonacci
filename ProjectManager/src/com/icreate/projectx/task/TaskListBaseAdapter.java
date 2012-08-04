@@ -96,7 +96,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.txtassignee.setVisibility(View.VISIBLE);
 
 			holder.txtName.setText(taskList.get(position).getTask_name());
-			System.out.println("assignee" + taskList.get(position).getAssignee_name());
 
 			if (taskList.get(position).getAssignee() == 0)
 				holder.txtassignee.setText("Unassigned");
@@ -107,8 +106,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			int flag = 0;
 			for (int i = 0; i < allTaskList.size(); i++) {
 				if (parent_id == allTaskList.get(i).getTask_id() && parent_id != 0) {
-					System.out.println("parent test" + parent_id + allTaskList.get(i).getTask_id());
-					System.out.println("i have a parent.my name is" + allTaskList.get(position).getTask_name() + "my parent is" + allTaskList.get(i).getTask_name());
 					holder.txtParentName.setText(allTaskList.get(i).getTask_name());
 					flag = 1;
 					break;
@@ -139,8 +136,6 @@ public class TaskListBaseAdapter extends BaseAdapter {
 			holder.txtdate.setText(taskList.get(position).getDue_date());
 			double progress = taskList.get(position).getProgress() * 100.0;
 			holder.TaskProgress.setProgress((int) progress);
-			System.out.println("task name" + taskList.get(position).getTask_name() + "progress:" + (int) taskList.get(position).getProgress());
-
 			if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
 				holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
 				holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));

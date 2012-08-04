@@ -81,11 +81,8 @@ public class GetProjectTask extends AsyncTask<String, Void, String> {
 			}
 		} catch (Exception e) {
 		}
-		System.out.println(result);
 		try {
 			JSONObject resultJson = new JSONObject(result);
-			System.out.println(resultJson.toString());
-			System.out.println("task id is" + task_id);
 			if (resultJson.getString("msg").equals("success")) {
 				Gson gson = new Gson();
 				Project project = gson.fromJson(resultJson.getString("project"), Project.class);

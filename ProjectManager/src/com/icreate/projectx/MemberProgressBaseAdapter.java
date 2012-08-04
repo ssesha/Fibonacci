@@ -51,12 +51,6 @@ public class MemberProgressBaseAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		Typeface font = Typeface.createFromAsset(context.getAssets(), "EraserDust.ttf");
-		System.out.println("inside base adapter");
-		System.out.println(memberList.toString());
-		System.out.println("position");
-		System.out.println(position);
-		System.out.println("tasklist");
-		System.out.println(tasks.toString());
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.memberprogressitem, null);
 			holder = new ViewHolder();

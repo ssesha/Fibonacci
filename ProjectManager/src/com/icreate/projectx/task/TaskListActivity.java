@@ -41,8 +41,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -51,6 +49,8 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.datamodel.TaskList;
 import com.icreate.projectx.net.GetProjectTask;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 
 public class TaskListActivity extends Activity {
 	private TextView logoText;
@@ -134,7 +134,7 @@ public class TaskListActivity extends Activity {
 		passedUserId = null;
 		if (extras != null) {
 			passedUserId = extras.getString("requiredId");
-			if (passedUserId.equalsIgnoreCase(ProjectXPreferences.readString(cont, ProjectXPreferences.USER,globalState.getUserid()))) {
+			if (passedUserId.equalsIgnoreCase(ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()))) {
 				logoText.setText("My Tasks");
 			} else {
 				logoText.setText("Tasks");
@@ -151,7 +151,6 @@ public class TaskListActivity extends Activity {
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 			ListTask ListTasks = new ListTask(cont, currentActivity, dialog, TaskListView);
-			System.out.println(url);
 			ListTasks.execute(url);
 		}
 
@@ -185,7 +184,6 @@ public class TaskListActivity extends Activity {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = myTaskSearch.getText().length();
 				if (tasks != null) {
-					System.out.println(myTaskSearch.getText());
 					filteredTasks.clear();
 					for (int i = 0; i < tasks.size(); i++) {
 						Log.d("YOLO", tasks.get(i).getTask_name());
@@ -291,7 +289,6 @@ public class TaskListActivity extends Activity {
 					this.dialog.dismiss();
 				}
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("TaskList", resultJson.toString());
@@ -308,13 +305,6 @@ public class TaskListActivity extends Activity {
 							mytasksAdapter.notifyDataSetChanged();
 						}
 					});
-					Log.d("testing", "" + tasks.size());
-					for (Task task : tasks) {
-						Log.d("testing", "test test");
-						System.out.println("task name" + task.getTask_name());
-						System.out.println("project name" + task.getProject_name());
-						System.out.println("task date" + task.getDue_date());
-					}
 					if (dialog == null) {
 						taskListViewWrapper.onRefreshComplete();
 					}

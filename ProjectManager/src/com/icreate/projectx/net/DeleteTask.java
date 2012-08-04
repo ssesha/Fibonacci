@@ -20,10 +20,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.datamodel.Project;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.task.TaskListBaseAdapter;
 
 public class DeleteTask extends AsyncTask<String, Void, String> {
@@ -74,21 +74,16 @@ public class DeleteTask extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		System.out.println(result);
 		try {
 			JSONObject resultJson = new JSONObject(result);
-			System.out.println(resultJson.toString());
 			if (resultJson.getString("msg").equals("success")) {
-
 				projectListViewWrapper.setRefreshing(false);
 				search.setText("");
 				Gson gson = new Gson();
 				Project project = gson.fromJson(resultJson.getString("projectString"), Project.class);
-				System.out.println(project.getProject_name());
 				ProjectxGlobalState globalState = (ProjectxGlobalState) callingActivity.getApplication();
 				globalState.setProject(project);
 				for (int i = 0; i < project.getTasks().size(); i++) {
-					System.out.println("task" + i + project.getTasks().get(i).getTask_name());
 					if (project.getTasks().get(i).getAssignee() != 0) {
 						for (int j = 0; j < project.getMembers().size(); j++) {
 							if (project.getTasks().get(i).getAssignee() == project.getMembers().get(j).getMember_id())

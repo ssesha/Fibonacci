@@ -98,8 +98,6 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 
 			holder.txtName.setText(taskList.get(position).getTask_name());
 
-			System.out.println("assignee" + taskList.get(position).getAssignee_name());
-
 			if (taskList.get(position).getAssignee_name() == null)
 				holder.txtassignee.setVisibility(View.GONE);
 			else
@@ -109,8 +107,6 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 			int flag = 0;
 			for (int i = 0; i < taskList.size(); i++) {
 				if (parent_id == taskList.get(i).getTask_id() && parent_id != 0) {
-					System.out.println("parent test" + parent_id + taskList.get(i).getTask_id());
-					System.out.println("i have a parent.my name is" + taskList.get(position).getTask_name() + "my parent is" + taskList.get(i).getTask_name());
 					holder.txtParentName.setText(taskList.get(i).getTask_name());
 					flag = 1;
 					break;
@@ -141,8 +137,6 @@ public class ParentSpinnerBaseAdapter extends BaseAdapter {
 			holder.txtdate.setText(taskList.get(position).getDue_date());
 			double progress = taskList.get(position).getProgress() * 100.0;
 			holder.TaskProgress.setProgress((int) progress);
-			System.out.println("task name" + taskList.get(position).getTask_name() + "progress:" + (int) taskList.get(position).getProgress());
-
 			if (taskList.get(position).getTask_status().equalsIgnoreCase("COMPLETE")) {
 				holder.txtName.setTextColor(Color.parseColor("#AAB3B6"));
 				holder.txtParentName.setTextColor(Color.parseColor("#AAB3B6"));

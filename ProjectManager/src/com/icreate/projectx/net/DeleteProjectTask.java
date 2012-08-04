@@ -60,11 +60,9 @@ public class DeleteProjectTask extends AsyncTask<String, Void, String> {
 
 	@Override
 	protected void onPostExecute(String result) {
-		System.out.println(result);
 		Project project = (Project) projectListBaseAdapter.getItem(info.position - 1);
 		try {
 			JSONObject resultJson = new JSONObject(result);
-			System.out.println(resultJson.toString());
 			if (resultJson.getString("msg").equals("success")) {
 				projectListBaseAdapter.removeItem(info.position - 1);
 				projectListBaseAdapter.notifyDataSetChanged();

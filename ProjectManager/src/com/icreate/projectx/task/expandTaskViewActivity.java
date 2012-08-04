@@ -29,8 +29,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Project;
@@ -38,6 +36,8 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.net.DeleteTask;
 import com.icreate.projectx.net.GetProjectRefresh;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 
 public class expandTaskViewActivity extends Activity {
 	private TextView logoText;
@@ -132,7 +132,6 @@ public class expandTaskViewActivity extends Activity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				int textLength2 = projectTaskSearch.getText().length();
-				System.out.println(projectTaskSearch.getText());
 				filteredTasks.clear();
 				globalState = (ProjectxGlobalState) getApplication();
 				project = globalState.getProject();
@@ -238,12 +237,10 @@ public class expandTaskViewActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		final Task selectedTask = (Task) task_projectListView.getItemAtPosition(info.position);
-		System.out.println(selectedTask.getTask_id() + " " + selectedTask.getTask_name());
 		globalState = (ProjectxGlobalState) getApplication();
 		project = globalState.getProject();
 		if (item.getTitle() == "Delete") {
 			if (selectedTask.getSubTasks().size() == 0) {
-				System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
 				String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
 				DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
 				deletetask.execute(url);
@@ -256,8 +253,6 @@ public class expandTaskViewActivity extends Activity {
 				builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-
-						System.out.println("deleting task" + selectedTask.getTask_id() + " " + selectedTask.getTask_name());
 						String url = ProjectxGlobalState.urlPrefix + "deleteTask.php?task_id=" + selectedTask.getTask_id() + "&project_id=" + project.getProject_id();
 						DeleteTask deletetask = new DeleteTask(cont, currentActivity, info, projectListViewWrapper, project.getProject_id(), task_projectListView, null, projectTaskSearch);
 						deletetask.execute(url);
@@ -281,7 +276,7 @@ public class expandTaskViewActivity extends Activity {
 			startActivity(TaskViewIntent);
 			return true;
 		} else {
-			System.out.println("blsldsdlflsfsdf");
+			// Do nothing
 		}
 		return false;
 	}

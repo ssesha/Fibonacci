@@ -45,8 +45,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
@@ -55,6 +53,8 @@ import com.icreate.projectx.datamodel.ProjectList;
 import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.net.DeleteProjectTask;
 import com.icreate.projectx.net.GetProjectTask;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 
 public class ProjectListActivity extends Activity {
 	private TextView logoText;
@@ -151,7 +151,6 @@ public class ProjectListActivity extends Activity {
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 			ProjectListTask projectListTask = new ProjectListTask(cont, currentActivity, dialog, projectListView);
-			System.out.println(url);
 			projectListTask.execute(url);
 		}
 
@@ -268,7 +267,6 @@ public class ProjectListActivity extends Activity {
 					this.dialog.dismiss();
 				}
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("ProjectList", resultJson.toString());
@@ -323,7 +321,6 @@ public class ProjectListActivity extends Activity {
 	public boolean onContextItemSelected(MenuItem item) {
 		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		final Project selectedProject = (Project) projectListView.getItemAtPosition(info.position);
-		System.out.println(selectedProject.getProject_name() + " " + selectedProject.getLeader_name());
 		if (item.getTitle() == "Delete") {
 			AlertDialog.Builder builder = new AlertDialog.Builder(currentActivity);
 			builder.setCancelable(true);
@@ -362,7 +359,6 @@ public class ProjectListActivity extends Activity {
 			getProjectTask.execute(url);
 			return true;
 		} else {
-			System.out.println("blsldsdlflsfsdf");
 		}
 		return false;
 	}

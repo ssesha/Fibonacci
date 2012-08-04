@@ -58,12 +58,8 @@ public class ProjectManagerActivity extends Activity {
 		String authToken = ProjectXPreferences.readString(cont, ProjectXPreferences.TOKEN, "");
 		if (authToken.length() != 0 && userName.length() != 0 && passwordString.length() != 0) {
 			appGlobalState.setAuthToken(authToken);
-			System.out.println(appGlobalState.getAuthToken());
 			appGlobalState.setUserid(userName);
 			Account[] accounts = AccountManager.get(cont).getAccountsByType("com.google");
-			for (Account acc : accounts) {
-				System.out.println(acc.name);
-			}
 			startActivity(new Intent(cont, homeActivity.class));
 			finish();
 		}
@@ -127,7 +123,6 @@ public class ProjectManagerActivity extends Activity {
 							}
 							ProjectXPreferences.getEditor(cont).clear().commit();
 						}
-						System.out.println(loginAttempts);
 						loginAttempts++;
 					}
 				});
@@ -211,10 +206,8 @@ public class ProjectManagerActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					Log.w("C2DM", "start registration process");
 					Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");

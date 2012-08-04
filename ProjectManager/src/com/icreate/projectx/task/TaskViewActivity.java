@@ -54,13 +54,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
-import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 import com.icreate.projectx.AlarmReceiver;
 import com.icreate.projectx.CommentBaseAdapter;
 import com.icreate.projectx.MyHorizontalScrollView;
-import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.MyHorizontalScrollView.SizeCallback;
+import com.icreate.projectx.ProjectXPreferences;
 import com.icreate.projectx.R;
 import com.icreate.projectx.homeActivity;
 import com.icreate.projectx.datamodel.Comment;
@@ -71,6 +69,8 @@ import com.icreate.projectx.datamodel.ProjectxGlobalState;
 import com.icreate.projectx.datamodel.Task;
 import com.icreate.projectx.net.GetProjectTask;
 import com.icreate.projectx.project.projectViewActivity;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.icreate.projectx.pulltorefresh.library.PullToRefreshListView;
 
 public class TaskViewActivity extends Activity {
 
@@ -183,7 +183,7 @@ public class TaskViewActivity extends Activity {
 				Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
 				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 				if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
-					System.out.println("Alarm was set now it is removed");
+					// Alarm was set now it is removed
 					PendingIntent sender = PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_UPDATE_CURRENT);
 					try {
 						am.cancel(sender);
@@ -194,15 +194,13 @@ public class TaskViewActivity extends Activity {
 						Log.e("Error", "AlarmManager update was not canceled. " + e.toString());
 					}
 				} else {
-					System.out.println("Alarm not set now it is set");
+					// Alarm not set now it is set
 					DateFormat formatter;
 					Date date;
 					formatter = new SimpleDateFormat("yyyy-MM-dd");
 					try {
 						date = formatter.parse(task.getDue_date());
 						Calendar cal = Calendar.getInstance();
-						System.out.println("Due date = " + task.getDue_date());
-						System.out.println("Due date date = " + date);
 						cal.setTime(date);
 						// cal.setTimeInMillis(System.currentTimeMillis());
 						// cal.add(Calendar.SECOND, 10);
@@ -227,7 +225,6 @@ public class TaskViewActivity extends Activity {
 			task_id = extras.getInt("task_id");
 			Intent alarmintent = new Intent(getApplicationContext(), AlarmReceiver.class);
 			if (PendingIntent.getBroadcast(getApplicationContext(), task_id, alarmintent, PendingIntent.FLAG_NO_CREATE) != null) {
-				System.out.println("Alarm set");
 				// setAlarm.setText("Alarm Set");
 				setAlarm.setBackgroundResource(R.drawable.alarmon);
 			} else {
@@ -267,8 +264,6 @@ public class TaskViewActivity extends Activity {
 				if (status.get(i).equalsIgnoreCase(task.getTask_status()))
 					statusSpinner.setSelection(i);
 			}
-
-			System.out.println("Task details:" + task.getTask_id() + "" + task.getDescription() + "" + task.getDue_date());
 			if (task.getDescription() != null) {
 				TaskDesc.setText(task.getDescription());
 			} else
@@ -302,9 +297,8 @@ public class TaskViewActivity extends Activity {
 			TaskStatus.setText(task.getTask_status());
 			if (!(task.getTask_status().equals("OPEN"))) {
 				for (int i = 0; i < member.size(); i++) {
-					System.out.println("check status" + member.get(i).getMember_id() + "  " + task.getAssignee());
-					System.out.println("check user id" + globalState.getUserid() + " " + member.get(i).getUser_id());
-					if (member.get(i).getMember_id() == task.getAssignee() && ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(member.get(i).getUser_id()) && task.getSubTasks().size() == 0) {
+					if (member.get(i).getMember_id() == task.getAssignee()
+							&& ProjectXPreferences.readString(cont, ProjectXPreferences.USER, globalState.getUserid()).equalsIgnoreCase(member.get(i).getUser_id()) && task.getSubTasks().size() == 0) {
 						statusSpinner.setVisibility(View.VISIBLE);
 						TaskStatus.setVisibility(View.GONE);
 					}
@@ -312,18 +306,12 @@ public class TaskViewActivity extends Activity {
 				}
 			}
 			ProjectName.setText(project.getProject_name());
-			Log.d("Project name ", project.getProject_name());
-			System.out.println(alltasks.size());
 			int sub_taskid;
 			for (int i = 0; i < task.getTopSubTasks().size(); i++) {
 				sub_taskid = task.getTopSubTasks().get(i);
-				System.out.println("sub task id" + sub_taskid);
 				for (int j = 0; j < alltasks.size(); j++) {
-					System.out.println("j" + j + "all task id" + alltasks.get(j).getTask_id());
 					if (sub_taskid == alltasks.get(j).getTask_id()) {
-						System.out.println("j inside " + j + "" + alltasks.get(j).getTask_name());
 						subTasks.add(alltasks.get(j));
-						System.out.println(subTasks.size());
 						break;
 					}
 
@@ -346,7 +334,6 @@ public class TaskViewActivity extends Activity {
 			dialog.setCancelable(false);
 			dialog.setCanceledOnTouchOutside(false);
 			ListComment ListComments = new ListComment(cont, currentActivity, dialog, commentListView);
-			System.out.println(url);
 			ListComments.execute(url);
 
 		}
@@ -359,7 +346,6 @@ public class TaskViewActivity extends Activity {
 		// Scroll to app (view[1]) when layout finished.
 		int scrollToViewIdx = 1;
 		scrollView.initViews(children, scrollToViewIdx, new SizeCallbackForMenu(slide));
-		System.out.println("Menu ScrollViewIdx + " + scrollToViewIdx);
 
 		sendComment.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -370,7 +356,6 @@ public class TaskViewActivity extends Activity {
 					json1.put("comment", commentTextBox.getText());
 					json1.put("taskId", task_id);
 					ProjectxGlobalState Gs = (ProjectxGlobalState) getApplication();
-					System.out.println("createdby: " + Gs.getUserid());
 					json1.put("createdBy", ProjectXPreferences.readString(cont, ProjectXPreferences.USER, Gs.getUserid()));
 
 					Log.d("JSON string", json1.toString());
@@ -392,7 +377,7 @@ public class TaskViewActivity extends Activity {
 					 * ProgressDialog(cont);
 					 * dialog1.setMessage("Getting Comments"); ListComment
 					 * ListComments = new ListComment(cont, currentActivity,
-					 * dialog1, commentListView); System.out.println(url);
+					 * dialog1, commentListView); hoola.println(url);
 					 * ListComments.execute(url);
 					 */
 
@@ -534,7 +519,6 @@ public class TaskViewActivity extends Activity {
 				dialog.setCancelable(false);
 				dialog.setCanceledOnTouchOutside(false);
 				ListComment ListComments = new ListComment(cont, currentActivity, commentListView);
-				System.out.println(url);
 				ListComments.execute(url);
 			}
 		});
@@ -571,7 +555,6 @@ public class TaskViewActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.setCancelable(false);
 				this.dialog.setCanceledOnTouchOutside(false);
@@ -606,10 +589,8 @@ public class TaskViewActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					// context.startActivity(new Intent(context,
 					// homeActivity.class));
@@ -623,7 +604,6 @@ public class TaskViewActivity extends Activity {
 					dialog.setCancelable(false);
 					dialog.setCanceledOnTouchOutside(false);
 					ListComment ListComments = new ListComment(context, callingActivity, dialog, commentListView);
-					System.out.println(url);
 					ListComments.execute(url);
 				} else {
 
@@ -656,12 +636,8 @@ public class TaskViewActivity extends Activity {
 		@Override
 		public void onClick(View v) {
 			Context context = menu.getContext();
-			String msg = "Slide " + new Date();
-
-			System.out.println(msg);
 
 			int menuWidth = menu.getMeasuredWidth();
-			System.out.println("Guiiiii" + menu.getMeasuredWidth() + " menuOut= " + menuOut);
 
 			// Ensure menu is visible
 			// if (menu.getVisibility() == View.INVISIBLE)
@@ -706,7 +682,6 @@ public class TaskViewActivity extends Activity {
 		@Override
 		public void onGlobalLayout() {
 			btnWidth = btnSlide.getMeasuredWidth() + 50;
-			System.out.println("btnWidth=" + btnWidth);
 		}
 
 		@Override
@@ -782,7 +757,6 @@ public class TaskViewActivity extends Activity {
 					this.dialog.dismiss();
 				}
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
 				Log.d("CommentList", resultJson.toString());
@@ -793,13 +767,6 @@ public class TaskViewActivity extends Activity {
 					comments = commentsContainer.getComments();
 					commentListView.setAdapter(new CommentBaseAdapter(context, comments));
 					commentListView.setSelection(commentListView.getCount() - 1);
-					Log.d("testing", "" + comments.size());
-					for (Comment comment : comments) {
-						Log.d("testing", "test test");
-						System.out.println("creator id" + comment.getCreated_by());
-						System.out.println("creator name" + comment.getCreator_name());
-						System.out.println("comment name" + comment.getComment());
-					}
 					if (this.dialog == null) {
 						commentListViewWrapper.onRefreshComplete();
 					}
@@ -828,7 +795,6 @@ public class TaskViewActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			System.out.println(this.dialog.isShowing());
 			if (!(this.dialog.isShowing())) {
 				this.dialog.show();
 				this.dialog.setCanceledOnTouchOutside(false);
@@ -864,10 +830,8 @@ public class TaskViewActivity extends Activity {
 			if (this.dialog.isShowing()) {
 				this.dialog.dismiss();
 			}
-			System.out.println(result);
 			try {
 				JSONObject resultJson = new JSONObject(result);
-				System.out.println(resultJson.toString());
 				if (resultJson.getString("msg").equals("success")) {
 					int projectId = project.getProject_id();
 					int taskId = resultJson.getInt("task_id");
